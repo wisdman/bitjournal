@@ -1,0 +1,4 @@
+# bitbay.media
+User-agent: *
+ Disallow: /
+ Host: bitbay.media

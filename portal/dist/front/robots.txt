@@ -1,0 +1,3 @@
+# bitjournal.media
+User-agent: *
+ Host: bitjournal.media

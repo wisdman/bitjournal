@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "angularCompilerOptions": {
+    "genDir": ".",
+    "entryModule": "src/app.back.module#AppModule",
+    "preserveWhitespaces": false
+  },
+  "exclude": [
+    "./src/main.front.ts",
+    "./src/app.front.module.ts"
+  ],
+}

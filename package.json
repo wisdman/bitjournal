@@ -1,0 +1,96 @@
+{
+  "name": "bitjournal",
+  "version": "0.1.0",
+  "description": "Webportal about Blockchain",
+  "author": "Wisdman <wisdman@ajaw.it> (https://github.com/wisdman)",
+  "contributors": [
+    {
+      "name": "Dmitriy Poliakov",
+      "url": "https://github.com/wisdman",
+      "email": "wisdman@ajaw.it"
+    }
+  ],
+  "license": "UNLICENSED",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wisdman/bitjournal.git"
+  },
+  "homepage": "https://github.com/wisdman/bitjournal",
+  "bugs": "https://github.com/wisdman/bitjournal/issues",
+  "engines": {
+    "node": ">=8.9.0",
+    "npm": ">=5.5.0"
+  },
+  "lang": "ru-RU",
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Edge versions",
+    "last 2 Firefox versions",
+    "last 2 iOS versions",
+    "last 2 Safari versions"
+  ],
+  "browser": {
+    "core/uuid/randomBytes.ts": "core/uuid/randomBytes-browser.ts"
+  },
+  "scripts": {
+    "admin:clean": "rm -rf ./admin/dist/*",
+    "admin:build": "npm run admin:clean && webpack --config ./admin/webpack.config.js",
+    "admin:build:production": "NODE_ENV=production npm run admin:build",
+    "api:clean": "rm -rf ./api/dist/*",
+    "api:build": "webpack --config ./api/webpack.config.js",
+    "api:build:production": "npm run api:clean && NODE_ENV=production npm run api:build",
+    "portal:build": "webpack --config ./portal/webpack.config.js",
+    "portal:build:production": "NODE_ENV=production npm run portal:build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@angular/cli": "^1.5.2",
+    "@angular/compiler-cli": "^5.0.1",
+    "@angular/language-service": "^5.0.1",
+    "@types/node": "^8.0.52",
+    "@types/pg": "^7.1.5",
+    "autoprefixer": "^7.1.6",
+    "awesome-typescript-loader": "^3.3.0",
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "copy-webpack-plugin": "^4.2.0",
+    "css-loader": "^0.28.7",
+    "exports-loader": "^0.6.4",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.5",
+    "html-minifier": "^3.5.6",
+    "node-sass": "^4.7.1",
+    "null-loader": "^0.1.1",
+    "postcss": "^6.0.14",
+    "postcss-csso": "^3.0.0",
+    "postcss-discard-comments": "^2.0.4",
+    "postcss-discard-font-face": "^3.0.0",
+    "postcss-selector-matches": "^3.0.1",
+    "postcss-selector-not": "^3.0.1",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^6.0.6",
+    "svgo": "^1.0.3",
+    "svgo-loader": "^2.0.0",
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1",
+    "webpack-sources": "^1.0.2"
+  },
+  "dependencies": {
+    "@angular/animations": "^5.0.1",
+    "@angular/cdk": "^5.0.0-rc0",
+    "@angular/common": "^5.0.1",
+    "@angular/compiler": "^5.0.1",
+    "@angular/core": "^5.0.1",
+    "@angular/forms": "^5.0.1",
+    "@angular/http": "^5.0.1",
+    "@angular/material": "^5.0.0-rc0",
+    "@angular/platform-browser": "^5.0.1",
+    "@angular/platform-browser-dynamic": "^5.0.1",
+    "@angular/platform-server": "^5.0.1",
+    "@angular/router": "^5.0.1",
+    "pg": "^7.4.0",
+    "pg-large-object": "^2.0.0",
+    "rxjs": "^5.5.2",
+    "zone.js": "^0.8.18"
+  }
+}

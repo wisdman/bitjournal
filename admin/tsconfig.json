@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "angularCompilerOptions": {
+    "genDir": ".",
+    "entryModule": "src/app.module#AppModule",
+    "preserveWhitespaces": false
+    // "fullTemplateTypeCheck": true
+  }
+}

@@ -1,0 +1,55 @@
+version: '3.3'
+
+services:
+
+  db:
+    restart: unless-stopped
+    image: postgres:10-alpine
+    volumes:
+      - data-volume:/var/lib/postgresql/data
+      - ./sql/postgresql.conf:/etc/postgresql.conf:ro
+      - ./sql/initdb.d:/docker-entrypoint-initdb.d:ro
+    environment:
+      POSTGRES_DB: bitjournal
+      POSTGRES_USER: bitjournal
+      POSTGRES_PASSWORD: bitjournal
+    networks:
+      default:
+    ports:
+      - 5432:5432
+    command: postgres -c config_file=/etc/postgresql.conf
+
+  api:
+    restart: unless-stopped
+    build: ./api
+    networks:
+      default:
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: bitjournal
+      POSTGRES_USER: bitjournal
+      POSTGRES_PASSWORD: bitjournal
+      POSTGRES_IDLE_TIMEOUT: 30
+      POSTGRES_POOL_SIZE: 128
+      NODE_DEBUG: api
+    networks:
+      default:
+    ports:
+      - 8080:80
+
+  admin:
+    restart: unless-stopped
+    build: ./nginx
+    volumes:
+      - ./admin/dist:/www:ro
+      - ./admin/server.conf:/etc/nginx/server.conf:ro
+    networks:
+      default:
+    ports:
+      - 443:443
+volumes:
+  data-volume:
