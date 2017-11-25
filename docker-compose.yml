@@ -46,22 +46,30 @@ services:
       - api
     volumes:
       - ./api/assets:/www:ro
-      - ./api/server.dev.conf:/etc/nginx/server.conf:ro
+      - ./api/server.conf:/etc/nginx/server.conf:ro
     networks:
       default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:65
     ports:
-      - 8082:80
+      - 145.239.188.65:443:443
 
   admin:
     restart: unless-stopped
     build: ./nginx
     volumes:
       - ./admin/dist:/www:ro
-      - ./admin/server.dev.conf:/etc/nginx/server.conf:ro
+      - ./admin/server.conf:/etc/nginx/server.conf:ro
     networks:
       default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:67
     ports:
-      - 8083:80
+      - 145.239.188.67:443:443
+
+networks:
+  outside:
+    external: true
 
 volumes:
   data-volume:
