@@ -36,12 +36,12 @@
   "scripts": {
     "admin:clean": "rm -rf ./admin/dist/*",
     "admin:build": "npm run admin:clean && webpack --config ./admin/webpack.config.js",
-    "admin:build:production": "NODE_ENV=production npm run admin:build",
+    "admin:build:prod": "NODE_ENV=production npm run admin:build",
     "api:clean": "rm -rf ./api/dist/*",
     "api:build": "webpack --config ./api/webpack.config.js",
-    "api:build:production": "npm run api:clean && NODE_ENV=production npm run api:build",
+    "api:build:prod": "npm run api:clean && NODE_ENV=production npm run api:build",
     "portal:build": "webpack --config ./portal/webpack.config.js",
-    "portal:build:production": "NODE_ENV=production npm run portal:build",
+    "portal:build:prod": "NODE_ENV=production npm run portal:build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

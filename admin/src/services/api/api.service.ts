@@ -11,7 +11,7 @@ import { AuthService } from '../auth'
 
 import {
  API_SERVER
-} from '../../app.enveroments'
+} from '../../enveroments'
 
 const PATH_REGEXP = /^\/?(.*)/
 

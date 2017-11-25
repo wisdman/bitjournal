@@ -7,7 +7,7 @@ import { AuthDialogComponent } from '../../components'
 
 import {
  API_SERVER
-} from '../../app.enveroments'
+} from '../../enveroments'
 
 const AUTH_TOKEN_LS_ID = 'auth-token'
 

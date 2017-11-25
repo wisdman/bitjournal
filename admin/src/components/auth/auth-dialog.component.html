@@ -22,8 +22,6 @@
       OTP Key is <strong>required</strong>
     </mat-error>
   </mat-form-field>
-  <p>Form value: {{ authForm.value | json }}</p>
-  <p>Form pristine: {{ authForm.pristine | json }}</p>
 </form>
 <mat-dialog-actions>
   <button type="submit" mat-button class="auth-form-button" color="primary" [disabled]="authForm.pristine" (click)="onSubmit()">Submit</button>
