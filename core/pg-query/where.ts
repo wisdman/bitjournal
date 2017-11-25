@@ -2,8 +2,8 @@ export type IWhereValue = string | null
 
 export class Where {
 
-  readonly text: string
-  readonly values: Array<any>
+  readonly text: string = ''
+  readonly values: Array<any> = []
 
   constructor(value: IWhereValue = null, index = 0, inputValues: Array<any> = []){
 

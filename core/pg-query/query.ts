@@ -18,7 +18,7 @@ export class Query {
     this.scheme = scheme
   }
 
-  select(value: ISelectValue): Select {
+  select(value?: ISelectValue): Select {
     return new Select(this, value)
   }
 

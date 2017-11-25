@@ -2,6 +2,7 @@
 import {
   AdsItemComponent,
   AdsListComponent,
+  AuthDialogComponent,
   BlockItemComponent,
   BlockListComponent,
   CurrencyItemComponent,
@@ -35,6 +36,7 @@ import {
 export const COMPONENTS: any[] = [
   AdsItemComponent,
   AdsListComponent,
+  AuthDialogComponent,
   BlockItemComponent,
   BlockListComponent,
   CurrencyItemComponent,
@@ -63,4 +65,8 @@ export const COMPONENTS: any[] = [
   UserItemComponent,
   UserListComponent,
   VideoListComponent,
+]
+
+export const ENTRY_COMPONENTS: any[] = [
+  AuthDialogComponent,
 ]

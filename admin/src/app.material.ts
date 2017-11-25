@@ -1,6 +1,7 @@
 
 import {
   MatButtonModule,
+  MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
@@ -18,6 +19,7 @@ import {
 
 export const MATERIAL: any[] = [
   MatButtonModule,
+  MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,

@@ -1,7 +1,13 @@
 import {
-  APIService
+  APIService,
+  AuthService,
+  UserService,
 } from './services'
 
 export const SERVICES: any[] = [
-  APIService
+  AuthService,
+
+  APIService,
+
+  UserService,
 ]

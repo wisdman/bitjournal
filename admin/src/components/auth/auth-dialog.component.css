@@ -1,0 +1,24 @@
+
+.auth-form-title {
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.auth-form {
+  min-width: 300px;
+}
+
+.auth-form-row {
+  margin-top: 10px;
+  display: block;
+  width: 100%;
+}
+
+.auth-form-row:first-child {
+  margin-top: 0;
+}
+
+.auth-form-button {
+  margin-left: auto;
+  margin-right: auto;
+}

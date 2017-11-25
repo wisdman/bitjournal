@@ -6,8 +6,6 @@ import { Middleware, INext } from '../middleware'
 import { Context } from '../context'
 import { Session } from './session'
 
-import { SESSION_ID_REGEXP } from './pattern'
-
 export class SessionMiddleware extends Middleware {
   constructor(readonly BaseClass: new (ctx: Context) => Session = Session, readonly readonly:boolean = false){
     super()
@@ -38,20 +36,11 @@ export class SessionMiddleware extends Middleware {
     await this.set(ctx)
   }
 
-  async get(ctx: Context) {
-    const id = SESSION_ID_REGEXP.exec(ctx.request.getHeader('Cookie') || '')
-    ctx.session.id = id && id[0] || ''
-  }
+  async get(ctx: Context) {}
 
   async before(ctx: Context) {}
 
   async after(ctx: Context) {}
 
-  async set(ctx: Context) {
-    if (ctx.session.isValid)
-      ctx.response.setHeader('Set-Cookie', `session=${ctx.session.id}; path=/; expires=Thu, 31 Dec 3000 00:00:00 GMT`)
-    else
-      ctx.response.setHeader('Set-Cookie', 'session=closed; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT')
-
-  }
+  async set(ctx: Context) {}
 }

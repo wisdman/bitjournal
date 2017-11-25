@@ -1,6 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET search_path = private;
+SET search_path = public;
 
 -- Prevent change id feeld trigger
 CREATE FUNCTION prevent_change_id_trigger() RETURNS trigger LANGUAGE plpgsql AS $$

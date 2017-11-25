@@ -1,4 +1,5 @@
 export * from './ads'
+export * from './auth'
 export * from './block'
 export * from './currency'
 export * from './dashboard'

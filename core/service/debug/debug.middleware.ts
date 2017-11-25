@@ -17,7 +17,9 @@ export class DebugMiddleware extends Middleware {
 
   log(...args: Array<any>) {
     let first = args.shift()
-    args = args.map(item => inspect(item.valueOf instanceof Function ? item.valueOf() : item, {depth: 3, colors: true}))
+    args = args.map(item =>
+                  inspect(item && item.valueOf instanceof Function ? item.valueOf() : item, {depth: 3, colors: true})
+                )
     console.log(first, ...args)
   }
 

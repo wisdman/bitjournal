@@ -1,6 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET search_path = private;
+SET search_path = public;
 
 -- User roles
 CREATE TYPE roles AS ENUM (
@@ -25,7 +25,7 @@ CREATE TABLE users (
   phone       varchar(16)  DEFAULT NULL,
 
   password    char(128)    DEFAULT NULL,
-  totp        char(128)    DEFAULT NULL,
+  totp        char(64)     DEFAULT NULL, -- encode(digest(uuid_generate_v4()::text, 'sha128'), 'hex')
   oauth       jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
   image       oid          DEFAULT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE users (
   CONSTRAINT users__check__phone    CHECK (phone ~ '^\+[0-9]{11,15}$'),
 
   CONSTRAINT users__check__password CHECK (password ~ '^[0-9a-f]{128}$'),
-  CONSTRAINT users__check__totp     CHECK (totp     ~ '^[0-9a-f]{128}$')
+  CONSTRAINT users__check__totp     CHECK (totp     ~ '^[0-9a-f]{64}$')
 ) WITH (OIDS = FALSE);
 
 -- Check unique indexes

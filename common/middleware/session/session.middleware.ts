@@ -5,7 +5,6 @@
 import { Client } from 'pg'
 import { SessionMiddleware, Context, INext } from '@core/service'
 
-import { Query } from '@core/pg-query'
 import { User } from '@common/models'
 
 import { UserSession } from './session'
@@ -19,22 +18,19 @@ export class UserSessionMiddleware extends SessionMiddleware {
   }
 
   async get(ctx: Context) {
-    const id = SESSION_ID_REGEXP.exec(
-      ctx.request.getHeader('Authorization') ||
-      ctx.request.getHeader('Cookie') ||
-      ''
-    )
+    const id = SESSION_ID_REGEXP.exec(ctx.request.getHeader('Authorization') || '')
     ctx.session.id = id && id[0] || ''
   }
 
   async before(ctx: Context) {
-    if (ctx.session.isNULL)
+    if (!ctx.session.id)
       return
 
-    const query = new Query('users', 'public').select(User.fields.inputKeyList)
-                                              .where('sessions ? $1', ctx.session.id)
     const db = ctx.db as Client
-    const result = await db.query(query)
+    const result = await db.query({
+      text: 'SELECT * FROM sessions__get_user($1)',
+      values: [ctx.session.id]
+    })
 
     if (result.rowCount === 0)
       return
@@ -53,10 +49,15 @@ export class UserSessionMiddleware extends SessionMiddleware {
 
     const db = ctx.db as Client
     const result = await db.query({
-      text: 'SELECT public.sessions__save($1, $2, $3) AS id',
+      text: 'SELECT sessions__save($1, $2, $3) AS id',
       values: [ ctx.session.id || null, String(user.id), ctx.session.ip ]
     })
 
     ctx.session.id = result.rows[0] && result.rows[0].id || ''
+  }
+
+  async set(ctx: Context) {
+    if (ctx.session.isValid)
+      ctx.response.setHeader('Authorization', 'token ' + ctx.session.id)
   }
 }

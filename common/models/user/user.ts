@@ -35,6 +35,21 @@ export class User extends Model {
   @ToJSON()
   roles: Array<UserRole>
 
+  hasRole(input: any): boolean {
+    if (this.roles.length <= 0)
+      return false
+
+    let roles = [].concat(input)
+                  .map( item => UserRole.get(item) )
+                  .filter( item => item !== undefined) as Array<UserRole>
+
+    for (let role of roles)
+      if ( this.roles.findIndex(item => item === role) >=0 )
+        return true
+
+    return false
+  }
+
   @Main()
   @Input(value => String(value || ''))
   @Output()

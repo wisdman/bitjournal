@@ -1,6 +1,7 @@
 
 import { Context } from '../context'
-import { SESSION_ID_STRONG_REGEXP } from './pattern'
+
+export const SESSION_ID_REGEXP = /^[0-9a-z]+$/
 
 export class Session {
 
@@ -13,7 +14,7 @@ export class Session {
   }
 
   set id(id: string) {
-    this._id = SESSION_ID_STRONG_REGEXP.test(id) ? id : ''
+    this._id = SESSION_ID_REGEXP.test(id) ? id : ''
   }
 
   get ip() {

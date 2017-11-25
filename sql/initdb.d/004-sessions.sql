@@ -1,6 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET search_path = private;
+SET search_path = public;
 
 -- User sessions datatable
 CREATE TABLE sessions (
@@ -37,23 +37,32 @@ CREATE TRIGGER sessions__trigger__update_expires_trigger
 -- Auto clean old sessions
 CREATE FUNCTION sessions__delete_old_rows_trigger() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
-  DELETE FROM private.sessions WHERE expires < timezone('UTC', now());
+  DELETE FROM sessions WHERE expires < timezone('UTC', now());
   RETURN NULL;
 END; $$;
 CREATE TRIGGER sessions__trigger__delete_old_rows_trigger
   AFTER INSERT OR UPDATE ON sessions FOR EACH STATEMENT
   EXECUTE PROCEDURE sessions__delete_old_rows_trigger();
 
+
+-- Get user by session
+CREATE FUNCTION sessions__get_user(_id char(128)) RETURNS SETOF users
+LANGUAGE sql AS $$
+  SELECT users.* FROM sessions LEFT JOIN users ON sessions.owner = users.id WHERE sessions.id = _id;
+$$;
+
 -- Start new user session
-CREATE FUNCTION public.sessions__save(_id char(128), _owner uuid, _ip inet) RETURNS char(128)
+CREATE FUNCTION sessions__save(_id char(128), _owner uuid, _ip inet) RETURNS char(128)
 LANGUAGE plpgsql AS $$
 DECLARE
   result char(128);
 BEGIN
   IF (_id is NULL) THEN
-    INSERT INTO private.sessions (owner, ip) VALUES (_owner, _ip) RETURNING id INTO result;
+    INSERT INTO sessions (owner, ip) VALUES (_owner, _ip) RETURNING id INTO result;
   ELSE
-    UPDATE private.sessions SET ip = _ip WHERE id = _id RETURNING id INTO result;
+    UPDATE sessions SET ip = _ip WHERE id = _id RETURNING id INTO result;
   END IF;
   RETURN result;
 END; $$;
+
+

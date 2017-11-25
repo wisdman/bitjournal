@@ -10,13 +10,15 @@ import { HttpClientModule } from '@angular/common/http'
 
 import { RouterModule, PreloadAllModules } from '@angular/router'
 
-import { COMPONENTS } from './app.components'
+import { COMPONENTS, ENTRY_COMPONENTS } from './app.components'
+import { MATERIAL } from './app.material'
 // import { MODULES } from './app.modules'
 import { ROUTES }   from './app.routes'
 import { SERVICES } from './app.services'
-import { MATERIAL } from './app.material'
 
 import { LayoutComponent } from './components'
+
+import { AuthDialogComponent } from './components'
 
 @NgModule({
   bootstrap: [ LayoutComponent ],
@@ -43,6 +45,10 @@ import { LayoutComponent } from './components'
 
   providers: [
     ...SERVICES
+  ],
+
+  entryComponents: [
+    ...ENTRY_COMPONENTS
   ]
 })
 export class AppModule {}
