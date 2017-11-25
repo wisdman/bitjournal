@@ -60,9 +60,7 @@ services:
     volumes:
       - ./admin/dist:/www:ro
       - ./admin/server.conf:/etc/nginx/server.conf:ro
-      - ./admin/ssl/server.crt:/etc/nginx/server.crt
-      - ./admin/ssl/server.key:/etc/nginx/server.key
-      - ./admin/ssl/ca.crt:/etc/nginx/ca.crt
+      - ./admin/ssl/ca.crt:/etc/nginx/ca.crt:ro
     networks:
       default:
       outside:
