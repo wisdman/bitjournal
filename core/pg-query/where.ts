@@ -14,7 +14,6 @@ export class Where {
       return this
     }
 
-
     // === String value ===
     if (typeof value === 'string') {
 
@@ -23,7 +22,7 @@ export class Where {
       this.values = []
       this.text = ' WHERE '
                 + value.replace(/\$\d+/g, (match: string) => {
-                                            let j: number = ~~match
+                                            let j: number = ~~((/\d+/.exec(match) as any)[0]) - 1
 
                                             if (inputValues[j] === undefined)
                                               return 'DEFAULT'

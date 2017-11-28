@@ -1434,7 +1434,7 @@ module.exports = __webpack_require__(19);
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var api_namespaceObject = {};
 __webpack_require__.d(api_namespaceObject, "AuthAPI", function() { return auth_api_AuthAPI; });
-__webpack_require__.d(api_namespaceObject, "PublicationsAPI", function() { return PublicationsAPI; });
+__webpack_require__.d(api_namespaceObject, "PublicationsAPI", function() { return publications_api_PublicationsAPI; });
 __webpack_require__.d(api_namespaceObject, "UsersAPI", function() { return users_api_UsersAPI; });
 
 // EXTERNAL MODULE: external "http"
@@ -2204,234 +2204,28 @@ function ACL(roles = []) {
             return descriptor;
         const originalMethod = descriptor.value;
         descriptor.value = async function (ctx, next) {
+            const session = ctx.session;
             if (!ctx.session) {
                 ctx.debug('=== ACL %s Denied ===\nSession is undefined', rolesIds);
                 ctx.set(403);
                 return await next();
             }
-            const user = ctx.session.user;
-            if (!user) {
-                ctx.debug('=== ACL %s Denied ===\nUser: %s', rolesIds, user);
+            if (!ctx.session.isValid) {
+                ctx.debug('=== ACL %s Denied ===\nSession: %s', rolesIds, ctx.session);
                 ctx.set(403);
                 return await next();
             }
-            if (!user.hasRole(roles)) {
-                ctx.debug('=== ACL %s Denied ===\nUser: %s', rolesIds, user);
+            if (!ctx.session.checkRole(roles)) {
+                ctx.debug('=== ACL %s Denied ===\nSession: %s', rolesIds, ctx.session);
                 ctx.set(403);
                 return await next();
             }
-            ctx.debug('=== ACL %s Allow ===\nUser: %s', rolesIds, user);
+            ctx.debug('=== ACL %s Allow ===\nSession: %s', rolesIds, ctx.session);
             await originalMethod.call(this, ctx, next);
         };
         return descriptor;
     };
 }
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/session.ts
-
-class UserSession extends Session {
-    constructor() {
-        super(...arguments);
-        this.user = undefined;
-    }
-    get isValid() {
-        return this.id.length > 0
-            && !!this.user;
-    }
-    valueOf() {
-        return Object.assign(super.valueOf(), { user: this.user });
-    }
-}
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/fields/fields.ts
-class Field {
-    constructor(propertyKey) {
-        this.propertyKey = propertyKey;
-        this.isMain = false;
-        this.isInput = false;
-        this.inputFunction = undefined;
-        this.isOutput = false;
-        this.outputFunction = undefined;
-        this.isJSON = false;
-        this.toJSONFunction = undefined;
-        this.validationFunction = undefined;
-    }
-}
-class Fields extends Map {
-    static get(target) {
-        return this.List.get(target) || new Fields();
-    }
-    static set(target, fields) {
-        this.List.set(target, fields);
-    }
-    get(propertyKey) {
-        return super.get(propertyKey) || new Field(propertyKey);
-    }
-    set(field) {
-        let value = field instanceof Field ? field : new Field(field);
-        super.set(value.propertyKey, value);
-        return this;
-    }
-    get fields() { return Array.from(this.values()); }
-    get mainFields() { return this.fields.filter(item => item.isMain); }
-    get mainKeyList() { return this.mainFields.map(item => item.propertyKey); }
-    get inputFields() { return this.fields.filter(item => item.isInput); }
-    get inputKeyList() { return this.inputFields.map(item => item.propertyKey); }
-    get outputFields() { return this.fields.filter(item => item.isOutput); }
-    get outputKeyList() { return this.outputFields.map(item => item.propertyKey); }
-    get jsonFields() { return this.fields.filter(item => item.isJSON); }
-    get jsonKeyList() { return this.jsonFields.map(item => item.propertyKey); }
-    get validateFilds() { return this.fields.filter(item => item.validationFunction !== undefined); }
-    get validateKeyList() { return this.validateFilds.map(item => item.propertyKey); }
-}
-Fields.List = new WeakMap();
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/fields/input.ts
-
-function Input(fn) {
-    return (target, propertyKey) => {
-        if (typeof propertyKey === 'symbol')
-            throw new TypeError('Property name must be a string');
-        let fields = Fields.get(target.constructor);
-        let field = fields.get(propertyKey);
-        field.isInput = true;
-        field.inputFunction = fn;
-        Fields.set(target.constructor, fields.set(field));
-    };
-}
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/fields/json.ts
-
-function ToJSON(fn) {
-    return (target, propertyKey) => {
-        if (typeof propertyKey === 'symbol')
-            throw new TypeError('Property name must be a string');
-        let fields = Fields.get(target.constructor);
-        let field = fields.get(propertyKey);
-        field.isJSON = true;
-        field.toJSONFunction = fn;
-        Fields.set(target.constructor, fields.set(field));
-    };
-}
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/fields/main.ts
-
-function Main() {
-    return (target, propertyKey) => {
-        if (typeof propertyKey === 'symbol')
-            throw new TypeError('Property name must be a string');
-        let fields = Fields.get(target.constructor);
-        let field = fields.get(propertyKey);
-        field.isMain = true;
-        Fields.set(target.constructor, fields.set(field));
-    };
-}
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/fields/output.ts
-
-function Output(fn) {
-    return (target, propertyKey) => {
-        if (typeof propertyKey === 'symbol')
-            throw new TypeError('Property name must be a string');
-        let fields = Fields.get(target.constructor);
-        let field = fields.get(propertyKey);
-        field.isOutput = true;
-        field.outputFunction = fn;
-        Fields.set(target.constructor, fields.set(field));
-    };
-}
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/fields/validate.ts
-
-function Validate(fn) {
-    return (target, propertyKey) => {
-        if (typeof propertyKey === 'symbol')
-            throw new TypeError('Property name must be a string');
-        let fields = Fields.get(target.constructor);
-        let field = fields.get(propertyKey);
-        field.validationFunction = fn;
-        Fields.set(target.constructor, fields.set(field));
-    };
-}
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/fields/index.ts
-
-
-
-
-
-
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/valueof.ts
-function valueOfLoop(value) {
-    if (Array.isArray(value))
-        return value.map(item => valueOfLoop(item));
-    if (value.valueOf instanceof Function)
-        return value.valueOf();
-    return value;
-}
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/model.ts
-
-
-const FieldsSymbol = Symbol('Fields');
-class model_Model {
-    static get fields() {
-        return Fields.get(this);
-    }
-    constructor(...attr) {
-        const fields = this.constructor.fields;
-        const value = attr[0] === undefined ? {} : attr[0];
-        fields.inputFields.forEach(field => {
-            this[field.propertyKey] =
-                field.inputFunction instanceof Function ? field.inputFunction.call(this, value[field.propertyKey])
-                    : value[field.propertyKey];
-        });
-    }
-    valueOf() {
-        const fields = this.constructor.fields;
-        return fields.outputFields.reduce((prev, field) => {
-            let value = field.outputFunction instanceof Function ? field.outputFunction.call(this, this[field.propertyKey])
-                : this[field.propertyKey];
-            prev[field.propertyKey] = valueOfLoop(value);
-            return prev;
-        }, {});
-    }
-    toNumber() {
-        return NaN;
-    }
-    toString() {
-        return '';
-    }
-    toJSON() {
-        const fields = this.constructor.fields;
-        return fields.jsonFields.reduce((prev, field) => {
-            prev[field.propertyKey] =
-                field.toJSONFunction instanceof Function ? field.toJSONFunction.call(this, this[field.propertyKey])
-                    : this[field.propertyKey];
-            return prev;
-        }, {});
-    }
-    [Symbol.toPrimitive](hint) {
-        switch (hint) {
-            case 'default':
-                return this.valueOf();
-            case 'number':
-                return this.toNumber();
-            case 'string':
-                return this.toString();
-            default:
-                throw new TypeError('Cannot convert Model value to unknown value');
-        }
-    }
-    [Symbol.toStringTag]() {
-        return 'Model';
-    }
-}
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/model/index.ts
-
-
 
 // EXTERNAL MODULE: external "crypto"
 var external__crypto_ = __webpack_require__(5);
@@ -2605,13 +2399,25 @@ class uuid_UUID {
 
 
 
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/enum/patterns.ts
-const ENUM_ID_REGEXP = /^[a-z][a-z0-9]*$/;
-const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/;
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/user.interface.ts
+const IUser_MAIN_FIELDS = [
+    'id',
+    'enable',
+    'roles',
+    'url',
+    'title',
+    'description',
+    'email',
+    'phone',
+    'image',
+];
+const IUser_ALL_FIELDS = IUser_MAIN_FIELDS.concat([
+    'card'
+]);
 
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/enum/enum.ts
-
-class enum_Enum {
+const ENUM_ID_REGEXP = /^[a-z][a-z0-9]*$/;
+class Enum {
     constructor(id, value) {
         this.id = id;
         this.value = value;
@@ -2631,13 +2437,10 @@ class enum_Enum {
                 return item;
         return undefined;
     }
-    static parsePgArray(value) {
-        let match = ENUM_PG_ARRAY_PATTERN.exec(value);
-        if (!match)
-            return [];
-        return match[1].split(',')
+    static getArray(value) {
+        return new Array().concat(value)
             .map(item => this.get(item))
-            .filter(item => !!item);
+            .filter(item => item !== undefined);
     }
     valueOf() {
         return this.id;
@@ -2671,10 +2474,9 @@ class enum_Enum {
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/enum/index.ts
 
 
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/user-role.enum.ts
 
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/user-role.ts
-
-class UserRole extends enum_Enum {
+class UserRoleEnum extends Enum {
     constructor(id, value, icon) {
         super(id, value);
         this.icon = icon;
@@ -2683,96 +2485,12 @@ class UserRole extends enum_Enum {
         return 'UserRole';
     }
 }
-UserRole.User = new UserRole('user', 'Пользователь', null);
-UserRole.Author = new UserRole('author', 'Автор', null);
-UserRole.Publisher = new UserRole('publisher', 'Публикатор', null);
-UserRole.Chief = new UserRole('chief', 'Редактор', null);
-UserRole.Administrator = new UserRole('administrator', 'Администратор', null);
-UserRole.Su = new UserRole('su', 'Super user', null);
-
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/user.ts
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-class user_User extends model_Model {
-    hasRole(input) {
-        if (this.roles.length <= 0)
-            return false;
-        let roles = [].concat(input)
-            .map(item => UserRole.get(item))
-            .filter(item => item !== undefined);
-        for (let role of roles)
-            if (this.roles.findIndex(item => item === role) >= 0)
-                return true;
-        return false;
-    }
-    toString() {
-        return this.title;
-    }
-}
-__decorate([
-    Main(),
-    Input(value => new uuid_UUID(value)),
-    Output(),
-    ToJSON(),
-    __metadata("design:type", uuid_UUID)
-], user_User.prototype, "id", void 0);
-__decorate([
-    Main(),
-    Input(value => typeof value === 'boolean' ? value : true),
-    Output(),
-    ToJSON(),
-    __metadata("design:type", Boolean)
-], user_User.prototype, "enable", void 0);
-__decorate([
-    Main(),
-    Input(value => {
-        if (typeof value === 'string' && value[0] === '{')
-            return UserRole.parsePgArray(value);
-        return [].concat(value)
-            .map((item) => UserRole.get(item))
-            .filter(item => item instanceof UserRole);
-    }),
-    Output(),
-    ToJSON(),
-    __metadata("design:type", Array)
-], user_User.prototype, "roles", void 0);
-__decorate([
-    Main(),
-    Input(value => String(value || '')),
-    Output(),
-    ToJSON(),
-    __metadata("design:type", String)
-], user_User.prototype, "title", void 0);
-__decorate([
-    Input(value => String(value || '')),
-    Output(),
-    ToJSON(),
-    __metadata("design:type", String)
-], user_User.prototype, "description", void 0);
-__decorate([
-    Main(),
-    Input(value => String(value || '')),
-    Output(),
-    ToJSON(),
-    __metadata("design:type", String)
-], user_User.prototype, "email", void 0);
-__decorate([
-    Main(),
-    Input(value => String(value || '')),
-    Output(),
-    ToJSON(),
-    __metadata("design:type", String)
-], user_User.prototype, "phone", void 0);
+UserRoleEnum.User = new UserRoleEnum('user', 'Пользователь', null);
+UserRoleEnum.Author = new UserRoleEnum('author', 'Автор', null);
+UserRoleEnum.Publisher = new UserRoleEnum('publisher', 'Публикатор', null);
+UserRoleEnum.Chief = new UserRoleEnum('chief', 'Редактор', null);
+UserRoleEnum.Administrator = new UserRoleEnum('administrator', 'Администратор', null);
+UserRoleEnum.Su = new UserRoleEnum('su', 'Super user', null);
 
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/index.ts
 
@@ -2781,6 +2499,52 @@ __decorate([
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/index.ts
 
 
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/session.ts
+
+
+
+const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/;
+class session_UserSession extends Session {
+    constructor() {
+        super(...arguments);
+        this._userId = undefined;
+        this._roles = [];
+    }
+    get userId() {
+        return this._userId;
+    }
+    setUserId(value) {
+        this._userId = value && new uuid_UUID(value) || undefined;
+        return this._userId;
+    }
+    get roles() {
+        return this._roles;
+    }
+    setRoles(value) {
+        let match = ENUM_PG_ARRAY_PATTERN.exec(value);
+        if (match)
+            value = match[1].split(',');
+        this._roles = UserRoleEnum.getArray(value);
+        return this._roles;
+    }
+    checkRole(roles) {
+        for (let role of roles)
+            if (this._roles.includes(role))
+                return true;
+        return false;
+    }
+    get isValid() {
+        return this.id.length > 0
+            && this._userId instanceof uuid_UUID;
+    }
+    valueOf() {
+        return Object.assign(super.valueOf(), {
+            userId: this._userId,
+            roles: this._roles
+        });
+    }
+}
+
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/session.middleware.ts
 
 
@@ -2788,7 +2552,7 @@ __decorate([
 const session_middleware_SESSION_ID_REGEXP = /[0-9a-f]{128}/;
 class session_middleware_UserSessionMiddleware extends session_middleware_SessionMiddleware {
     constructor() {
-        super(UserSession);
+        super(session_UserSession);
     }
     async get(ctx) {
         const id = session_middleware_SESSION_ID_REGEXP.exec(ctx.request.getHeader('Authorization') || '');
@@ -2799,23 +2563,24 @@ class session_middleware_UserSessionMiddleware extends session_middleware_Sessio
             return;
         const db = ctx.db;
         const result = await db.query({
-            text: 'SELECT * FROM sessions__get_user($1)',
+            text: 'SELECT id, roles FROM sessions__get_user($1)',
             values: [ctx.session.id]
         });
         if (result.rowCount === 0)
             return;
-        ctx.session.user = new user_User(result.rows[0]);
+        ctx.session.setUserId(result.rows[0].id);
+        ctx.session.setRoles(result.rows[0].roles);
     }
     async after(ctx) {
-        const user = ctx.session.user;
-        if (!(user instanceof user_User) || !user.id.version) {
+        const userId = ctx.session.userId;
+        if (!(userId instanceof uuid_UUID) || !userId.version) {
             ctx.session.id = '';
             return;
         }
         const db = ctx.db;
         const result = await db.query({
             text: 'SELECT sessions__save($1, $2, $3) AS id',
-            values: [ctx.session.id || null, String(user.id), ctx.session.ip]
+            values: [ctx.session.id || null, String(userId), ctx.session.ip]
         });
         ctx.session.id = result.rows[0] && result.rows[0].id || '';
     }
@@ -2903,7 +2668,7 @@ class Where {
             this.values = [];
             this.text = ' WHERE '
                 + value.replace(/\$\d+/g, (match) => {
-                    let j = ~~match;
+                    let j = ~~(/\d+/.exec(match)[0]) - 1;
                     if (inputValues[j] === undefined)
                         return 'DEFAULT';
                     this.values.push(inputValues[j]);
@@ -3271,15 +3036,19 @@ class otp_OTP {
             return false;
         return Number.parseFloat(token) === Number.parseFloat(systemToken);
     }
-    totpToken() {
-        const counter = Math.floor(Date.now() / this._step / 1000);
+    totpToken(offset = 0) {
+        const counter = Math.floor(Date.now() / this._step / 1000) + offset;
         return this.hotpToken(counter);
     }
-    totpCheck(token) {
-        let systemToken = this.totpToken();
-        if (systemToken.length < 1)
-            return false;
-        return Number.parseFloat(token) === Number.parseFloat(systemToken);
+    totpCheck(token, window = 0) {
+        const systemTokens = [];
+        if (window > 0) {
+            for (let i = window * -1; i <= window; i++)
+                systemTokens.push(Number.parseFloat(this.totpToken(i)));
+        }
+        else
+            systemTokens.push(Number.parseFloat(this.totpToken()));
+        return systemTokens.includes(Number.parseFloat(token));
     }
     get base32Secret() {
         return encode(this._secret).toString()
@@ -3294,16 +3063,15 @@ class otp_OTP {
 
 
 // CONCATENATED MODULE: ./api/auth/auth.api.ts
-var auth_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var auth_api___metadata = (this && this.__metadata) || function (k, v) {
+var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -3316,7 +3084,7 @@ class auth_api_AuthAPI extends route_middleware_RouteMiddleware {
         }
         const db = ctx.db;
         const query = new query_Query('users').select()
-            .where("email = $1 AND password = encode($2, 'sha512'), 'hex')", body.email, body.password);
+            .where("email = $1 AND password = encode(digest($2, 'sha512'), 'hex')", body.email, body.password);
         ctx.debug('=== SQL Query [/auth/login] ===\n%s', query);
         const result = await db.query(query.valueOf());
         ctx.debug('=== SQL Result [/auth/login] ===\n%s', result.rows);
@@ -3331,25 +3099,27 @@ class auth_api_AuthAPI extends route_middleware_RouteMiddleware {
                 return;
             }
             const otp = new otp_OTP({ secret });
-            if (!otp.totpCheck(body.totp)) {
+            if (!otp.totpCheck(body.totp, 2)) {
                 ctx.set(403);
                 return;
             }
         }
-        ctx.session.user = new user_User(result.rows[0]);
+        ctx.session.setUserId(result.rows[0].id);
+        ctx.session.setRoles(result.rows[0].roles);
         ctx.set(204);
     }
     async logout(ctx, next) {
         if (ctx.session.isValid) {
-            const user = ctx.session.user;
+            const userId = ctx.session.userId;
             const db = ctx.db;
             const query = new query_Query('sessions').delete()
-                .where('owner = $1', String(user.id));
+                .where('owner = $1', String(userId));
             ctx.debug('=== SQL Query [/auth/login] ===\n%s', query);
             const result = await db.query(query.valueOf());
             ctx.debug('=== SQL Result [/auth/login] ===\n%s', result.rows);
         }
-        ctx.session.user = undefined;
+        ctx.session.setUserId(undefined);
+        ctx.session.setRoles([]);
         ctx.set(204);
     }
     async getOne(ctx, next) {
@@ -3359,32 +3129,62 @@ class auth_api_AuthAPI extends route_middleware_RouteMiddleware {
             ctx.set(403);
     }
 }
-auth_api___decorate([
+__decorate([
     Post('/auth/login'),
-    auth_api___metadata("design:type", Function),
-    auth_api___metadata("design:paramtypes", [context_Context, Function]),
-    auth_api___metadata("design:returntype", Promise)
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [context_Context, Function]),
+    __metadata("design:returntype", Promise)
 ], auth_api_AuthAPI.prototype, "login", null);
-auth_api___decorate([
+__decorate([
     Get('/auth/logout'),
-    auth_api___metadata("design:type", Function),
-    auth_api___metadata("design:paramtypes", [context_Context, Function]),
-    auth_api___metadata("design:returntype", Promise)
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [context_Context, Function]),
+    __metadata("design:returntype", Promise)
 ], auth_api_AuthAPI.prototype, "logout", null);
-auth_api___decorate([
+__decorate([
     Get('/auth'),
-    auth_api___metadata("design:type", Function),
-    auth_api___metadata("design:paramtypes", [context_Context, Function]),
-    auth_api___metadata("design:returntype", Promise)
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [context_Context, Function]),
+    __metadata("design:returntype", Promise)
 ], auth_api_AuthAPI.prototype, "getOne", null);
 
 // CONCATENATED MODULE: ./api/auth/index.ts
 
 
 // CONCATENATED MODULE: ./api/publications/publications.api.ts
+var publications_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var publications_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 
-class PublicationsAPI extends Middleware {
+
+
+
+class publications_api_PublicationsAPI extends route_middleware_RouteMiddleware {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query('publications').select();
+        ctx.debug('=== SQL Query [/publications] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [/publications] ===\n%s', result.rows);
+        ctx.set(result.rows);
+    }
 }
+publications_api___decorate([
+    Get('/publications'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    publications_api___metadata("design:type", Function),
+    publications_api___metadata("design:paramtypes", [context_Context, Function]),
+    publications_api___metadata("design:returntype", Promise)
+], publications_api_PublicationsAPI.prototype, "getAll", null);
 
 // CONCATENATED MODULE: ./api/publications/index.ts
 
@@ -3404,6 +3204,7 @@ var users_api___metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 class users_api_UsersAPI extends route_middleware_RouteMiddleware {
     async find(ctx, next) {
         const route = ctx.route;
@@ -3413,11 +3214,57 @@ class users_api_UsersAPI extends route_middleware_RouteMiddleware {
     }
     async getAll(ctx, next) {
         const db = ctx.db;
-        const query = new query_Query('users').select(user_User.fields.mainKeyList);
+        const query = new query_Query('users').select(IUser_MAIN_FIELDS);
         ctx.debug('=== SQL Query [/users] ===\n%s', query);
         const result = await db.query(query.valueOf());
         ctx.debug('=== SQL Result [/users] ===\n%s', result.rows);
         ctx.set(result.rows);
+    }
+    async getMe(ctx, next) {
+        if (!ctx.session.isValid) {
+            ctx.set(403);
+            return;
+        }
+        const db = ctx.db;
+        const id = ctx.session.userId;
+        const query = new query_Query('users').select(IUser_ALL_FIELDS)
+            .where('id = $1', String(id));
+        ctx.debug('=== SQL Query [/users/me] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [/users/me] ===\n%s', result.rows);
+        if (result.rowCount > 0) {
+            ctx.set(result.rows[0]);
+            return;
+        }
+        ctx.set(403);
+    }
+    async getTOTP(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid_UUID(route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query('users').select(['email', 'totp'])
+            .where('id = $1', String(id));
+        ctx.debug('=== SQL Query [/users/:id] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [/users/:id] ===\n%s', result.rows);
+        if (result.rowCount === 0) {
+            ctx.set(404);
+            return;
+        }
+        let secret = result.rows[0].totp;
+        if (!secret) {
+            ctx.set(204);
+            return;
+        }
+        const otp = new otp_OTP({ secret });
+        ctx.set(otp.keyuri(result.rows[0].email, 'BitJournal'));
     }
     async getOne(ctx, next) {
         const route = ctx.route;
@@ -3430,8 +3277,8 @@ class users_api_UsersAPI extends route_middleware_RouteMiddleware {
             ctx.set(400, error.message);
             return;
         }
-        const query = new query_Query('users').select(user_User.fields.inputKeyList)
-            .where('id = $1', id.toString());
+        const query = new query_Query('users').select(IUser_ALL_FIELDS)
+            .where('id = $1', String(id));
         ctx.debug('=== SQL Query [/users/:id] ===\n%s', query);
         const result = await db.query(query.valueOf());
         ctx.debug('=== SQL Result [/users/:id] ===\n%s', result.rows);
@@ -3457,8 +3304,8 @@ class users_api_UsersAPI extends route_middleware_RouteMiddleware {
 users_api___decorate([
     Get('/users', 'q'),
     ACL([
-        UserRole.Administrator,
-        UserRole.Su,
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
     ]),
     users_api___metadata("design:type", Function),
     users_api___metadata("design:paramtypes", [context_Context, Function]),
@@ -3467,18 +3314,34 @@ users_api___decorate([
 users_api___decorate([
     Get('/users'),
     ACL([
-        UserRole.Administrator,
-        UserRole.Su,
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
     ]),
     users_api___metadata("design:type", Function),
     users_api___metadata("design:paramtypes", [context_Context, Function]),
     users_api___metadata("design:returntype", Promise)
 ], users_api_UsersAPI.prototype, "getAll", null);
 users_api___decorate([
+    Get('/users/me'),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [context_Context, Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "getMe", null);
+users_api___decorate([
+    Get('/users/:id/otp'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [context_Context, Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "getTOTP", null);
+users_api___decorate([
     Get('/users/:id'),
     ACL([
-        UserRole.Administrator,
-        UserRole.Su,
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
     ]),
     users_api___metadata("design:type", Function),
     users_api___metadata("design:paramtypes", [context_Context, Function]),
@@ -3487,8 +3350,8 @@ users_api___decorate([
 users_api___decorate([
     Post('/users'),
     ACL([
-        UserRole.Administrator,
-        UserRole.Su,
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
     ]),
     users_api___metadata("design:type", Function),
     users_api___metadata("design:paramtypes", [context_Context, Function]),
@@ -3497,8 +3360,8 @@ users_api___decorate([
 users_api___decorate([
     Post('/users/:id'),
     ACL([
-        UserRole.Administrator,
-        UserRole.Su,
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
     ]),
     users_api___metadata("design:type", Function),
     users_api___metadata("design:paramtypes", [context_Context, Function]),

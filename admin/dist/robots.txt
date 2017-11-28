@@ -1,4 +1,4 @@
-# bitbay.media
+# adm.bitjournal.io
 User-agent: *
  Disallow: /
- Host: bitbay.media
+ Host: adm.bitjournal.io

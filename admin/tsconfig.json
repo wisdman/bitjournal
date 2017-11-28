@@ -1,5 +1,10 @@
 {
   "extends": "../tsconfig.json",
+  "include": [
+    "./src/**/*.ts",
+    "../core/**/*.ts",
+    "../common/**/*.ts"
+  ],
   "angularCompilerOptions": {
     "genDir": ".",
     "entryModule": "src/app.module#AppModule",

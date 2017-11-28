@@ -4,8 +4,7 @@
 
 import { Client } from 'pg'
 import { SessionMiddleware, Context, INext } from '@core/service'
-
-import { User } from '@common/models'
+import { UUID } from '@core/uuid'
 
 import { UserSession } from './session'
 
@@ -28,21 +27,22 @@ export class UserSessionMiddleware extends SessionMiddleware {
 
     const db = ctx.db as Client
     const result = await db.query({
-      text: 'SELECT * FROM sessions__get_user($1)',
+      text: 'SELECT id, roles FROM sessions__get_user($1)',
       values: [ctx.session.id]
     })
 
     if (result.rowCount === 0)
       return
 
-    ctx.session.user = new User(result.rows[0])
+    ctx.session.setUserId(result.rows[0].id)
+    ctx.session.setRoles(result.rows[0].roles)
   }
 
   async after(ctx: Context) {
-    const user = ctx.session.user as User
+    const userId = ctx.session.userId
 
     // User is empty, clear session
-    if (!(user instanceof User) || !user.id.version) {
+    if (!(userId instanceof UUID) || !userId.version) {
       ctx.session.id = ''
       return
     }
@@ -50,7 +50,7 @@ export class UserSessionMiddleware extends SessionMiddleware {
     const db = ctx.db as Client
     const result = await db.query({
       text: 'SELECT sessions__save($1, $2, $3) AS id',
-      values: [ ctx.session.id || null, String(user.id), ctx.session.ip ]
+      values: [ ctx.session.id || null, String(userId), ctx.session.ip ]
     })
 
     ctx.session.id = result.rows[0] && result.rows[0].id || ''

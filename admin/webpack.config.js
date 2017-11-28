@@ -13,7 +13,6 @@ const {
   EnvironmentPlugin,
   LoaderOptionsPlugin,
   NoEmitOnErrorsPlugin,
-  NormalModuleReplacementPlugin,
   ProgressPlugin,
 } = require('webpack')
 
@@ -257,9 +256,7 @@ module.exports = {
       comments: false,
       sourceMap: false
     })
-  ] : [
-    new NormalModuleReplacementPlugin( /\.\/environment\.ts/, './app.enveroments.dev\.ts' )
-  ]),
+  ] : []),
 
   node: false,
   devtool: isProduction ? false : 'inline-source-map',

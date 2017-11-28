@@ -3,9 +3,6 @@ import { RouteMiddleware, Context, INext, HttpError, Get, Post, Route } from '@c
 import { Query } from '@core/pg-query'
 import { Client } from 'pg'
 
-import { UserSession } from '@common/middleware'
-import { User } from '@common/models'
-
 import { UUID } from '@core/uuid'
 import { OTP } from '@core/otp'
 
@@ -23,7 +20,7 @@ export class AuthAPI extends RouteMiddleware {
     const db = ctx.db as Client
 
     const query = new Query('users').select()
-                                    .where("email = $1 AND password = encode($2, 'sha512'), 'hex')",
+                                    .where("email = $1 AND password = encode(digest($2, 'sha512'), 'hex')",
                                            body.email, body.password)
 
     ctx.debug('=== SQL Query [/auth/login] ===\n%s', query)
@@ -48,7 +45,7 @@ export class AuthAPI extends RouteMiddleware {
 
       const otp = new OTP({ secret })
 
-      if (!otp.totpCheck(body.totp)) { // bad TOTP key
+      if (!otp.totpCheck(body.totp, 2)) { // bad TOTP key
         ctx.set(403)
         return
       }
@@ -56,8 +53,8 @@ export class AuthAPI extends RouteMiddleware {
     }
 
     // Allow
-
-    ctx.session.user = new User(result.rows[0])
+    ctx.session.setUserId(result.rows[0].id)
+    ctx.session.setRoles(result.rows[0].roles)
     ctx.set(204)
   }
 
@@ -66,12 +63,12 @@ export class AuthAPI extends RouteMiddleware {
   async logout(ctx: Context, next: INext) {
     if (ctx.session.isValid) {
 
-      const user = ctx.session.user as User
+      const userId = ctx.session.userId as UUID
 
       const db = ctx.db as Client
 
       const query = new Query('sessions').delete()
-                                         .where('owner = $1', String(user.id))
+                                         .where('owner = $1', String(userId))
 
       ctx.debug('=== SQL Query [/auth/login] ===\n%s', query)
 
@@ -80,7 +77,8 @@ export class AuthAPI extends RouteMiddleware {
       ctx.debug('=== SQL Result [/auth/login] ===\n%s', result.rows)
     }
 
-    ctx.session.user = undefined
+    ctx.session.setUserId(undefined)
+    ctx.session.setRoles([])
     ctx.set(204)
   }
 

@@ -60,18 +60,21 @@ export class OTP {
     return Number.parseFloat(token) === Number.parseFloat(systemToken)
   }
 
-  totpToken(): string {
-    const counter = Math.floor(Date.now() / this._step / 1000)
+  totpToken(offset: number = 0): string {
+    const counter = Math.floor(Date.now() / this._step / 1000) + offset
     return this.hotpToken(counter)
   }
 
-  totpCheck(token: string) {
-    let systemToken = this.totpToken()
+  totpCheck(token: string, window: number = 0) {
+    const systemTokens: Array<number> = []
 
-    if (systemToken.length < 1)
-      return false
+    if (window > 0) {
+      for (let i = window * -1; i <= window; i++)
+        systemTokens.push( Number.parseFloat( this.totpToken(i) ) )
+    } else
+      systemTokens.push( Number.parseFloat( this.totpToken() ) )
 
-    return Number.parseFloat(token) === Number.parseFloat(systemToken)
+    return systemTokens.includes( Number.parseFloat(token) )
   }
 
   get base32Secret(): string {

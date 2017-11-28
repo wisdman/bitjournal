@@ -2,10 +2,7 @@
  * Enum
  */
 
-import {
-  ENUM_ID_REGEXP,
-  ENUM_PG_ARRAY_PATTERN
-} from'./patterns'
+const ENUM_ID_REGEXP = /^[a-z][a-z0-9]*$/
 
 export abstract class Enum {
 
@@ -26,15 +23,10 @@ export abstract class Enum {
     return undefined
   }
 
-  static parsePgArray(value: string): Array<Enum> {
-    let match = ENUM_PG_ARRAY_PATTERN.exec(value)
-
-    if (!match)
-      return []
-
-    return match[1].split(',')
-                   .map( item => this.get(item))
-                   .filter( item => !!item) as Array<Enum>
+  static getArray(value: any): Array<Enum> {
+    return new Array<any>().concat(value)
+                           .map( item => this.get(item) )
+                           .filter( item => item !== undefined ) as Array<Enum>
   }
 
   constructor(

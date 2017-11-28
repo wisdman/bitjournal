@@ -1,16 +1,23 @@
 
+.w-100 {
+  width: 100%;
+  flex: 0 0 100%;
+}
+
 main {
   box-sizing: border-box;
   position: relative;
 
   margin: 0 auto;
   padding: 1rem;
+
+  background: #fff;
 }
 
 main.narrow {
   max-width: 1000px;
 }
 
-h1 {
+.mat-toolbar h1 {
   margin-right: auto;
 }

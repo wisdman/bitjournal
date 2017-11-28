@@ -1,10 +1,10 @@
 
 import { Context, INext } from '@core/service'
-import { User, UserRole } from '@common/models'
+import { UserRoleEnum } from '@common/models'
 
 import { UserSession } from './session'
 
-export function ACL(roles: Array<UserRole> = []): MethodDecorator {
+export function ACL(roles: Array<UserRoleEnum> = []): MethodDecorator {
   const rolesIds = roles.map( item => item.id)
 
   return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor): PropertyDescriptor => {
@@ -15,6 +15,7 @@ export function ACL(roles: Array<UserRole> = []): MethodDecorator {
     const originalMethod = descriptor.value
 
     descriptor.value = async function(ctx: Context, next: INext): Promise<void> {
+      const session = ctx.session as UserSession
 
       if (!ctx.session) {
         ctx.debug('=== ACL %s Denied ===\nSession is undefined', rolesIds)
@@ -22,21 +23,19 @@ export function ACL(roles: Array<UserRole> = []): MethodDecorator {
         return await next()
       }
 
-      const user = ctx.session.user as User
-
-      if (!user) {
-        ctx.debug('=== ACL %s Denied ===\nUser: %s', rolesIds, user)
+      if (!ctx.session.isValid) {
+        ctx.debug('=== ACL %s Denied ===\nSession: %s', rolesIds, ctx.session)
         ctx.set(403)
         return await next()
       }
 
-      if ( !user.hasRole(roles) ) {
-        ctx.debug('=== ACL %s Denied ===\nUser: %s', rolesIds, user)
+      if (!ctx.session.checkRole(roles)) {
+        ctx.debug('=== ACL %s Denied ===\nSession: %s', rolesIds, ctx.session)
         ctx.set(403)
         return await next()
       }
 
-      ctx.debug('=== ACL %s Allow ===\nUser: %s', rolesIds, user)
+      ctx.debug('=== ACL %s Allow ===\nSession: %s', rolesIds, ctx.session)
 
       await originalMethod.call(this, ctx, next)
     }

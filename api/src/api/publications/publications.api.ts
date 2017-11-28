@@ -1,35 +1,31 @@
-import { Middleware, Context, INext } from '@core/service'
+import { RouteMiddleware, Context, INext, HttpError, Get, Post, Route } from '@core/service'
 
-// @Route('/publications')
-export class PublicationsAPI extends Middleware {
+import { Query } from '@core/pg-query'
+import { Client } from 'pg'
 
-  // @Get('')
-  // @Auth()
-  // getAll() {
+import { UUID } from '@core/uuid'
+import { ACL } from '@common/middleware'
 
-  // }
+import { UserRoleEnum } from '@common/models'
 
-  // @Get(':id')
-  // @Auth()
-  // getOne() {
+export class PublicationsAPI extends RouteMiddleware {
 
-  // }
+  @Get('/publications')
+  @ACL([
+    UserRoleEnum.Administrator,
+    UserRoleEnum.Su,
+  ])
+  async getAll(ctx: Context, next: INext) {
+    const db = ctx.db as Client
 
-  // @Get('', 'q')
-  // find() {
+    const query = new Query('publications').select()
 
-  // }
+    ctx.debug('=== SQL Query [/publications] ===\n%s', query)
 
-  // @Post('')
-  // @Auth(['author', 'admin', 'su'])
-  // create() {
+    const result = await db.query(query.valueOf())
 
-  // }
+    ctx.debug('=== SQL Result [/publications] ===\n%s', result.rows)
 
-  // @Post(':id')
-  // @Auth(['author', 'admin', 'su'])
-  // update() {
-
-  // }
-
+    ctx.set(result.rows)
+  }
 }

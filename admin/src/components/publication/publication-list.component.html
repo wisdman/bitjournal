@@ -1,6 +1,65 @@
-<mat-toolbar color="accent">
+<mat-toolbar color="primary">
   <mat-toolbar-row>
     <h1>Публикации</h1>
+    <button mat-button (click)="add()">
+      <mat-icon>add</mat-icon>
+      <span>Добавить</span>
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
-<main>403 Forbidden</main>
+<main>
+  <mat-form-field class="w-100">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+  <mat-table #table [dataSource]="dataSource">
+
+    <!-- Date Column -->
+    <ng-container matColumnDef="date">
+      <mat-header-cell *matHeaderCellDef>Дата</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.date }}</mat-cell>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="weight">
+      <mat-header-cell *matHeaderCellDef>Вес</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.weight }}</mat-cell>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef>Заголовок</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
+    </ng-container>
+
+    <!-- Author Column -->
+    <ng-container matColumnDef="author">
+      <mat-header-cell *matHeaderCellDef>Автор</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.author }}</mat-cell>
+    </ng-container>
+
+    <!-- Views Column -->
+    <ng-container matColumnDef="views">
+      <mat-header-cell *matHeaderCellDef>Просмотры</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.views }}</mat-cell>
+    </ng-container>
+
+     <!-- Liks Column -->
+    <ng-container matColumnDef="liks">
+      <mat-header-cell *matHeaderCellDef>Лайки</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.liks }}</mat-cell>
+    </ng-container>
+
+     <!-- Buttons Column -->
+    <ng-container matColumnDef="icons">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="delete(element)">
+          <mat-icon aria-label="Delete">delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="select(row)"></mat-row>
+  </mat-table>
+</main>
