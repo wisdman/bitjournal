@@ -1435,6 +1435,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var api_namespaceObject = {};
 __webpack_require__.d(api_namespaceObject, "AuthAPI", function() { return auth_api_AuthAPI; });
 __webpack_require__.d(api_namespaceObject, "PublicationsAPI", function() { return publications_api_PublicationsAPI; });
+__webpack_require__.d(api_namespaceObject, "SectionsAPI", function() { return sections_api_SectionsAPI; });
 __webpack_require__.d(api_namespaceObject, "UsersAPI", function() { return users_api_UsersAPI; });
 
 // EXTERNAL MODULE: external "http"
@@ -2399,21 +2400,129 @@ class uuid_UUID {
 
 
 
-// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/user.interface.ts
-const IUser_MAIN_FIELDS = [
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/timestamp/timestamp.ts
+class Timestamp extends Date {
+    constructor(value) {
+        super(value);
+    }
+    get isValid() {
+        return !Number.isNaN(this.getTime());
+    }
+    get isInvalid() {
+        return !this.isValid;
+    }
+    valueOf() {
+        return new Date(this);
+    }
+    toNumber() {
+        return this.getTime();
+    }
+    toString() {
+        return this.toISOString();
+    }
+    toJSON() {
+        return this.toISOString();
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Model value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Timestamp';
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/timestamp/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/publication/publication.ts
+
+
+class publication_Publication {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid_UUID(value.id || null);
+        this.ts = new Timestamp(value.ts);
+        this.url = String(value.url || '');
+        this.enable = !!value.enable;
+        this.lastModified = new Timestamp(value.lastModified);
+        this.weight = Math.max(~~value.weight, 0);
+        this.sections = new Array();
+        this.bigTitle = String(value.bigTitle || '');
+        this.title = String(value.title || '');
+        this.ogTitle = String(value.ogTitle || '');
+        this.description = String(value.description || '');
+        this.ogDescription = String(value.ogDescription || '');
+        this.image = Math.max(~~value.image, 0) || null;
+        this.ogImage = Math.max(~~value.ogImage, 0) || null;
+        this.authors = new Array();
+        this.tags = new Array();
+        this.sharing = !!value.sharing;
+        this.comments = !!value.comments;
+        this.advertising = !!value.advertising;
+        this.rss = !!value.rss;
+        this.yandexNews = !!value.yandexNews;
+        this.yandexZen = !!value.yandexZen;
+        this.facebookIA = !!value.facebookIA;
+        this.branding = {};
+        this.content = String(value.content || '');
+    }
+    [Symbol.toStringTag]() {
+        return 'Publication';
+    }
+}
+publication_Publication.MainFields = [
+    'id',
+    'ts',
+    'url',
+    'enable',
+    'lastModified',
+    'weight',
+    'title',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/publication/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/section/section.ts
+
+class section_Section {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid_UUID(value.id || null);
+        this.enable = !!value.enable;
+        this.url = String(value.url || '');
+        this.title = String(value.title || '');
+        this.ogTitle = String(value.ogTitle || '');
+        this.description = String(value.description || '');
+        this.ogDescription = String(value.ogDescription || '');
+        this.image = Math.max(~~value.image, 0) || null;
+        this.ogImage = Math.max(~~value.ogImage, 0) || null;
+        this.branding = {};
+    }
+    [Symbol.toStringTag]() {
+        return 'Sections';
+    }
+}
+section_Section.MainFields = [
     'id',
     'enable',
-    'roles',
     'url',
     'title',
-    'description',
-    'email',
-    'phone',
-    'image',
 ];
-const IUser_ALL_FIELDS = IUser_MAIN_FIELDS.concat([
-    'card'
-]);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/section/index.ts
+
 
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/enum/enum.ts
 const ENUM_ID_REGEXP = /^[a-z][a-z0-9]*$/;
@@ -2492,6 +2601,47 @@ UserRoleEnum.Chief = new UserRoleEnum('chief', 'Редактор', null);
 UserRoleEnum.Administrator = new UserRoleEnum('administrator', 'Администратор', null);
 UserRoleEnum.Su = new UserRoleEnum('su', 'Super user', null);
 
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/user.ts
+
+
+const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/;
+class user_User {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid_UUID(value.id || null);
+        this.enable = !!value.enable;
+        if (value.roles) {
+            const match = ENUM_PG_ARRAY_PATTERN.exec(value.roles);
+            const roles = match && match[1].split(',') || value.roles;
+            this.roles = UserRoleEnum.getArray(roles);
+        }
+        else
+            this.roles = new Array();
+        this.url = String(value.url || '');
+        this.title = String(value.title || '');
+        this.description = String(value.description || '');
+        this.email = String(value.email || '');
+        this.phone = String(value.phone || '');
+        this.image = Math.max(~~value.image, 0) || null;
+        this.card = {};
+    }
+    [Symbol.toStringTag]() {
+        return 'User';
+    }
+}
+user_User.MainFields = [
+    'id',
+    'enable',
+    'roles',
+    'url',
+    'title',
+    'description',
+    'email',
+    'phone',
+    'image',
+];
+
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/index.ts
 
 
@@ -2499,48 +2649,40 @@ UserRoleEnum.Su = new UserRoleEnum('su', 'Super user', null);
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/index.ts
 
 
+
+
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/session.ts
 
 
-
-const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/;
 class session_UserSession extends Session {
     constructor() {
         super(...arguments);
-        this._userId = undefined;
-        this._roles = [];
+        this._user = null;
     }
-    get userId() {
-        return this._userId;
+    get user() {
+        return this._user;
     }
-    setUserId(value) {
-        this._userId = value && new uuid_UUID(value) || undefined;
-        return this._userId;
-    }
-    get roles() {
-        return this._roles;
-    }
-    setRoles(value) {
-        let match = ENUM_PG_ARRAY_PATTERN.exec(value);
-        if (match)
-            value = match[1].split(',');
-        this._roles = UserRoleEnum.getArray(value);
-        return this._roles;
+    setUser(value) {
+        let user = new user_User(value);
+        this._user = user.id.value !== null ? user : null;
+        return this._user;
     }
     checkRole(roles) {
+        if (!this._user)
+            return false;
         for (let role of roles)
-            if (this._roles.includes(role))
+            if (this._user.roles.includes(role))
                 return true;
         return false;
     }
     get isValid() {
         return this.id.length > 0
-            && this._userId instanceof uuid_UUID;
+            && this._user instanceof user_User
+            && this._user.id.value !== null;
     }
     valueOf() {
         return Object.assign(super.valueOf(), {
-            userId: this._userId,
-            roles: this._roles
+            user: this._user
         });
     }
 }
@@ -2548,15 +2690,14 @@ class session_UserSession extends Session {
 // CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/session.middleware.ts
 
 
-
-const session_middleware_SESSION_ID_REGEXP = /[0-9a-f]{128}/;
+const session_middleware_SESSION_ID_REGEXP = /token\s+([0-9a-f]{128})/;
 class session_middleware_UserSessionMiddleware extends session_middleware_SessionMiddleware {
     constructor() {
         super(session_UserSession);
     }
     async get(ctx) {
         const id = session_middleware_SESSION_ID_REGEXP.exec(ctx.request.getHeader('Authorization') || '');
-        ctx.session.id = id && id[0] || '';
+        ctx.session.id = id && id[1] || '';
     }
     async before(ctx) {
         if (!ctx.session.id)
@@ -2568,25 +2709,7 @@ class session_middleware_UserSessionMiddleware extends session_middleware_Sessio
         });
         if (result.rowCount === 0)
             return;
-        ctx.session.setUserId(result.rows[0].id);
-        ctx.session.setRoles(result.rows[0].roles);
-    }
-    async after(ctx) {
-        const userId = ctx.session.userId;
-        if (!(userId instanceof uuid_UUID) || !userId.version) {
-            ctx.session.id = '';
-            return;
-        }
-        const db = ctx.db;
-        const result = await db.query({
-            text: 'SELECT sessions__save($1, $2, $3) AS id',
-            values: [ctx.session.id || null, String(userId), ctx.session.ip]
-        });
-        ctx.session.id = result.rows[0] && result.rows[0].id || '';
-    }
-    async set(ctx) {
-        if (ctx.session.isValid)
-            ctx.response.setHeader('Authorization', 'token ' + ctx.session.id);
+        ctx.session.setUser(result.rows[0]);
     }
 }
 
@@ -2817,7 +2940,7 @@ class insert_Insert extends AbstractQuery {
             values.push(`$${i}`);
         });
         feelds = feelds.map(item => `"${item}"`);
-        this._command = `INSERT INTO TABLE "${query.scheme}"."${query.table}" (${feelds.join(', ')}) VALUES (${values.join(', ')})`;
+        this._command = `INSERT INTO "${query.scheme}"."${query.table}" (${feelds.join(', ')}) VALUES (${values.join(', ')})`;
     }
     returning(value) {
         this._returning = new Returning(value);
@@ -2853,7 +2976,7 @@ class update_Update extends AbstractQuery {
         this._command = `UPDATE "${query.scheme}"."${query.table}" SET ${feelds.join(', ')}`;
     }
     where(value, ...values) {
-        this._where = new Where(value, 0, values);
+        this._where = new Where(value, this._values.length, values);
         return this;
     }
     returning(value) {
@@ -3083,10 +3206,10 @@ class auth_api_AuthAPI extends route_middleware_RouteMiddleware {
             return;
         }
         const db = ctx.db;
-        const query = new query_Query('users').select()
+        const query = new query_Query('users').select(['id', 'roles', 'totp'])
             .where("email = $1 AND password = encode(digest($2, 'sha512'), 'hex')", body.email, body.password);
         ctx.debug('=== SQL Query [/auth/login] ===\n%s', query);
-        const result = await db.query(query.valueOf());
+        let result = await db.query(query.valueOf());
         ctx.debug('=== SQL Result [/auth/login] ===\n%s', result.rows);
         if (result.rowCount !== 1) {
             ctx.set(403);
@@ -3104,9 +3227,20 @@ class auth_api_AuthAPI extends route_middleware_RouteMiddleware {
                 return;
             }
         }
-        ctx.session.setUserId(result.rows[0].id);
-        ctx.session.setRoles(result.rows[0].roles);
-        ctx.set(204);
+        ctx.session.setUser(result.rows[0]);
+        if (!ctx.session.user) {
+            ctx.set(403);
+            return;
+        }
+        const newSessionQuery = {
+            text: 'SELECT sessions__new($1, $2) AS id',
+            values: [String(ctx.session.user.id), ctx.session.ip]
+        };
+        ctx.debug('=== SQL Query [/auth/login] NEW ===\n%s', newSessionQuery);
+        result = await db.query(newSessionQuery);
+        ctx.debug('=== SQL Result [/auth/login] NEW ===\n%s', result.rows);
+        ctx.session.id = result.rows[0] && result.rows[0].id || '';
+        ctx.set({ token: ctx.session.id });
     }
     async logout(ctx, next) {
         if (ctx.session.isValid) {
@@ -3118,11 +3252,10 @@ class auth_api_AuthAPI extends route_middleware_RouteMiddleware {
             const result = await db.query(query.valueOf());
             ctx.debug('=== SQL Result [/auth/login] ===\n%s', result.rows);
         }
-        ctx.session.setUserId(undefined);
-        ctx.session.setRoles([]);
+        ctx.session.setUser(null);
         ctx.set(204);
     }
-    async getOne(ctx, next) {
+    async auth(ctx, next) {
         if (ctx.session.isValid)
             ctx.set(204);
         else
@@ -3146,7 +3279,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [context_Context, Function]),
     __metadata("design:returntype", Promise)
-], auth_api_AuthAPI.prototype, "getOne", null);
+], auth_api_AuthAPI.prototype, "auth", null);
 
 // CONCATENATED MODULE: ./api/auth/index.ts
 
@@ -3189,6 +3322,220 @@ publications_api___decorate([
 // CONCATENATED MODULE: ./api/publications/index.ts
 
 
+// CONCATENATED MODULE: ./api/sections/sections.api.ts
+var sections_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var sections_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+class sections_api_SectionsAPI extends route_middleware_RouteMiddleware {
+    async getAllAdmin(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query('sections').select(section_Section.MainFields);
+        ctx.debug('=== SQL Query [GET /sections] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [GET /sections] ===\n%s', result.rows);
+        const items = result.rows.map(item => new section_Section(item));
+        ctx.set(items);
+    }
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query('sections').select(section_Section.MainFields)
+            .where('enable');
+        ctx.debug('=== SQL Query [GET /sections] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [GET /sections] ===\n%s', result.rows);
+        const items = result.rows.map(item => new section_Section(item));
+        ctx.set(items);
+    }
+    async getOneAdmin(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid_UUID(route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query('sections').select()
+            .where('id = $1', String(id));
+        ctx.debug('=== SQL Query [GET /sections/:id] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [GET /sections/:id] ===\n%s', result.rows);
+        if (result.rowCount > 0) {
+            const item = new section_Section(result.rows[0]);
+            ctx.set(item);
+            return;
+        }
+        ctx.set(404);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid_UUID(route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query('sections').select()
+            .where('id = $1 AND enable', String(id));
+        ctx.debug('=== SQL Query [GET /sections/:id] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [GET /sections/:id] ===\n%s', result.rows);
+        if (result.rowCount > 0) {
+            const item = new section_Section(result.rows[0]);
+            ctx.set(item);
+            return;
+        }
+        ctx.set(404);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new section_Section(data);
+        const query = new query_Query('sections').insert(item)
+            .returning();
+        ctx.debug('=== SQL Query [POST /sections] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [POST /sections] ===\n%s', result.rows);
+        if (result.rowCount > 0) {
+            const item = new section_Section(result.rows[0]);
+            ctx.set(item);
+            return;
+        }
+        ctx.set(404);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid_UUID(route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new section_Section(data);
+        const query = new query_Query('sections').update(item)
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug('=== SQL Query [POST /sections/:id] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [POST /sections/:id] ===\n%s', result.rows);
+        if (result.rowCount > 0) {
+            const item = new section_Section(result.rows[0]);
+            ctx.set(item);
+            return;
+        }
+        ctx.set(404);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid_UUID(route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query('sections').delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug('=== SQL Query [DELETE /sections/:id] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [DELETE /sections/:id] ===\n%s', result.rows);
+        if (result.rowCount > 0) {
+            const item = new section_Section(result.rows[0]);
+            ctx.set(item);
+            return;
+        }
+        ctx.set(404);
+    }
+}
+sections_api___decorate([
+    Get('/sections'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [context_Context, Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "getAllAdmin", null);
+sections_api___decorate([
+    Get('/sections'),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [context_Context, Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "getAll", null);
+sections_api___decorate([
+    Get('/sections/:id'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [context_Context, Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "getOneAdmin", null);
+sections_api___decorate([
+    Get('/sections/:id'),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [context_Context, Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "getOne", null);
+sections_api___decorate([
+    Post('/sections'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [context_Context, Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "add", null);
+sections_api___decorate([
+    Post('/sections/:id'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [context_Context, Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "update", null);
+sections_api___decorate([
+    method_Delete('/sections/:id'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [context_Context, Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/sections/index.ts
+
+
 // CONCATENATED MODULE: ./api/users/users.api.ts
 var users_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3206,19 +3553,14 @@ var users_api___metadata = (this && this.__metadata) || function (k, v) {
 
 
 class users_api_UsersAPI extends route_middleware_RouteMiddleware {
-    async find(ctx, next) {
-        const route = ctx.route;
-        const db = ctx.db;
-        const q = route.query;
-        ctx.set({});
-    }
     async getAll(ctx, next) {
         const db = ctx.db;
-        const query = new query_Query('users').select(IUser_MAIN_FIELDS);
+        const query = new query_Query('users').select(user_User.MainFields);
         ctx.debug('=== SQL Query [/users] ===\n%s', query);
         const result = await db.query(query.valueOf());
         ctx.debug('=== SQL Result [/users] ===\n%s', result.rows);
-        ctx.set(result.rows);
+        const items = result.rows.map(item => new user_User(item));
+        ctx.set(items);
     }
     async getMe(ctx, next) {
         if (!ctx.session.isValid) {
@@ -3226,17 +3568,41 @@ class users_api_UsersAPI extends route_middleware_RouteMiddleware {
             return;
         }
         const db = ctx.db;
-        const id = ctx.session.userId;
-        const query = new query_Query('users').select(IUser_ALL_FIELDS)
-            .where('id = $1', String(id));
+        const id = ctx.session.user.id;
+        const query = new query_Query('users').select()
+            .where('id = $1 AND enable', String(id));
         ctx.debug('=== SQL Query [/users/me] ===\n%s', query);
         const result = await db.query(query.valueOf());
         ctx.debug('=== SQL Result [/users/me] ===\n%s', result.rows);
         if (result.rowCount > 0) {
-            ctx.set(result.rows[0]);
+            const item = new user_User(result.rows[0]);
+            ctx.set(item);
             return;
         }
         ctx.set(403);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid_UUID(route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query('users').select()
+            .where('id = $1', String(id));
+        ctx.debug('=== SQL Query [/users/:id] ===\n%s', query);
+        const result = await db.query(query.valueOf());
+        ctx.debug('=== SQL Result [/users/:id] ===\n%s', result.rows);
+        if (result.rowCount > 0) {
+            const item = new user_User(result.rows[0]);
+            ctx.set(item);
+            return;
+        }
+        ctx.set(404);
     }
     async getTOTP(ctx, next) {
         const route = ctx.route;
@@ -3266,28 +3632,6 @@ class users_api_UsersAPI extends route_middleware_RouteMiddleware {
         const otp = new otp_OTP({ secret });
         ctx.set(otp.keyuri(result.rows[0].email, 'BitJournal'));
     }
-    async getOne(ctx, next) {
-        const route = ctx.route;
-        const db = ctx.db;
-        let id;
-        try {
-            id = new uuid_UUID(route.data.id);
-        }
-        catch (error) {
-            ctx.set(400, error.message);
-            return;
-        }
-        const query = new query_Query('users').select(IUser_ALL_FIELDS)
-            .where('id = $1', String(id));
-        ctx.debug('=== SQL Query [/users/:id] ===\n%s', query);
-        const result = await db.query(query.valueOf());
-        ctx.debug('=== SQL Result [/users/:id] ===\n%s', result.rows);
-        if (result.rowCount > 0) {
-            ctx.set(result.rows[0]);
-            return;
-        }
-        ctx.set(404);
-    }
     async create(ctx, next) {
         const db = ctx.db;
         const data = ctx.request.json();
@@ -3300,17 +3644,14 @@ class users_api_UsersAPI extends route_middleware_RouteMiddleware {
         const data = ctx.request.json();
         ctx.set({});
     }
+    async setPassword(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const id = route.data.id;
+        const data = ctx.request.json();
+        ctx.set({});
+    }
 }
-users_api___decorate([
-    Get('/users', 'q'),
-    ACL([
-        UserRoleEnum.Administrator,
-        UserRoleEnum.Su,
-    ]),
-    users_api___metadata("design:type", Function),
-    users_api___metadata("design:paramtypes", [context_Context, Function]),
-    users_api___metadata("design:returntype", Promise)
-], users_api_UsersAPI.prototype, "find", null);
 users_api___decorate([
     Get('/users'),
     ACL([
@@ -3328,16 +3669,6 @@ users_api___decorate([
     users_api___metadata("design:returntype", Promise)
 ], users_api_UsersAPI.prototype, "getMe", null);
 users_api___decorate([
-    Get('/users/:id/otp'),
-    ACL([
-        UserRoleEnum.Administrator,
-        UserRoleEnum.Su,
-    ]),
-    users_api___metadata("design:type", Function),
-    users_api___metadata("design:paramtypes", [context_Context, Function]),
-    users_api___metadata("design:returntype", Promise)
-], users_api_UsersAPI.prototype, "getTOTP", null);
-users_api___decorate([
     Get('/users/:id'),
     ACL([
         UserRoleEnum.Administrator,
@@ -3347,6 +3678,16 @@ users_api___decorate([
     users_api___metadata("design:paramtypes", [context_Context, Function]),
     users_api___metadata("design:returntype", Promise)
 ], users_api_UsersAPI.prototype, "getOne", null);
+users_api___decorate([
+    Get('/users/:id/otp'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [context_Context, Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "getTOTP", null);
 users_api___decorate([
     Post('/users'),
     ACL([
@@ -3367,11 +3708,22 @@ users_api___decorate([
     users_api___metadata("design:paramtypes", [context_Context, Function]),
     users_api___metadata("design:returntype", Promise)
 ], users_api_UsersAPI.prototype, "update", null);
+users_api___decorate([
+    Post('/users/:id/password'),
+    ACL([
+        UserRoleEnum.Administrator,
+        UserRoleEnum.Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [context_Context, Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "setPassword", null);
 
 // CONCATENATED MODULE: ./api/users/index.ts
 
 
 // CONCATENATED MODULE: ./api/index.ts
+
 
 
 

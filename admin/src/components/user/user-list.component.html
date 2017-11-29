@@ -1,7 +1,59 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <h1>Пользователи</h1>
+    <button mat-button (click)="add()">
+      <mat-icon>add</mat-icon>
+      <span>Добавить</span>
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
-<main>403 Forbidden</main>
+<main>
+  <mat-form-field class="m-col-100">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
+  </mat-form-field>
+  <mat-table #table [dataSource]="dataSource" class="m-col--max">
+
+    <!-- Enabled Column -->
+    <ng-container matColumnDef="enable">
+      <mat-header-cell *matHeaderCellDef style="flex: 0 0 30px">#</mat-header-cell>
+      <mat-cell *matCellDef="let element" style="flex: 0 0 30px"><mat-icon *ngIf="element.enable">check</mat-icon></mat-cell>
+    </ng-container>
+
+    <!-- URL Column -->
+    <ng-container matColumnDef="url">
+      <mat-header-cell *matHeaderCellDef>Ссылка</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.url && ('/' + element.url) || '' }}</mat-cell>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef>Заголовок</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef>E-mail</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.email }}</mat-cell>
+    </ng-container>
+
+    <!-- Phone Column -->
+    <ng-container matColumnDef="phone">
+      <mat-header-cell *matHeaderCellDef>Телефон</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.phone }}</mat-cell>
+    </ng-container>
+
+    <!-- Roles Column -->
+    <ng-container matColumnDef="roles">
+      <mat-header-cell *matHeaderCellDef>Роли</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.roles }}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="select(row)" class="pointer"></mat-row>
+  </mat-table>
+
+  <mat-paginator #paginator [pageSize]="50" [pageSizeOptions]="[50, 100, 200]">
+  </mat-paginator>
+</main>
 

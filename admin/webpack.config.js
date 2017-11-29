@@ -52,7 +52,7 @@ const postcssLoaderPlugins = [
   PostcssDiscardComments({
     removeAll: isProduction
   }),
-  PostcssDiscardFontFace(['woff', 'woff2']),
+  PostcssDiscardFontFace(['woff2']),
 ]
 
 // === Final plugins ===
@@ -68,7 +68,7 @@ const postcssFinalPlugins = [
 
 // === Extract css chunks plugins
 const ExtractStylesCSS = new ExtractTextPlugin('css/[name].[hash:10].bundle.css')
-// const ExtractVendorCSS = new ExtractTextPlugin('css/vendor.[hash:10].bundle.css')
+const ExtractVendorCSS = new ExtractTextPlugin('css/vendor.[hash:10].bundle.css')
 
 // === Webpack config ===
 module.exports = {
@@ -142,11 +142,34 @@ module.exports = {
         }]
       })
     },{
+      // === Global css styles ===
+      test: /\.css$/i,
+      include: [
+        PATH('../node_modules/font-awesome'),
+        PATH('../node_modules/froala-editor'),
+      ],
+      loader: ExtractVendorCSS.extract({
+        use: [{
+          loader: 'css-loader',
+          options: {
+            importLoaders: 2
+          }
+        },{
+          loader: 'postcss-loader',
+          options: {
+            ident: 'postcss',
+            plugins: postcssLoaderPlugins
+          }
+        }]
+      })
+    },{
       // === Modules css styles ===
       test: /\.(css|scss)$/i,
       exclude: [
         PATH('./src/styles'),
         PATH('../node_modules/@angular/material/theming'),
+        PATH('../node_modules/font-awesome'),
+        PATH('../node_modules/froala-editor'),
       ],
       use: [{
         loader: 'exports-loader',
@@ -210,7 +233,7 @@ module.exports = {
       minChunks: module => /node_modules/.test(module.resource)
     }),
 
-    // ExtractVendorCSS,
+    ExtractVendorCSS,
     ExtractStylesCSS,
     new WebpackPostCSSPlugin({
       plugins: postcssFinalPlugins

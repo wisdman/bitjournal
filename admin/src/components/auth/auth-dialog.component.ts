@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, Inject } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 
-import { MatDialogRef } from '@angular/material'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
+
+import { CurrentUserService } from '../../services'
 
 @Component({
   selector: 'auth-dialog',
@@ -13,25 +15,39 @@ export class AuthDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<AuthDialogComponent>,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public user: CurrentUserService
   ) {
+    this.dialogRef.disableClose = true
     this.authForm = this.fb.group({
       email:    ['', [ Validators.required, Validators.email ] ],
       password: ['', [ Validators.required ] ],
       totp:     ['', [ Validators.required ] ],
     })
-
-    console.dir(this.authForm)
   }
 
   ngOnInit() {
-    this.dialogRef.disableClose = true
+    this.authForm.setValue({
+      email: '',
+      password: '',
+      totp: '',
+    })
   }
 
-  onSubmit() {
-    console.log(this.authForm.value)
-    this.dialogRef.disableClose = false
-    this.dialogRef.close()
+  async onSubmit() {
+    if (!this.authForm.valid)
+      return
+
+    let result = await this.user.login(this.authForm.value)
+
+    if (result)
+      return
+
+    this.authForm.setValue({
+      email: '',
+      password: '',
+      totp: '',
+    })
   }
 }
 

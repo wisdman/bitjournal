@@ -7,28 +7,13 @@ import { UUID } from '@core/uuid'
 
 import { ACL } from '@common/middleware'
 import {
-  IUser_MAIN_FIELDS,
-  IUser_ALL_FIELDS,
+  User,
   UserRoleEnum,
 } from '@common/models'
 
 import { OTP } from '@core/otp'
 
 export class UsersAPI extends RouteMiddleware {
-
-  @Get('/users', 'q')
-  @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
-  ])
-  async find(ctx: Context, next: INext) {
-    const route = ctx.route as Route
-    const db = ctx.db as Client
-
-    const q = route.query
-
-    ctx.set({})
-  }
 
   @Get('/users')
   @ACL([
@@ -38,7 +23,7 @@ export class UsersAPI extends RouteMiddleware {
   async getAll(ctx: Context, next: INext) {
     const db = ctx.db as Client
 
-    const query = new Query('users').select(IUser_MAIN_FIELDS)
+    const query = new Query('users').select(User.MainFields)
 
     ctx.debug('=== SQL Query [/users] ===\n%s', query)
 
@@ -46,7 +31,8 @@ export class UsersAPI extends RouteMiddleware {
 
     ctx.debug('=== SQL Result [/users] ===\n%s', result.rows)
 
-    ctx.set(result.rows)
+    const items = result.rows.map(item => new User(item))
+    ctx.set(items)
   }
 
   @Get('/users/me')
@@ -58,10 +44,10 @@ export class UsersAPI extends RouteMiddleware {
 
     const db = ctx.db as Client
 
-    const id = ctx.session.userId as UUID
+    const id = ctx.session.user.id as UUID
 
-    const query = new Query('users').select(IUser_ALL_FIELDS)
-                                    .where('id = $1', String(id))
+    const query = new Query('users').select()
+                                    .where('id = $1 AND enable', String(id))
 
     ctx.debug('=== SQL Query [/users/me] ===\n%s', query)
 
@@ -70,7 +56,8 @@ export class UsersAPI extends RouteMiddleware {
     ctx.debug('=== SQL Result [/users/me] ===\n%s', result.rows)
 
     if (result.rowCount > 0) {
-      ctx.set(result.rows[0])
+      const item = new User(result.rows[0])
+      ctx.set( item )
       return
     }
 
@@ -95,7 +82,7 @@ export class UsersAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query('users').select(IUser_ALL_FIELDS)
+    const query = new Query('users').select()
                                     .where('id = $1', String(id))
 
     ctx.debug('=== SQL Query [/users/:id] ===\n%s', query)
@@ -105,7 +92,8 @@ export class UsersAPI extends RouteMiddleware {
     ctx.debug('=== SQL Result [/users/:id] ===\n%s', result.rows)
 
     if (result.rowCount > 0) {
-      ctx.set(result.rows[0])
+      const item = new User(result.rows[0])
+      ctx.set( item )
       return
     }
 

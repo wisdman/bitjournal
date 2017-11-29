@@ -8,7 +8,7 @@ import { UUID } from '@core/uuid'
 
 import { UserSession } from './session'
 
-const SESSION_ID_REGEXP = /[0-9a-f]{128}/
+const SESSION_ID_REGEXP = /token\s+([0-9a-f]{128})/
 
 export class UserSessionMiddleware extends SessionMiddleware {
 
@@ -18,7 +18,7 @@ export class UserSessionMiddleware extends SessionMiddleware {
 
   async get(ctx: Context) {
     const id = SESSION_ID_REGEXP.exec(ctx.request.getHeader('Authorization') || '')
-    ctx.session.id = id && id[0] || ''
+    ctx.session.id = id && id[1] || ''
   }
 
   async before(ctx: Context) {
@@ -34,30 +34,6 @@ export class UserSessionMiddleware extends SessionMiddleware {
     if (result.rowCount === 0)
       return
 
-    ctx.session.setUserId(result.rows[0].id)
-    ctx.session.setRoles(result.rows[0].roles)
-  }
-
-  async after(ctx: Context) {
-    const userId = ctx.session.userId
-
-    // User is empty, clear session
-    if (!(userId instanceof UUID) || !userId.version) {
-      ctx.session.id = ''
-      return
-    }
-
-    const db = ctx.db as Client
-    const result = await db.query({
-      text: 'SELECT sessions__save($1, $2, $3) AS id',
-      values: [ ctx.session.id || null, String(userId), ctx.session.ip ]
-    })
-
-    ctx.session.id = result.rows[0] && result.rows[0].id || ''
-  }
-
-  async set(ctx: Context) {
-    if (ctx.session.isValid)
-      ctx.response.setHeader('Authorization', 'token ' + ctx.session.id)
+    ctx.session.setUser(result.rows[0])
   }
 }

@@ -12,7 +12,7 @@ import { RouterModule, PreloadAllModules } from '@angular/router'
 
 import { COMPONENTS, ENTRY_COMPONENTS } from './app.components'
 import { MATERIAL } from './app.material'
-// import { MODULES } from './app.modules'
+import { MODULES } from './app.modules'
 import { ROUTES }   from './app.routes'
 import { SERVICES } from './app.services'
 
@@ -36,6 +36,8 @@ import { AuthDialogComponent } from './components'
     HttpClientModule,
 
     ...MATERIAL,
+
+    ...MODULES,
 
     RouterModule.forRoot(ROUTES, {
       useHash: false,

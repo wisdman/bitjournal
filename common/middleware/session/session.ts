@@ -5,42 +5,31 @@
 import { Session } from '@core/service'
 import { UUID } from '@core/uuid'
 
-import { UserRoleEnum } from '@common/models'
-
-const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/
+import {
+  UserRoleEnum,
+  User,
+} from '@common/models'
 
 export class UserSession extends Session {
 
-  private _userId: UUID | undefined = undefined
+  private _user: User | null = null
 
-  get userId(): UUID | undefined {
-    return this._userId
+  get user(): User | null {
+    return this._user
   }
 
-  setUserId(value: any): UUID | undefined {
-    this._userId = value && new UUID(value) || undefined
-    return this._userId
-  }
-
-  private _roles: Array<UserRoleEnum> = []
-
-  get roles(): Array<UserRoleEnum> {
-    return this._roles
-  }
-
-  setRoles(value: any): Array<UserRoleEnum> {
-    let match = ENUM_PG_ARRAY_PATTERN.exec(value)
-
-    if (match)
-      value = match[1].split(',')
-
-    this._roles = UserRoleEnum.getArray(value) as Array<UserRoleEnum>
-    return this._roles
+  setUser(value: any): User | null {
+    let user = new User(value)
+    this._user = user.id.value !== null ? user : null
+    return this._user
   }
 
   checkRole(roles: Array<UserRoleEnum>): boolean {
+    if (!this._user)
+      return false
+
     for (let role of roles)
-      if (this._roles.includes(role))
+      if (this._user.roles.includes(role))
         return true
 
     return false
@@ -48,13 +37,13 @@ export class UserSession extends Session {
 
   get isValid(): boolean {
     return this.id.length > 0
-        && this._userId instanceof UUID
+        && this._user instanceof User
+        && this._user.id.value !== null
   }
 
   valueOf() {
     return Object.assign(super.valueOf(), {
-      userId: this._userId,
-      roles: this._roles
+      user: this._user
     })
   }
 }

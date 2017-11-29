@@ -1,23 +1,42 @@
 
-.w-100 {
-  width: 100%;
-  flex: 0 0 100%;
-}
-
 main {
   box-sizing: border-box;
   position: relative;
 
+  max-width: 1200px;
+
   margin: 0 auto;
   padding: 1rem;
-
-  background: #fff;
 }
 
-main.narrow {
-  max-width: 1000px;
+.m-row {
+  margin-top: 1rem;
+  display: flex;
+}
+
+.m-col {
+  flex: 0 0 auto;
+}
+
+.m-col-max {
+  flex: 1 1 auto;
+}
+
+.m-col-100 {
+  width: 100%;
+  flex: 0 0 100%;
 }
 
 .mat-toolbar h1 {
+  flex-grow: 1;
+  flex-shrink: 1;
   margin-right: auto;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pointer {
+  cursor: pointer;
 }

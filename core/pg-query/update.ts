@@ -41,11 +41,11 @@ export class Update extends AbstractQuery {
   }
 
   where(value: IWhereValue, ...values: Array<any>) {
-    this._where = new Where(value, 0, values)
+    this._where = new Where(value, this._values.length, values)
     return this
   }
 
-  returning(value: IReturningValue) {
+  returning(value?: IReturningValue) {
     this._returning = new Returning(value)
     return this
   }

@@ -1,9 +1,9 @@
 
-// import {
+import {
+  EditorModule,
+} from './modules'
 
-// } from './modules'
 
-
-// export const MODULES: any[] = [
-
-// ]
+export const MODULES: any[] = [
+  EditorModule,
+]

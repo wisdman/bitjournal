@@ -57,3 +57,7 @@ body {
   color: #737373;
   fill: #737373;
 }
+
+.layout-content {
+  background: #fff;
+}

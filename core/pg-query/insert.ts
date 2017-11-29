@@ -36,10 +36,10 @@ export class Insert extends AbstractQuery {
     // escape feels
     feelds = feelds.map( item => `"${item}"` )
 
-    this._command = `INSERT INTO TABLE "${ query.scheme }"."${ query.table }" (${ feelds.join(', ') }) VALUES (${ values.join(', ') })`
+    this._command = `INSERT INTO "${ query.scheme }"."${ query.table }" (${ feelds.join(', ') }) VALUES (${ values.join(', ') })`
   }
 
-  returning(value: IReturningValue) {
+  returning(value?: IReturningValue) {
     this._returning = new Returning(value)
     return this
   }

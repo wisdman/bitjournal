@@ -21,7 +21,7 @@ export class Delete extends AbstractQuery {
     return this
   }
 
-  returning(value: IReturningValue) {
+  returning(value?: IReturningValue) {
     this._returning = new Returning(value)
     return this
   }

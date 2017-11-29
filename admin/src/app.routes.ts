@@ -10,7 +10,6 @@ import {
   DashboardBlockComponent,
   ExchangeItemComponent,
   ExchangeListComponent,
-  ForumBlockComponent,
   HardwareItemComponent,
   HardwareListComponent,
   ICOItemComponent,
@@ -23,6 +22,7 @@ import {
   NoContentComponent,
   PublicationItemComponent,
   PublicationListComponent,
+  SectionItemComponent,
   SectionListComponent,
   SettingsBlockComponent,
   StaticItemComponent,
@@ -32,6 +32,12 @@ import {
   UserListComponent,
   VideoListComponent,
 } from './components'
+
+import {
+  PublicationService,
+  SectionService,
+  UserService,
+} from './services'
 
 export const ROUTES: Routes = [
   { path: ''                 , component: DashboardBlockComponent  },
@@ -48,8 +54,6 @@ export const ROUTES: Routes = [
   { path: 'exchanges/:id'    , component: ExchangeItemComponent    },
   { path: 'exchanges'        , component: ExchangeListComponent    },
 
-  { path: 'forum'            , component: ForumBlockComponent      },
-
   { path: 'hardware/:id'     , component: HardwareItemComponent    },
   { path: 'hardware'         , component: HardwareListComponent    },
 
@@ -64,10 +68,11 @@ export const ROUTES: Routes = [
   { path: 'markets/:id'      , component: MarketItemComponent      },
   { path: 'markets'          , component: MarketListComponent      },
 
-  { path: 'publications/:id' , component: PublicationItemComponent },
-  { path: 'publications'     , component: PublicationListComponent },
+  { path: `${PublicationService.BaseURL}/:id` , component: PublicationItemComponent },
+  { path: `${PublicationService.BaseURL}`     , component: PublicationListComponent },
 
-  { path: 'sections'         , component: SectionListComponent     },
+  { path: `${SectionService.BaseURL}/:id`     , component: SectionItemComponent     },
+  { path: `${SectionService.BaseURL}`         , component: SectionListComponent     },
 
   { path: 'settings'         , component: SettingsBlockComponent   },
 
@@ -76,9 +81,8 @@ export const ROUTES: Routes = [
 
   { path: 'status'           , component: StatusListComponent      },
 
-  { path: 'me'               , component: UserItemComponent        },
-  { path: 'users/:id'        , component: UserItemComponent        },
-  { path: 'users'            , component: UserListComponent        },
+  { path: `${UserService.BaseURL}/:id`        , component: UserItemComponent        },
+  { path: `${UserService.BaseURL}`            , component: UserListComponent        },
 
   { path: 'video'            , component: VideoListComponent       },
 

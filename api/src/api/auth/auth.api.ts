@@ -19,13 +19,13 @@ export class AuthAPI extends RouteMiddleware {
 
     const db = ctx.db as Client
 
-    const query = new Query('users').select()
+    const query = new Query('users').select(['id', 'roles', 'totp'])
                                     .where("email = $1 AND password = encode(digest($2, 'sha512'), 'hex')",
                                            body.email, body.password)
 
     ctx.debug('=== SQL Query [/auth/login] ===\n%s', query)
 
-    const result = await db.query(query.valueOf())
+    let result = await db.query(query.valueOf())
 
     ctx.debug('=== SQL Result [/auth/login] ===\n%s', result.rows)
 
@@ -52,10 +52,27 @@ export class AuthAPI extends RouteMiddleware {
 
     }
 
-    // Allow
-    ctx.session.setUserId(result.rows[0].id)
-    ctx.session.setRoles(result.rows[0].roles)
-    ctx.set(204)
+    ctx.session.setUser(result.rows[0])
+
+    if (!ctx.session.user) {
+      ctx.set(403)
+      return
+    }
+
+    const newSessionQuery = {
+      text: 'SELECT sessions__new($1, $2) AS id',
+      values: [ String(ctx.session.user.id), ctx.session.ip ]
+    }
+
+    ctx.debug('=== SQL Query [/auth/login] NEW ===\n%s', newSessionQuery)
+
+    result = await db.query(newSessionQuery)
+
+    ctx.debug('=== SQL Result [/auth/login] NEW ===\n%s', result.rows)
+
+    ctx.session.id = result.rows[0] && result.rows[0].id || ''
+
+    ctx.set({ token: ctx.session.id })
   }
 
 
@@ -77,14 +94,13 @@ export class AuthAPI extends RouteMiddleware {
       ctx.debug('=== SQL Result [/auth/login] ===\n%s', result.rows)
     }
 
-    ctx.session.setUserId(undefined)
-    ctx.session.setRoles([])
+    ctx.session.setUser(null)
     ctx.set(204)
   }
 
 
   @Get('/auth')
-  async getOne(ctx: Context, next: INext) {
+  async auth(ctx: Context, next: INext) {
     if (ctx.session.isValid)
       ctx.set(204)
     else
