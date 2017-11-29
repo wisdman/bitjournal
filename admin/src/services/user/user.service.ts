@@ -38,5 +38,17 @@ export class UserService {
   delete(data: User) {
     return this._api.delete(`/${UserService.BaseURL}/${data.id}`)
   }
+
+  otp(data: User) {
+    return this._api.get<{secret: string}>(`/${UserService.BaseURL}/${data.id}/otp`)
+  }
+
+  resetOTP(data: User) {
+    return this._api.post<{secret: string}>(`/${UserService.BaseURL}/${data.id}/otp`, { secret: '' })
+  }
+
+  password(data: User, password: string) {
+    return this._api.post<{password: string}>(`/${UserService.BaseURL}/${data.id}/password`, { password })
+  }
 }
 

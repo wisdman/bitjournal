@@ -9,7 +9,7 @@ export class Section {
     'title',
   ]
 
-  readonly id: UUID
+  id: UUID
   enable: boolean
 
   url: string | null

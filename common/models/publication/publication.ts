@@ -13,7 +13,7 @@ export class Publication {
     'title',
   ]
 
-  readonly id: UUID
+  id: UUID
 
   ts: Timestamp
   url: string

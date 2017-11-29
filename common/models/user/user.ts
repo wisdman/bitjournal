@@ -20,7 +20,7 @@ export class User {
     'image',
   ]
 
-  readonly id: UUID
+  id: UUID
   enable: boolean
   roles: Array<UserRoleEnum>
 
@@ -30,7 +30,7 @@ export class User {
   description: string
 
   email: string
-  phone: string
+  phone: string | null
 
   image: number | null
 
@@ -51,13 +51,13 @@ export class User {
     } else
       this.roles = new Array<UserRoleEnum>()
 
-    this.url = String(value.url || '')
+    this.url = String(value.url || '').trim() || null
 
     this.title = String(value.title || '')
     this.description = String(value.description || '')
 
-    this.email = String(value.email || '')
-    this.phone = String(value.phone || '')
+    this.email = String(value.email || '').trim()
+    this.phone = String(value.phone || '').trim() || null
 
     this.image = Math.max(~~value.image, 0) || null
 

@@ -1,6 +1,6 @@
 {
   "name": "bitjournal",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Webportal about Blockchain",
   "author": "Wisdman <wisdman@ajaw.it> (https://github.com/wisdman)",
   "contributors": [
@@ -94,6 +94,7 @@
     "jquery": "^3.2.1",
     "pg": "^7.4.0",
     "pg-large-object": "^2.0.0",
+    "qrious": "^4.0.2",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.18"
   }

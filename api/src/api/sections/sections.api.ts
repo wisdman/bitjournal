@@ -130,6 +130,7 @@ export class SectionsAPI extends RouteMiddleware {
     const data = await ctx.request.json()
 
     const item = new Section(data)
+    delete item.id
 
     const query = new Query('sections').insert(item)
                                        .returning()
@@ -170,6 +171,7 @@ export class SectionsAPI extends RouteMiddleware {
     const data = await ctx.request.json()
 
     const item = new Section(data)
+    delete item.id
 
     const query = new Query('sections').update(item)
                                        .where('id = $1', String(id))

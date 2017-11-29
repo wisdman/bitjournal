@@ -12,59 +12,75 @@
   </mat-toolbar-row>
 </mat-toolbar>
 <main>
-  <form mat-dialog-content [formGroup]="itemForm" novalidate>
-    <mat-tab-group>
-      <mat-tab label="Основное">
+  <mat-tab-group>
+    <mat-tab label="Основное">
+      <form mat-dialog-content [formGroup]="itemForm" novalidate>
         <div class="m-row">
           <mat-form-field class="m-col-max">
-            <input matInput type="text" maxlength="128" placeholder="Ссылка" formControlName="url">
+            <input #urlInput matInput type="text" maxlength="128" placeholder="Ссылка" formControlName="url">
             <mat-hint>При изменении ссылки може пострадать SEO</mat-hint>
-            <mat-hint align="end">{{itemForm.controls.url.value.length}} / 128</mat-hint>
+            <mat-hint align="end">{{ urlInput.value.length }} / 128</mat-hint>
           </mat-form-field>
         </div>
         <div class="m-row">
           <mat-form-field class="m-col-max">
-            <input matInput type="email" maxlength="256" placeholder="E-mail" formControlName="email">
-            <mat-hint align="end">{{itemForm.controls.email.value.length}} / 256</mat-hint>
+            <input #emailInput matInput type="email" maxlength="256" placeholder="E-mail" formControlName="email">
+            <mat-hint align="end">{{ emailInput.value.length }} / 256</mat-hint>
             <mat-error *ngIf="itemForm.controls.title.hasError('required')">E-mail должен быть заполнен <strong>обязательно</strong></mat-error>
           </mat-form-field>
         </div>
         <div class="m-row">
           <mat-form-field class="m-col-max">
-            <input matInput type="text" maxlength="160" placeholder="Телефон" formControlName="phone">
-            <mat-hint align="end">{{itemForm.controls.phone.value.length}} / 18</mat-hint>
+            <input #phoneInput matInput type="text" maxlength="160" placeholder="Телефон" formControlName="phone">
+            <mat-hint align="end">{{ phoneInput.value.length }} / 18</mat-hint>
           </mat-form-field>
         </div>
         <div class="m-row">
           <mat-form-field class="m-col-max">
-            <input matInput type="text" maxlength="160" placeholder="Имя" formControlName="title">
-            <mat-hint align="end">{{itemForm.controls.title.value.length}} / 160</mat-hint>
+            <input #titleInput matInput type="text" maxlength="160" placeholder="Имя" formControlName="title">
+            <mat-hint align="end">{{ titleInput.value.length }} / 160</mat-hint>
           </mat-form-field>
         </div>
         <div class="m-row">
           <mat-form-field class="m-col-max">
-            <input matInput type="text" maxlength="160" placeholder="Описание" formControlName="description">
-            <mat-hint align="end">{{itemForm.controls.description.value.length}} / 160</mat-hint>
+            <input #descriptionInput matInput type="text" maxlength="160" placeholder="Описание" formControlName="description">
+            <mat-hint align="end">{{ descriptionInput.value.length }} / 160</mat-hint>
           </mat-form-field>
         </div>
-      </mat-tab>
-      <mat-tab label="Безопасность">
-        <div class="m-row">
+      </form>
+    </mat-tab>
+    <mat-tab label="Безопасность">
+      <form mat-dialog-content [formGroup]="passwordForm" (ngSubmit)="setPassword()" novalidate class="m-row">
+        <mat-form-field class="m-col-max padding-right">
+          <input matInput type="password" placeholder="Пароль" formControlName="password1">
+        </mat-form-field>
+        <mat-form-field class="m-col-max padding-right">
+          <input matInput type="password" placeholder="Еще раз" formControlName="password2">
+        </mat-form-field>
+        <div class="m-col">
+          <button type="submit" mat-raised-button color="accent" [disabled]="this.isNew || passwordForm.invalid">Установить</button>
         </div>
-        <div class="m-row">
-        </div>
-      </mat-tab>
-      <mat-tab label="Карточка">
-        <div class="m-row">
-          Аватар
-        </div>
-        <div class="m-row">
-        </div>
-      </mat-tab>
-      <mat-tab label="Журнал">
-        <div class="m-row">
-        </div>
-      </mat-tab>
-    </mat-tab-group>
-  </form>
+      </form>
+      <div class="m-row">
+        <mat-form-field class="m-col-max">
+          <input matInput type="text" maxlength="128" placeholder="TOTP Secret" [ngModel]="totp" [ngModelOptions]="{standalone: true}" disabled>
+          <mat-icon matSuffix (click)="resetTOTP()" class="pointer">refresh</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="m-row">
+        <canvas #qrCanvas></canvas>
+      </div>
+    </mat-tab>
+    <mat-tab label="Карточка">
+      <div class="m-row">
+        Аватар
+      </div>
+      <div class="m-row">
+      </div>
+    </mat-tab>
+    <mat-tab label="Журнал">
+      <div class="m-row">
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </main>
