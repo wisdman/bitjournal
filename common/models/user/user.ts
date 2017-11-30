@@ -64,6 +64,17 @@ export class User {
     this.card = {}
   }
 
+  checkRole(roles: Array<UserRoleEnum>): boolean {
+    if (!this._user)
+      return false
+
+    for (let role of roles)
+      if (this._user.roles.includes(role))
+        return true
+
+    return false
+  }
+
   [Symbol.toStringTag]() {
     return 'User'
   }

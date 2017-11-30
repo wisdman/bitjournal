@@ -1,39 +1,34 @@
 /*
  * Auth context
  */
-
+import { Middleware, Context, INext } from '@core/service'
 import { Client } from 'pg'
-import { SessionMiddleware, Context, INext } from '@core/service'
-import { UUID } from '@core/uuid'
 
-import { UserSession } from './session'
+import { Session } from './session'
+import { User } from '@common/models'
 
-const SESSION_ID_REGEXP = /token\s+([0-9a-f]{128})/
+export class SessionMiddleware extends Middleware {
 
-export class UserSessionMiddleware extends SessionMiddleware {
+  async main(ctx: Context, next: INext): Promise<void> {
+    // === Create new session ===
+    const session = new Session(ctx)
 
-  constructor(){
-    super(UserSession)
-  }
-
-  async get(ctx: Context) {
-    const id = SESSION_ID_REGEXP.exec(ctx.request.getHeader('Authorization') || '')
-    ctx.session.id = id && id[1] || ''
-  }
-
-  async before(ctx: Context) {
-    if (!ctx.session.id)
-      return
-
+     // === Get user from DB by session ===
     const db = ctx.db as Client
     const result = await db.query({
-      text: 'SELECT id, roles FROM sessions__get_user($1)',
+      text: 'SELECT "users".* FROM "sessions" LEFT JOIN "users" ON "sessions"."owner" = "users"."id" WHERE "sessions"."id" = $1 AND "users"."enable"',
       values: [ctx.session.id]
     })
 
-    if (result.rowCount === 0)
+    if (result.rowCount !== 1)
       return
 
-    ctx.session.setUser(result.rows[0])
+    session.user = new User(result.rows[0])
+
+    ctx.debug('=== Input session ===\n%s', ctx.session)
+
+    await next()
+
+    ctx.debug('=== Output session ===\n%s', ctx.session)
   }
 }
