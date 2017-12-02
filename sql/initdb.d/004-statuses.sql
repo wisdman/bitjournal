@@ -9,7 +9,6 @@ CREATE TABLE statuses (
   "enable"      boolean      NOT NULL DEFAULT TRUE,
 
   "title"       varchar(160) NOT NULL DEFAULT '',
-  "description" varchar(160) NOT NULL DEFAULT '',
 
   "image"       oid          DEFAULT NULL,
 

@@ -32,16 +32,24 @@ export class APIService {
 
   private _handleError(error: Response | any) {
     if (error instanceof HttpErrorResponse) {
-      if (error.status === 403)
-        this._dialog.open({ title: 'Ошибка', message: 'Доступ запрещен' })
+      switch (error.status) {
+        case 403:
+          this._dialog.open({ title: 'Ошибка 403', message: 'Доступ запрещен' })
+          break
 
-      else if (error.status === 404)
-        this._dialog.open({ title: 'Ошибка', message: 'Элемент не найден' })
+        case 404:
+          this._dialog.open({ title: 'Ошибка 404', message: 'Элемент не найден' })
+          break
 
-      else
-        this._dialog.open({ title: 'Ошибка', message: error.message })
+        case 409:
+          this._dialog.open({ title: 'Ошибка 409', message: 'Конфликт идентификаторов' })
+          break
+
+        default:
+           this._dialog.open({ title: `Ошибка {error.status}`, message: error.message })
+      }
     } else
-      this._dialog.open({ title: 'Ошибка', message: String(error) })
+      this._dialog.open({ title: 'Ошибка приложения', message: String(error) })
 
     return Observable.of(null)
   }

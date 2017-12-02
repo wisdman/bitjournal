@@ -1,70 +1,34 @@
 
-export class Video {
+import { IVideo } from './video.interface'
+
+export class Video implements IVideo {
   static MainFields = [
     'id',
     'enable',
-    'title',
   ]
 
   readonly id: string
   readonly enable: boolean
 
-  readonly title: string
-  readonly description: string
-
-  readonly ogTitle: string
-  readonly ogDescription: string
-
-  readonly image: number | null
-  readonly ogImage: number | null
-
   constructor(value: any = {}) {
     if (!value)
       value = {}
 
-    this.id = String(value.title || '').trim()
-
-    this.enable = !!value.enable
-
-    this.title = String(value.title || '').trim()
-    this.ogTitle = String(value.ogTitle || '').trim()
-
-    this.description = String(value.description || '').trim()
-    this.ogDescription = String(value.ogDescription || '').trim()
-
-    this.image = Math.max(~~value.image, 0) || null
-    this.ogImage = Math.max(~~value.ogImage, 0) || null
+    this.id = String(value.id || '').trim()
+    this.enable = value.enable === undefined ? true : !!value.enable
   }
 
   valueOf() {
     return {
+      id: this.id,
       enable: this.enable,
-
-      title: this.title,
-      ogTitle: this.ogTitle,
-
-      description: this.description,
-      ogDescription: this.ogDescription,
-
-      image: this.image,
-      ogImage: this.ogImage,
     }
   }
 
   toJSON(): any {
     return {
       id: this.id,
-
       enable: this.enable,
-
-      title: this.title,
-      ogTitle: this.ogTitle,
-
-      description: this.description,
-      ogDescription: this.ogDescription,
-
-      image: this.image,
-      ogImage: this.ogImage,
     }
   }
 
@@ -73,7 +37,7 @@ export class Video {
   }
 
   toString(): string {
-    return this.title
+    return this.id
   }
 
   [Symbol.toPrimitive](hint : 'default' | 'string' | 'number') {

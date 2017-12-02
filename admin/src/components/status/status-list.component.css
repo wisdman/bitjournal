@@ -1,0 +1,6 @@
+.status-image {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  padding: .5rem 0;
+}

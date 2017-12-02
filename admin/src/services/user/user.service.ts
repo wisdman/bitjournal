@@ -6,7 +6,6 @@ import 'rxjs/add/observable/of'
 import 'rxjs/add/operator/catch'
 import 'rxjs/add/operator/filter'
 import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/toPromise'
 
 import { MatDialog } from '@angular/material'
 import { MatSnackBar } from '@angular/material'
@@ -58,10 +57,10 @@ export class UserService {
                             this._matDialog.open(AuthDialogComponent, { data: this })
 
                           else
-                            this._dialog.open({ title: 'Ошибка', message: error.message })
+                            this._dialog.open({ title: `Ошибка {error.status}`, message: error.message })
 
                         } else
-                          this._dialog.open({ title: 'Ошибка', message: String(error) })
+                          this._dialog.open({ title: 'Ошибка приложения', message: String(error) })
 
                         return Observable.of(null)
                      })

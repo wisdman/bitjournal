@@ -31,7 +31,7 @@ export class Section {
 
     this.id = new UUID(value.id || null)
 
-    this.enable = !!value.enable
+    this.enable = value.enable === undefined ? true : !!value.enable
 
     this.url = String(value.url || '').trim() || null
 

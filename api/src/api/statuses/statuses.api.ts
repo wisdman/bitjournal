@@ -25,6 +25,7 @@ export class StatusesAPI extends RouteMiddleware {
     const db = ctx.db as Client
 
     const query = new Query(DATATABLE).select(Status.MainFields)
+                                      .order('title')
 
     ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}] ===\n%s`, query)
 
@@ -43,6 +44,7 @@ export class StatusesAPI extends RouteMiddleware {
 
     const query = new Query(DATATABLE).select(Status.MainFields)
                                       .where('enable')
+                                      .order('title')
 
     ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}] ===\n%s`, query)
 

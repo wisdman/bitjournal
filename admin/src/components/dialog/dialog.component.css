@@ -2,3 +2,17 @@
   text-transform: uppercase;
   text-align: center;
 }
+
+.dialog-input {
+  min-width: 500px;
+  flex: 1 1 500px;
+}
+
+.dialog-p {
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.dialog-actions button:first-child {
+  margin-left: auto;
+}

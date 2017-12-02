@@ -124,6 +124,7 @@ module.exports = {
       include: [
         PATH('./src/styles'),
         PATH('../node_modules/@angular/material/theming'),
+        PATH('../node_modules/font-awesome'),
       ],
       loader: ExtractStylesCSS.extract({
         use: [{
@@ -142,10 +143,9 @@ module.exports = {
         }]
       })
     },{
-      // === Global css styles ===
+      // === Vendor css styles ===
       test: /\.css$/i,
       include: [
-        PATH('../node_modules/font-awesome'),
         PATH('../node_modules/froala-editor'),
       ],
       loader: ExtractVendorCSS.extract({

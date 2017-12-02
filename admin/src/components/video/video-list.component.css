@@ -1,0 +1,6 @@
+.video-thumb {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
+  padding: .5rem 0;
+}

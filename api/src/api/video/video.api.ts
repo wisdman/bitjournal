@@ -1,6 +1,6 @@
 import { RouteMiddleware, Context, INext, HttpError, Get, Post, Delete, Route } from '@core/service'
 
-import { Query } from '@core/pg-query'
+import { Query, DBError } from '@core/pg-query'
 import { Client } from 'pg'
 
 import { UUID } from '@core/uuid'
@@ -64,14 +64,7 @@ export class VideoAPI extends RouteMiddleware {
     const route = ctx.route as Route
     const db = ctx.db as Client
 
-    let id: UUID
-
-    try {
-      id = new UUID(route.data.id)
-    } catch (error) {
-      ctx.set(400, error.message)
-      return
-    }
+    const id = String(route.data.id)
 
     const query = new Query(DATATABLE).select()
                                       .where('id = $1', String(id))
@@ -97,14 +90,7 @@ export class VideoAPI extends RouteMiddleware {
     const route = ctx.route as Route
     const db = ctx.db as Client
 
-    let id: UUID
-
-    try {
-      id = new UUID(route.data.id)
-    } catch (error) {
-      ctx.set(400, error.message)
-      return
-    }
+    const id = String(route.data.id)
 
     const query = new Query(DATATABLE).select()
                                       .where('id = $1 AND enable', String(id))
@@ -143,7 +129,19 @@ export class VideoAPI extends RouteMiddleware {
 
     ctx.debug(`=== SQL Query [POST /${ROUTE_BASE}] ===\n%s`, query)
 
-    const result = await db.query(query.valueOf())
+    let result
+
+    try {
+      result = await db.query(query.valueOf())
+    } catch (error) {
+      if (DBError.parseError(error) === DBError.UNIQUE_VIOLATION) {
+        ctx.set(409)
+        return
+      }
+
+      ctx.throw(error)
+      return
+    }
 
     ctx.debug(`=== SQL Result [POST /${ROUTE_BASE}] ===\n%s`, result.rows)
 
@@ -167,14 +165,7 @@ export class VideoAPI extends RouteMiddleware {
 
     const db = ctx.db as Client
 
-    let id: UUID
-
-    try {
-      id = new UUID(route.data.id)
-    } catch (error) {
-      ctx.set(400, error.message)
-      return
-    }
+    const id = String(route.data.id)
 
     const data = await ctx.request.json()
 
@@ -210,14 +201,7 @@ export class VideoAPI extends RouteMiddleware {
 
     const db = ctx.db as Client
 
-    let id: UUID
-
-    try {
-      id = new UUID(route.data.id)
-    } catch (error) {
-      ctx.set(400, error.message)
-      return
-    }
+    const id = String(route.data.id)
 
     const query = new Query(DATATABLE).delete()
                                       .where('id = $1', String(id))

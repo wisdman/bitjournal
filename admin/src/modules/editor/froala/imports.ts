@@ -1,6 +1,3 @@
-// === Icont fonts ===
-import 'font-awesome/css/font-awesome.css'
-
 // === Editor ===
 import 'froala-editor/js/froala_editor.min.js'
 import 'froala-editor/css/froala_editor.css'

@@ -3,23 +3,23 @@ import { Component, Inject } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
 
 import {
-  IDialogOptions
+  IDialogMessageOptions
 } from '../../services'
 
 @Component({
-  selector: 'message-dialog',
-  templateUrl: './dialog.component.html',
+  selector: 'dialog-message',
+  templateUrl: './dialog-message.component.html',
   styleUrls: [ './dialog.component.css' ]
 })
-export class DialogComponent {
+export class DialogMessageComponent {
 
   public readonly title: string
   public readonly message: string
   public readonly buttons: Array<{title: string, value: any}> = []
 
   constructor(
-    private dialogRef: MatDialogRef<DialogComponent>,
-    @Inject(MAT_DIALOG_DATA) data: IDialogOptions
+    private dialogRef: MatDialogRef<DialogMessageComponent>,
+    @Inject(MAT_DIALOG_DATA) data: IDialogMessageOptions
   ) {
     this.title = data.title && String(data.title).trim() || ''
     this.message = data.message && String(data.message).trim() || ''

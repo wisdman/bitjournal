@@ -6,7 +6,8 @@ import {
   CurrencyItemComponent,
   CurrencyListComponent,
   DashboardBlockComponent,
-  DialogComponent,
+  DialogMessageComponent,
+  DialogRequestComponent,
   ExchangeItemComponent,
   ExchangeListComponent,
   ICOItemComponent,
@@ -34,7 +35,8 @@ export const COMPONENTS: any[] = [
   CurrencyItemComponent,
   CurrencyListComponent,
   DashboardBlockComponent,
-  DialogComponent,
+  DialogMessageComponent,
+  DialogRequestComponent,
   ExchangeItemComponent,
   ExchangeListComponent,
   ICOItemComponent,
@@ -57,5 +59,6 @@ export const COMPONENTS: any[] = [
 
 export const ENTRY_COMPONENTS: any[] = [
   AuthDialogComponent,
-  DialogComponent,
+  DialogMessageComponent,
+  DialogRequestComponent,
 ]

@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core'
 
 import { MatDialog, MatSnackBar } from '@angular/material'
-import { DialogComponent } from '../../components'
+import {
+  DialogMessageComponent,
+  DialogRequestComponent,
+} from '../../components'
 
 import { Observable } from 'rxjs/Observable'
 
-import { IDialogOptions } from './dialog-options.interface'
+import { IDialogMessageOptions } from './dialog-message-options.interface'
+import { IDialogRequestOptions } from './dialog-request-options.interface'
 
 @Injectable()
 export class DialogService {
@@ -15,8 +19,13 @@ export class DialogService {
     private readonly _snackBar: MatSnackBar
   ) {}
 
-  open(data: IDialogOptions): Observable<any> {
-    const dialogRef = this._matDialog.open(DialogComponent, { data })
+  open(data: IDialogMessageOptions): Observable<any> {
+    const dialogRef = this._matDialog.open(DialogMessageComponent, { data })
+    return dialogRef.afterClosed()
+  }
+
+  request(data: IDialogRequestOptions): Observable<any> {
+    const dialogRef = this._matDialog.open(DialogRequestComponent, { data })
     return dialogRef.afterClosed()
   }
 

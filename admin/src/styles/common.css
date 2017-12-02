@@ -1,14 +1,4 @@
 
-.mat-toolbar h1 {
-  flex-grow: 1;
-  flex-shrink: 1;
-  margin-right: auto;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 main {
   box-sizing: border-box;
   position: relative;
@@ -37,6 +27,6 @@ main {
   flex: 0 0 100%;
 }
 
-.pointer {
-  cursor: pointer;
+i.fa {
+  margin-right: .5em
 }

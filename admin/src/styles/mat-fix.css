@@ -1,0 +1,33 @@
+/* === Toolbar header === */
+.mat-toolbar h1 {
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin-right: auto;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* === Tables === */
+.mat-header-row,
+.mat-row {
+  padding: 0 !important;
+}
+
+.mat-header-cell,
+.mat-cell {
+  padding: 0 .5rem;
+  overflow: visible !important;
+}
+
+.mat-header-cell:first-child,
+.mat-cell:first-child {
+  padding-left: 0;
+}
+
+.mat-header-cell:last-child,
+.mat-cell:last-child {
+  padding-right: 0;
+}

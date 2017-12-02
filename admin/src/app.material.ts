@@ -10,9 +10,11 @@ import {
   MatPaginatorModule,
   MatSidenavModule,
   MatSnackBarModule,
+  MatSortModule,
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
+  MatCheckboxModule,
 } from '@angular/material';
 
 import {
@@ -30,9 +32,11 @@ export const MATERIAL: any[] = [
   MatPaginatorModule,
   MatSidenavModule,
   MatSnackBarModule,
+  MatSortModule,
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
+  MatCheckboxModule,
 
   ScrollDispatchModule,
 ]

@@ -1,7 +1,9 @@
 
+import { IStatus } from './status.interface'
+
 import { UUID } from '@core/uuid'
 
-export class Status {
+export class Status implements IStatus {
   static MainFields = [
     'id',
     'enable',
@@ -15,7 +17,6 @@ export class Status {
   readonly enable: boolean
 
   readonly title: string
-  readonly description: string
 
   readonly image: number | null
 
@@ -25,10 +26,9 @@ export class Status {
 
     this.id = new UUID(value.id || null)
 
-    this.enable = !!value.enable
+    this.enable = value.enable === undefined ? true : !!value.enable
 
     this.title = String(value.title || '').trim()
-    this.description = String(value.description || '').trim()
 
     this.image = Math.max(~~value.image, 0) || null
   }
@@ -38,8 +38,6 @@ export class Status {
       enable: this.enable,
 
       title: this.title,
-
-      description: this.description,
 
       image: this.image,
     }
@@ -52,8 +50,6 @@ export class Status {
       enable: this.enable,
 
       title: this.title,
-
-      description: this.description,
 
       image: this.image,
     }
