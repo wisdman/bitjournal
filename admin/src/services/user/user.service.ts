@@ -1,54 +1,95 @@
 import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http'
 
 import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/observable/of'
+import 'rxjs/add/operator/catch'
+import 'rxjs/add/operator/filter'
 import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/toPromise'
+
+import { MatDialog } from '@angular/material'
+import { MatSnackBar } from '@angular/material'
+
+import { AuthDialogComponent } from '../../components'
+
+import { User, UserRoleEnum } from '@common/models'
 
 import { APIService } from '../api'
-import {  User } from '@common/models'
+import { DialogService } from '../dialog'
 
-import { UUID } from '@core/uuid'
+const AUTH_TOKEN_LS_ID = 'auth-token'
 
 @Injectable()
 export class UserService {
-  static BaseURL = 'users'
 
-  constructor(private readonly _api: APIService) {}
+  constructor(
+    private readonly _http: HttpClient,
+    private readonly _matDialog: MatDialog,
+    private readonly _dialog: DialogService,
+    private readonly _snackBar: MatSnackBar) {}
 
-  list() {
-    return this._api.get<Array< Partial<User> >>(`/${UserService.BaseURL}`)
-                    .map( items => items.map( item => new User(item) ) )
+  private get _authToken(): string | null {
+    return window.localStorage.getItem(AUTH_TOKEN_LS_ID) || null
   }
 
-  get(id: UUID) {
-    return this._api.get< Partial<User> >(`/${UserService.BaseURL}/${id}`)
-                    .map( item => new User(item) )
+  private set _authToken(value: string | null) {
+    value = value && value.trim() || null
+    if (value)
+      window.localStorage.setItem(AUTH_TOKEN_LS_ID, value)
+    else
+      window.localStorage.removeItem(AUTH_TOKEN_LS_ID)
   }
 
-  add(data: User) {
-    return this._api.post< Partial<User> >(`/${UserService.BaseURL}`, data)
-                    .map( item => new User(item) )
+  get authToken(): string | null {
+    return this._authToken
   }
 
-  update(data: User) {
-    return this._api.post< Partial<User> >(`/${UserService.BaseURL}/${data.id}`, data)
-                    .map( item => new User(item) )
+  get authHeaders(): HttpHeaders {
+    let authToken = this._authToken
+    return new HttpHeaders({ 'Authorization': 'token ' + (authToken || 'null') })
   }
 
-  delete(data: User) {
-    return this._api.delete(`/${UserService.BaseURL}/${data.id}`)
+  me(): Observable<User> {
+    return this._http.get< Partial<User> >(APIService.buildPath('/users/me'), { headers: this.authHeaders })
+                     .catch(error => {
+                        if (error instanceof HttpErrorResponse) {
+                          if (error.status === 403)
+                            this._matDialog.open(AuthDialogComponent, { data: this })
+
+                          else
+                            this._dialog.open({ title: 'Ошибка', message: error.message })
+
+                        } else
+                          this._dialog.open({ title: 'Ошибка', message: String(error) })
+
+                        return Observable.of(null)
+                     })
+                     .filter(item => item !== null)
+                     .map( item => new User(item) ) as Observable<User>
   }
 
-  otp(data: User) {
-    return this._api.get<{secret: string}>(`/${UserService.BaseURL}/${data.id}/otp`)
+  login(data: { email: string, password: string, otp: string }): Observable<boolean> {
+    return this._http.post<{token: string}>( APIService.buildPath('/auth/login'), data, { headers: this.authHeaders })
+                     .catch( error => Observable.of(null) )
+                     .map( item => {
+                       if (item === null) {
+                         this._dialog.message('Неверные учетные данные')
+                         return false
+                       }
+
+                       this._authToken = item.token
+                       window.location.reload()
+                       return true
+                     })
   }
 
-  resetOTP(data: User) {
-    return this._api.post<{secret: string}>(`/${UserService.BaseURL}/${data.id}/otp`, { secret: '' })
-  }
-
-  password(data: User, password: string) {
-    return this._api.post<{password: string}>(`/${UserService.BaseURL}/${data.id}/password`, { password })
+  logout(): void {
+    this._http.get<void>(APIService.buildPath('/auth/logout'), { headers: this.authHeaders })
+              .catch( error => Observable.of(null) )
+              .subscribe( item => {
+                this._authToken = null
+                window.location.reload()
+              })
   }
 }
-

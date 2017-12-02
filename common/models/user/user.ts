@@ -18,23 +18,25 @@ export class User {
     'email',
     'phone',
     'image',
+    'statuses',
   ]
 
-  id: UUID
-  enable: boolean
-  roles: Array<UserRoleEnum>
+  readonly id: UUID
+  readonly enable: boolean
+  readonly roles: Array<UserRoleEnum>
 
-  url: string | null
+  readonly url: string | null
 
-  title: string
-  description: string
+  readonly title: string
+  readonly description: string
 
-  email: string
-  phone: string | null
+  readonly email: string
+  readonly phone: string | null
 
-  image: number | null
+  readonly image: number | null
 
-  card: object
+  readonly card: object
+  readonly statuses: Array<UUID>
 
   constructor(value: any = {}) {
     if (!value)
@@ -53,8 +55,8 @@ export class User {
 
     this.url = String(value.url || '').trim() || null
 
-    this.title = String(value.title || '')
-    this.description = String(value.description || '')
+    this.title = String(value.title || '').trim()
+    this.description = String(value.description || '').trim()
 
     this.email = String(value.email || '').trim()
     this.phone = String(value.phone || '').trim() || null
@@ -62,17 +64,91 @@ export class User {
     this.image = Math.max(~~value.image, 0) || null
 
     this.card = {}
+
+    this.statuses = Array.isArray(value.statuses) ? value.statuses
+                                                         .map( (item:any) => new UUID(value && value.id || value) )
+                                                         .filter( (item: UUID) => item.version !== null )
+                                                  : new Array<UUID>()
   }
 
   checkRole(roles: Array<UserRoleEnum>): boolean {
-    if (!this._user)
-      return false
-
     for (let role of roles)
-      if (this._user.roles.includes(role))
+      if (this.roles.includes(role))
         return true
 
     return false
+  }
+
+  get valid(): boolean {
+    return this.id !== null
+        && this.id.version !== null
+  }
+
+  valueOf() {
+    return {
+      enable: this.enable,
+
+      roles: this.roles,
+
+      url: this.url,
+
+      title: this.title,
+      description: this.description,
+
+      email: this.email,
+      phone: this.phone,
+
+      image: this.image,
+
+      card: this.card,
+
+      statuses: this.statuses,
+    }
+  }
+
+  toJSON(): any {
+    return {
+      id: this.id,
+
+      enable: this.enable,
+
+      roles: this.roles,
+
+      url: this.url,
+
+      title: this.title,
+      description: this.description,
+
+      email: this.email,
+      phone: this.phone,
+
+      image: this.image,
+
+      card: this.card,
+
+      statuses: this.statuses,
+    }
+  }
+
+  toNumber(): number {
+    return NaN
+  }
+
+  toString(): string {
+    return this.title
+  }
+
+  [Symbol.toPrimitive](hint : 'default' | 'string' | 'number') {
+    switch (hint) {
+      case 'default':
+        return this.valueOf()
+      case 'number':
+        return this.toNumber()
+      case 'string':
+        return this.toString()
+      default:
+        throw new TypeError('Cannot convert User value to unknown value')
+    }
   }
 
   [Symbol.toStringTag]() {

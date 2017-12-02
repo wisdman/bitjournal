@@ -1,6 +1,43 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <h1>Рейтинг обменников</h1>
+    <h1>Обменники</h1>
+    <button mat-button (click)="add()">
+      <mat-icon>add</mat-icon>
+      <span>Добавить</span>
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
-<main>403 Forbidden</main>
+<main>
+  <mat-form-field class="col-100">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
+  </mat-form-field>
+  <mat-table #table [dataSource]="dataSource" class="m-col--max">
+
+    <!-- Enabled Column -->
+    <ng-container matColumnDef="enable">
+      <mat-header-cell *matHeaderCellDef style="flex: 0 0 30px">#</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="flex: 0 0 30px"><mat-icon *ngIf="item.enable">check</mat-icon></mat-cell>
+    </ng-container>
+
+    <!-- URL Column -->
+    <ng-container matColumnDef="url">
+      <mat-header-cell *matHeaderCellDef>URL</mat-header-cell>
+      <mat-cell *matCellDef="let item">/{{ item.url }}</mat-cell>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef>Название</mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.title }}</mat-cell>
+    </ng-container>
+
+    <!-- Rating Column -->
+    <ng-container matColumnDef="rating">
+      <mat-header-cell *matHeaderCellDef>Рейтинг</mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.rating }}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="select(row)" class="pointer"></mat-row>
+  </mat-table>
+</main>

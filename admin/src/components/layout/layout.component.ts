@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 
-import { CurrentUserService } from '../../services'
+import { UserService } from '../../services'
 
-import { User } from '@common/models'
+import { User, UserRoleEnum } from '@common/models'
 
 @Component({
   selector: 'body',
@@ -16,12 +16,12 @@ export class LayoutComponent implements OnInit {
   currentUser: User | null = null
 
   constructor(
-    private readonly _user: CurrentUserService,
+    private readonly _userService: UserService,
     private readonly _router: Router,
   ) {}
 
   ngOnInit() {
-    this._user.me().subscribe( item => this.currentUser = item )
+    this._userService.me().subscribe( item => this.currentUser = item )
   }
 
   profile() {
@@ -32,6 +32,6 @@ export class LayoutComponent implements OnInit {
   }
 
   logout() {
-    this._user.logout()
+    this._userService.logout()
   }
 }

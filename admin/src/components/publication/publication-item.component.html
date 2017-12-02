@@ -15,14 +15,14 @@
   <form mat-dialog-content [formGroup]="itemForm" novalidate>
     <mat-tab-group>
       <mat-tab label="Основное">
-        <div class="m-row">
-          <mat-form-field class="m-col-max">
+        <div class="row">
+          <mat-form-field class="col-max">
             <input matInput type="text" placeholder="Ссылка" formControlName="url">
             <mat-hint>При сбросе ссылки може пострадать SEO</mat-hint>
             <mat-icon matSuffix (click)="resetUrl()" class="pointer">refresh</mat-icon>
           </mat-form-field>
         </div>
-        <div class="m-row">
+        <div class="row">
           <!-- <mat-form-field class="m-col">
             <mat-select placeholder="Вес" formControlName="weight">
               <mat-option *ngFor="let weight of [0,1,2,3]" [value]="weight">{{ weight }}</mat-option>
@@ -34,15 +34,15 @@
             </mat-select>
           </mat-form-field> -->
         </div>
-        <div class="m-row">
-          <mat-form-field class="m-col-max">
+        <div class="row">
+          <mat-form-field class="col-max">
             <input matInput type="text" maxlength="160" placeholder="Громкий заголовок" formControlName="bigTitle">
             <mat-hint>Если не заполнено используется "Заголовок"</mat-hint>
             <mat-hint align="end">{{itemForm.controls.bigTitle.value.length}} / 160</mat-hint>
           </mat-form-field>
         </div>
-        <div class="m-row">
-          <mat-form-field class="m-col-max">
+        <div class="row">
+          <mat-form-field class="col-max">
             <input matInput type="text" maxlength="160" placeholder="Заголовок*" formControlName="title">
             <mat-hint align="end">{{itemForm.controls.title.value.length}} / 160</mat-hint>
             <mat-error *ngIf="itemForm.controls.title.hasError('required')">
@@ -50,14 +50,14 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <div class="m-row">
-          <mat-form-field class="m-col-max">
+        <div class="row">
+          <mat-form-field class="col-max">
             <input matInput type="text" maxlength="160" placeholder="Описание" formControlName="description">
             <mat-hint>Если не заполнено используется первое предложение контента</mat-hint>
             <mat-hint align="end">{{itemForm.controls.description.value.length}} / 160</mat-hint>
           </mat-form-field>
         </div>
-        <div class="m-row">
+        <div class="row">
           <!-- <mat-form-field class="m-col">
             <mat-chip-list #chipList>
               <mat-chip *ngFor="let fruit of fruits" [selectable]="selectable"
@@ -73,7 +73,7 @@
             </mat-chip-list>
           </mat-form-field> -->
         </div>
-        <div class="m-row">
+        <div class="row">
           <!-- <mat-form-field class="m-col">
             <mat-select placeholder="Авторы" [formControl]="toppings" multiple>
               <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
@@ -82,18 +82,18 @@
         </div>
       </mat-tab>
       <mat-tab label="Контент">
-        <content-editor class="m-col-100"></content-editor>
+        <content-editor class="col-100"></content-editor>
       </mat-tab>
       <mat-tab label="Шаринг">
-        <div class="m-row">
-          <mat-form-field class="m-col-max">
+        <div class="row">
+          <mat-form-field class="col-max">
             <input matInput type="text" maxlength="160" placeholder="Заголовок для шаринга" formControlName="ogTitle">
             <mat-hint>Виден только при шаринге. Если не заполнено используется "Заголовок"</mat-hint>
             <mat-hint align="end">{{itemForm.controls.ogTitle.value.length}} / 160</mat-hint>
           </mat-form-field>
         </div>
-        <div class="m-row">
-          <mat-form-field class="m-col-max">
+        <div class="row">
+          <mat-form-field class="col-max">
             <input matInput type="text" maxlength="160" placeholder="Описание для шаринга" formControlName="ogDescription">
             <mat-hint>Виден только при шаринге. Если не заполнено используется "Описание"</mat-hint>
             <mat-hint align="end">{{itemForm.controls.ogDescription.value.length}} / 160</mat-hint>
@@ -101,16 +101,16 @@
         </div>
       </mat-tab>
       <mat-tab label="Комментарии">
-        <div class="m-row">
+        <div class="row">
           <p>Управление комментариями</p>
         </div>
       </mat-tab>
       <mat-tab label="Брендирование">
-        <div class="m-row">
+        <div class="row">
         </div>
       </mat-tab>
       <mat-tab label="Журнал">
-        <div class="m-row">
+        <div class="row">
         </div>
       </mat-tab>
     </mat-tab-group>

@@ -63,8 +63,8 @@
       </form>
       <div class="m-row">
         <mat-form-field class="m-col-max">
-          <input matInput type="text" maxlength="128" placeholder="TOTP Secret" [ngModel]="totp" [ngModelOptions]="{standalone: true}" disabled>
-          <mat-icon matSuffix (click)="resetTOTP()" class="pointer">refresh</mat-icon>
+          <input matInput type="text" maxlength="128" placeholder="TOTP Secret" [ngModel]="otpSecret" [ngModelOptions]="{standalone: true}" disabled>
+          <mat-icon matSuffix (click)="resetOTP()" class="pointer">refresh</mat-icon>
         </mat-form-field>
       </div>
       <div class="m-row">

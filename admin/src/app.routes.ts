@@ -3,15 +3,11 @@ import { Routes } from '@angular/router'
 import {
   AdsItemComponent,
   AdsListComponent,
-  BlockItemComponent,
-  BlockListComponent,
   CurrencyItemComponent,
   CurrencyListComponent,
   DashboardBlockComponent,
   ExchangeItemComponent,
   ExchangeListComponent,
-  HardwareItemComponent,
-  HardwareListComponent,
   ICOItemComponent,
   ICOListComponent,
   ImageItemComponent,
@@ -24,20 +20,11 @@ import {
   PublicationListComponent,
   SectionItemComponent,
   SectionListComponent,
-  SettingsBlockComponent,
-  StaticItemComponent,
-  StaticListComponent,
   StatusListComponent,
   UserItemComponent,
   UserListComponent,
   VideoListComponent,
 } from './components'
-
-import {
-  PublicationService,
-  SectionService,
-  UserService,
-} from './services'
 
 export const ROUTES: Routes = [
   { path: ''                 , component: DashboardBlockComponent  },
@@ -45,17 +32,11 @@ export const ROUTES: Routes = [
   { path: 'ads/:id'          , component: AdsItemComponent         },
   { path: 'ads'              , component: AdsListComponent         },
 
-  { path: 'blocks/:id'       , component: BlockItemComponent       },
-  { path: 'blocks'           , component: BlockListComponent       },
-
   { path: 'currencies/:id'   , component: CurrencyItemComponent    },
   { path: 'currencies'       , component: CurrencyListComponent    },
 
   { path: 'exchanges/:id'    , component: ExchangeItemComponent    },
   { path: 'exchanges'        , component: ExchangeListComponent    },
-
-  { path: 'hardware/:id'     , component: HardwareItemComponent    },
-  { path: 'hardware'         , component: HardwareListComponent    },
 
   { path: 'ico/:id'          , component: ICOItemComponent         },
   { path: 'ico'              , component: ICOListComponent         },
@@ -68,24 +49,19 @@ export const ROUTES: Routes = [
   { path: 'markets/:id'      , component: MarketItemComponent      },
   { path: 'markets'          , component: MarketListComponent      },
 
-  { path: `${PublicationService.BaseURL}/:id` , component: PublicationItemComponent },
-  { path: `${PublicationService.BaseURL}`     , component: PublicationListComponent },
+  { path: 'publications/:id' , component: PublicationItemComponent },
+  { path: 'publications'     , component: PublicationListComponent },
 
-  { path: `${SectionService.BaseURL}/:id`     , component: SectionItemComponent     },
-  { path: `${SectionService.BaseURL}`         , component: SectionListComponent     },
+  { path: 'sections/:id'     , component: SectionItemComponent     },
+  { path: 'sections'         , component: SectionListComponent     },
 
-  { path: 'settings'         , component: SettingsBlockComponent   },
+  { path: 'statuses'         , component: StatusListComponent      },
 
-  { path: 'static/:id'       , component: StaticItemComponent      },
-  { path: 'static'           , component: StaticListComponent      },
-
-  { path: 'status'           , component: StatusListComponent      },
-
-  { path: `${UserService.BaseURL}/:id`        , component: UserItemComponent        },
-  { path: `${UserService.BaseURL}`            , component: UserListComponent        },
+  { path: 'users/:id'        , component: UserItemComponent        },
+  { path: 'users'            , component: UserListComponent        },
 
   { path: 'video'            , component: VideoListComponent       },
 
-  { path: '**'               , component: NoContentComponent       },
+  // { path: '**'               , component: NoContentComponent       },
 ]
 

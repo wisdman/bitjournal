@@ -1,18 +1,17 @@
-import { Component, ViewEncapsulation, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core'
+import { Component, ViewEncapsulation, OnInit, ViewChild, ElementRef } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+
 import { Router, ActivatedRoute } from '@angular/router'
-import { MatDialog } from '@angular/material'
-
-import { ErrorDialogComponent } from '../error'
-import { QuestionDialogComponent } from '../question'
-
 import { UUID } from '@core/uuid'
-
-import { User } from '@common/models'
-import { UserService } from '../../services'
 
 import QRious from 'qrious'
 
+import {
+  APIService,
+  DialogService,
+} from '../../services'
+
+const ROUTE_BASE = 'users'
 const TOTP_SERVICE_NAME = 'BitJournal'
 
 @Component({
@@ -22,21 +21,21 @@ const TOTP_SERVICE_NAME = 'BitJournal'
 })
 export class UserItemComponent implements OnInit {
 
-  item: User = new User()
+  private _id: UUID = new UUID(null)
 
   get isNew() {
-    return this.item.id.version === null
+    return this._id.version === null
   }
 
   itemForm: FormGroup
   passwordForm: FormGroup
 
   constructor(
-    private readonly _userService: UserService,
+    private readonly _fb: FormBuilder,
     private readonly _router: Router,
     private readonly _route: ActivatedRoute,
-    private readonly _dialog: MatDialog,
-    private readonly _fb: FormBuilder
+    private readonly _apiService: APIService,
+    private readonly _dialog: DialogService
   ) {
     this.itemForm = this._fb.group({
       enable:        [true, Validators.required],
@@ -56,15 +55,17 @@ export class UserItemComponent implements OnInit {
     })
   }
 
-  totp: string = ''
+  otpSecret: string = ''
 
   get keyuri(): string {
-    if (!this.totp)
+    if (!this.otpSecret)
       return ''
-    return `otpauth://totp/${TOTP_SERVICE_NAME}:${this.item.email}?secret=${this.totp}&issuer=${TOTP_SERVICE_NAME}`
+    return `otpauth://totp/${TOTP_SERVICE_NAME}:${this.itemForm.value.email}?secret=${this.otpSecret}&issuer=${TOTP_SERVICE_NAME}`
   }
 
-  reloadTOTPCanvas() {
+  @ViewChild('qrCanvas') qrCanvasRef: ElementRef;
+
+  reloadOTPCanvas() {
     if (!this.qrCanvasRef)
       return
 
@@ -76,29 +77,24 @@ export class UserItemComponent implements OnInit {
     })
   }
 
-  @ViewChild('qrCanvas') qrCanvasRef: ElementRef;
-
   ngOnInit() {
-    const id = this._route.params.subscribe(params => {
-
-      let id: UUID
+    this._route.params.subscribe(params => {
 
       try {
-        id = new UUID(params['id'])
+        this._id = new UUID(params['id'])
       } catch (error) {
-        this._dialog.open(ErrorDialogComponent, { data: error })
-        this._router.navigate([UserService.BaseURL])
+        this._dialog.open({ title: 'Оштбка', message: 'Неверный ID' })
+        this._router.navigate([ROUTE_BASE])
         return
       }
 
-      if (id.version !== null)
-        this._userService.get(id).subscribe(item => {
-          this.item = item
-          this.itemForm.patchValue(this.item)
+      if (!this.isNew)
+        this._apiService.get<any>(`/${ROUTE_BASE}/${this._id}`).subscribe( (item: any) => {
+          this.itemForm.patchValue(item)
 
-          this._userService.otp(this.item).subscribe(item => {
-            this.totp = item.secret
-            this.reloadTOTPCanvas()
+          this._apiService.get<{secret: string}>(`/${ROUTE_BASE}/${this._id}/otp`).subscribe(item => {
+            this.otpSecret = item.secret
+            this.reloadOTPCanvas()
           })
         })
     })
@@ -108,52 +104,56 @@ export class UserItemComponent implements OnInit {
     if (this.isNew)
       return
 
-    if (this.passwordForm.invalid)
+    if (this.passwordForm.invalid) {
+      this._dialog.message('Пароли не совпадают')
       return
+    }
 
-    if (this.passwordForm.value.password1 !== this.passwordForm.value.password2)
+    if (this.passwordForm.value.password1 !== this.passwordForm.value.password2) {
+      this._dialog.message('Пароли не совпадают')
       return
+    }
 
-    this._userService.password(this.item, this.passwordForm.value.password1)
-                     .subscribe( item => console.log('password set') )
+    this._apiService.post<void>(`/${ROUTE_BASE}/${this._id}/password`, this.passwordForm.value)
+                    .subscribe( _ => this._dialog.message('Пароль успешно изменен') )
   }
 
-  resetTOTP() {
+  resetOTP() {
     if (this.isNew)
       return
 
-    this._userService.resetOTP(this.item).subscribe(item => {
-      this.totp = item.secret
-      this.reloadTOTPCanvas()
-    })
+    this._apiService.post<{secret: string}>(`/${ROUTE_BASE}/${this._id}/password`, {secret: ''})
+                    .subscribe(item => {
+                        this.otpSecret = item.secret
+                        this.reloadOTPCanvas()
+                    })
   }
 
   save() {
-    this.itemForm.updateValueAndValidity()
-    console.log(this.itemForm.invalid)
-
     if (this.itemForm.invalid)
       return
 
-    Object.assign(this.item, this.itemForm.value)
+    const postURL = this.isNew ? `/${ROUTE_BASE}` : `/${ROUTE_BASE}/${this._id}`
 
-    if (this.isNew)
-      this._userService.add(this.item).subscribe( item => this._router.navigate([UserService.BaseURL]) )
-    else
-      this._userService.update(this.item).subscribe( item => this._router.navigate([UserService.BaseURL]) )
+    this._apiService.post<any>(postURL, this.itemForm.value)
+                    .subscribe( _ => this._router.navigate([ROUTE_BASE]) )
   }
 
   delete() {
-    const dialogRef = this._dialog.open(QuestionDialogComponent, {
-      data: {
-        title: 'Удалить публикацию?',
-        message: `Вы уверены, что хотите удалить публикацию "${this.item.title}"?`
-      }
-    })
+    if (this.isNew)
+      return
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result)
-        this._userService.delete(this.item).subscribe( item => this._router.navigate([UserService.BaseURL]) )
+    this._dialog.open({
+      title: 'Удалить пользователя?',
+      message: `Вы уверены, что хотите удалить пользователя "${this.itemForm.value.title}"?`,
+      buttons: {
+        'Отмена': false,
+        'Удалить': true
+      }
+    }).subscribe( result => {
+      if (result === true)
+        this._apiService.delete(`/${ROUTE_BASE}/${this._id}`)
+                        .subscribe( _ => this._router.navigate([ROUTE_BASE]) )
     })
   }
 }

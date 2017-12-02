@@ -1,6 +1,42 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <h1>ICO Проект</h1>
+    <h1>{{ itemForm.value.title || 'Новое ICO' }}</h1>
+    <button mat-button (click)="save()">
+      <mat-icon>save</mat-icon>
+      <span>Сохранить</span>
+    </button>
+    <button *ngIf="!isNew" mat-button (click)="delete()">
+      <mat-icon>delete</mat-icon>
+      <span>Удалить</span>
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
-<main>403 Forbidden</main>
+<main>
+  <form mat-dialog-content [formGroup]="itemForm" novalidate>
+    <mat-tab-group>
+      <mat-tab label="Основное">
+        <div class="row">
+          <mat-form-field class="col-max">
+            <input #titleInput matInput type="text" maxlength="160" placeholder="Название" formControlName="title">
+            <mat-hint align="end">{{titleInput.value.length}} / 160</mat-hint>
+            <mat-error *ngIf="itemForm.controls.title.hasError('required')">Название должено быть заполнено <strong>обязательно</strong></mat-error>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="col-max">
+            <input #descriptionInput matInput type="text" maxlength="160" placeholder="Описание" formControlName="description">
+            <mat-hint align="end">{{descriptionInput.value.length}} / 160</mat-hint>
+          </mat-form-field>
+        </div>
+      </mat-tab>
+      <mat-tab label="Подробно">
+        <div class="row">
+        </div>
+      </mat-tab>
+      <mat-tab label="Статьи">
+        <div class="row">
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </form>
+</main>

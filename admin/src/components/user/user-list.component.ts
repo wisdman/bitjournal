@@ -1,12 +1,13 @@
-import { Component, ViewEncapsulation, ViewChild, OnInit, AfterViewInit } from '@angular/core'
+import { Component, ViewEncapsulation, OnInit, AfterViewInit, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 
 import { MatTableDataSource, MatPaginator } from '@angular/material'
 
 import { UUID } from '@core/uuid'
 
-import { User } from '@common/models'
-import { UserService } from '../../services'
+import { APIService } from '../../services'
+
+const ROUTE_BASE = 'users'
 
 @Component({
   selector: 'user-list',
@@ -17,7 +18,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
   constructor(
     private readonly _router: Router,
-    private readonly _userService: UserService
+    private readonly _apiService: APIService
   ) {}
 
   displayedColumns = [
@@ -29,10 +30,10 @@ export class UserListComponent implements OnInit, AfterViewInit {
     'roles'
   ]
 
-  dataSource = new MatTableDataSource(new Array<User>())
+  dataSource = new MatTableDataSource(new Array<any>())
 
   ngOnInit(){
-    this._userService.list().subscribe( list => this.dataSource.data = list )
+    this._apiService.get<any>(`/${ROUTE_BASE}`).subscribe( items => this.dataSource.data = items )
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator
@@ -48,10 +49,10 @@ export class UserListComponent implements OnInit, AfterViewInit {
   }
 
   add() {
-    this._router.navigate([UserService.BaseURL, new UUID(null).value])
+    this._router.navigate([ROUTE_BASE, new UUID(null).value])
   }
 
-  select(element: User) {
-    this._router.navigate([UserService.BaseURL, String(element.id)])
+  select(element: any) {
+    this._router.navigate([ROUTE_BASE, String(element.id)])
   }
 }

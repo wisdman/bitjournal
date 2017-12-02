@@ -1,12 +1,13 @@
-import { Component, ViewEncapsulation, ViewChild, OnInit, AfterViewInit } from '@angular/core'
+import { Component, ViewEncapsulation, OnInit, AfterViewInit, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 
 import { MatTableDataSource, MatPaginator } from '@angular/material'
 
 import { UUID } from '@core/uuid'
 
-import { Publication } from '@common/models'
-import { PublicationService } from '../../services'
+import { APIService } from '../../services'
+
+const ROUTE_BASE = 'publications'
 
 @Component({
   selector: 'publication-list',
@@ -17,7 +18,7 @@ export class PublicationListComponent implements OnInit, AfterViewInit {
 
   constructor(
     private readonly _router: Router,
-    private readonly _publicationService: PublicationService
+    private readonly _apiService: APIService
   ) {}
 
   displayedColumns = [
@@ -30,10 +31,10 @@ export class PublicationListComponent implements OnInit, AfterViewInit {
     'liks',
   ]
 
-  dataSource = new MatTableDataSource(new Array<Publication>())
+  dataSource = new MatTableDataSource(new Array<any>())
 
   ngOnInit(){
-    this._publicationService.list().subscribe( list => this.dataSource.data = list )
+    this._apiService.get<any>(`/${ROUTE_BASE}`).subscribe( items => this.dataSource.data = items )
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator
@@ -45,14 +46,15 @@ export class PublicationListComponent implements OnInit, AfterViewInit {
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim()
     filterValue = filterValue.toLowerCase()
-    this.dataSource.filter = filterValue;
+    this.dataSource.filter = filterValue
   }
 
   add() {
-    this._router.navigate([PublicationService.BaseURL, new UUID(null).value])
+    this._router.navigate([ROUTE_BASE, new UUID(null).value])
   }
 
-  select(element: Publication) {
-    this._router.navigate([PublicationService.BaseURL, String(element.id)])
+  select(element: any) {
+    this._router.navigate([ROUTE_BASE, String(element.id)])
   }
+
 }

@@ -5,10 +5,7 @@
 import { Context } from '@core/service'
 import { UUID } from '@core/uuid'
 
-import {
-  UserRoleEnum,
-  User,
-} from '@common/models'
+import { User } from '@common/models'
 
 const SESSION_ID_REGEXP = /^[0-9a-z]{128}$/
 const SESSION_TOKEN_REGEXP = /token\s+([0-9a-f]{128})/
@@ -34,8 +31,10 @@ export class Session  {
   set user(value: User | null) {
     if (!value)
       this._user = null
-    else
-      this._user = value instanceof User ? value : new User(value)
+    else {
+      let user = value instanceof User ? value : new User(value)
+      this._user = user.valid ? user : null
+    }
   }
 
   get ip() {
@@ -45,12 +44,7 @@ export class Session  {
   get valid(): boolean {
     return this.id.length > 0
         && this._user instanceof User
-        && this._user.id !== null
-        && this._user.enable
-  }
-
-  get invalid(): boolean {
-    return !this.valid
+        && this._user.valid
   }
 
   constructor(private _ctx: Context) {

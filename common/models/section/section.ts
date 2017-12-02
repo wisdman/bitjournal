@@ -9,21 +9,21 @@ export class Section {
     'title',
   ]
 
-  id: UUID
-  enable: boolean
+  readonly id: UUID
+  readonly enable: boolean
 
-  url: string | null
+  readonly url: string | null
 
-  title: string
-  description: string
+  readonly title: string
+  readonly description: string
 
-  ogTitle: string
-  ogDescription: string
+  readonly ogTitle: string
+  readonly ogDescription: string
 
-  image: number | null
-  ogImage: number | null
+  readonly image: number | null
+  readonly ogImage: number | null
 
-  branding: object
+  readonly branding: object
 
   constructor(value: any = {}) {
     if (!value)
@@ -33,13 +33,13 @@ export class Section {
 
     this.enable = !!value.enable
 
-    this.url = String(value.url || '')
+    this.url = String(value.url || '').trim() || null
 
-    this.title = String(value.title || '')
-    this.ogTitle = String(value.ogTitle || '')
+    this.title = String(value.title || '').trim()
+    this.ogTitle = String(value.ogTitle || '').trim()
 
-    this.description = String(value.description || '')
-    this.ogDescription = String(value.ogDescription || '')
+    this.description = String(value.description || '').trim()
+    this.ogDescription = String(value.ogDescription || '').trim()
 
     this.image = Math.max(~~value.image, 0) || null
     this.ogImage = Math.max(~~value.ogImage, 0) || null
@@ -47,7 +47,68 @@ export class Section {
     this.branding = {}
   }
 
+  valueOf() {
+    return {
+      enable: this.enable,
+
+      url: this.url,
+
+      title: this.title,
+      ogTitle: this.ogTitle,
+
+      description: this.description,
+      ogDescription: this.ogDescription,
+
+      image: this.image,
+      ogImage: this.ogImage,
+
+      branding: this.branding,
+    }
+  }
+
+  toJSON(): any {
+    return {
+      id: this.id,
+
+      enable: this.enable,
+
+      url: this.url,
+
+      title: this.title,
+      ogTitle: this.ogTitle,
+
+      description: this.description,
+      ogDescription: this.ogDescription,
+
+      image: this.image,
+      ogImage: this.ogImage,
+
+      branding: this.branding,
+    }
+  }
+
+  toNumber(): number {
+    return NaN
+  }
+
+  toString(): string {
+    return this.title
+  }
+
+  [Symbol.toPrimitive](hint : 'default' | 'string' | 'number') {
+    switch (hint) {
+      case 'default':
+        return this.valueOf()
+      case 'number':
+        return this.toNumber()
+      case 'string':
+        return this.toString()
+      default:
+        throw new TypeError('Cannot convert Section value to unknown value')
+    }
+  }
+
   [Symbol.toStringTag]() {
-    return 'Sections'
+    return 'Section'
   }
 }

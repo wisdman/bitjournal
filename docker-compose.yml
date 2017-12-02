@@ -47,6 +47,7 @@ services:
     volumes:
       - ./api/assets:/www:ro
       - ./api/server.conf:/etc/nginx/server.conf:ro
+      - ./api/server.api.conf:/etc/nginx/server.api.conf:ro
     networks:
       default:
       outside:

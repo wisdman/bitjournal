@@ -8,10 +8,10 @@
   </mat-toolbar-row>
 </mat-toolbar>
 <main>
-  <mat-form-field class="m-col-100">
+  <mat-form-field class="col-100">
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
   </mat-form-field>
-  <mat-table #table [dataSource]="dataSource" class="m-col--max">
+  <mat-table #table [dataSource]="dataSource">
 
     <!-- Enabled Column -->
     <ng-container matColumnDef="enable">

@@ -81,8 +81,4 @@ export class OTP {
     return base32encode(this._secret).toString()
                                      .replace(/=/g, '')
   }
-
-  keyuri(user: string = 'User', service: string = 'Service'): string {
-    return `otpauth://totp/${service}:${user}?secret=${this.base32Secret}&issuer=${service}`
-  }
 }

@@ -1,21 +1,23 @@
-import { RouteMiddleware, Context, INext, HttpError, Get, Post, Route } from '@core/service'
+import { RouteMiddleware, Context, INext, Get, Post, Delete, Route } from '@core/service'
 
 import { Query } from '@core/pg-query'
 import { Client } from 'pg'
 
 import { UUID } from '@core/uuid'
-
+import { OTP } from '@core/otp'
 import { ACL } from '@common/middleware'
+
 import {
-  User,
   UserRoleEnum,
+  User,
 } from '@common/models'
 
-import { OTP } from '@core/otp'
+const ROUTE_BASE = 'users'
+const DATATABLE = 'users'
 
 export class UsersAPI extends RouteMiddleware {
 
-  @Get('/users')
+  @Get(`/${ROUTE_BASE}`)
   @ACL([
     UserRoleEnum.Administrator,
     UserRoleEnum.Su,
@@ -23,48 +25,50 @@ export class UsersAPI extends RouteMiddleware {
   async getAll(ctx: Context, next: INext) {
     const db = ctx.db as Client
 
-    const query = new Query('users').select(User.MainFields)
+    const query = new Query(DATATABLE).select(User.MainFields)
 
-    ctx.debug('=== SQL Query [/users] ===\n%s', query)
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}] ===\n%s`, query)
 
     const result = await db.query(query.valueOf())
 
-    ctx.debug('=== SQL Result [/users] ===\n%s', result.rows)
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}] ===\n%s`, result.rows)
 
-    const items = result.rows.map(item => new User(item))
-    ctx.set(items)
+    const resultItems = result.rows.map( item => new User(item) )
+
+    ctx.set(resultItems)
   }
 
-  @Get('/users/me')
+  @Get(`/${ROUTE_BASE}/me`)
   async getMe(ctx: Context, next: INext) {
-    if (!ctx.session.isValid) {
+    if (!ctx.session.valid) {
       ctx.set(403)
       return
     }
 
     const db = ctx.db as Client
 
-    const id = ctx.session.user.id as UUID
+    const user = ctx.session.user as User
 
-    const query = new Query('users').select()
-                                    .where('id = $1 AND enable', String(id))
+    const query = new Query(DATATABLE).select()
+                                      .where('id = $1 AND enable', String(user.id))
 
-    ctx.debug('=== SQL Query [/users/me] ===\n%s', query)
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/me] ===\n%s`, query)
 
     const result = await db.query(query.valueOf())
 
-    ctx.debug('=== SQL Result [/users/me] ===\n%s', result.rows)
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}/me] ===\n%s`, result.rows)
 
-    if (result.rowCount > 0) {
-      const item = new User(result.rows[0])
-      ctx.set( item )
+    if (result.rowCount !== 1) {
+      ctx.set(403)
       return
     }
 
-    ctx.set(403)
+    const resultItem = new User(result.rows[0])
+
+    ctx.set(resultItem)
   }
 
-  @Get('/users/:id')
+  @Get(`/${ROUTE_BASE}/:id`)
   @ACL([
     UserRoleEnum.Administrator,
     UserRoleEnum.Su,
@@ -82,31 +86,33 @@ export class UsersAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query('users').select()
-                                    .where('id = $1', String(id))
+    const query = new Query(DATATABLE).select()
+                                      .where('id = $1', String(id))
 
-    ctx.debug('=== SQL Query [/users/:id] ===\n%s', query)
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/:id] ===\n%s`, query)
 
     const result = await db.query(query.valueOf())
 
-    ctx.debug('=== SQL Result [/users/:id] ===\n%s', result.rows)
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}/:id] ===\n%s`, result.rows)
 
-    if (result.rowCount > 0) {
-      const item = new User(result.rows[0])
-      ctx.set( item )
+    if (result.rowCount !== 1) {
+      ctx.set(404)
       return
     }
 
-    ctx.set(404)
+    const resultItem = new User(result.rows[0])
+
+    ctx.set(resultItem)
   }
 
-  @Get('/users/:id/otp')
+  @Post(`/${ROUTE_BASE}/:id/otp`)
   @ACL([
     UserRoleEnum.Administrator,
     UserRoleEnum.Su,
   ])
-  async getTOTP(ctx: Context, next: INext) {
+  async resetOTP(ctx: Context, next: INext) {
     const route = ctx.route as Route
+
     const db = ctx.db as Client
 
     let id: UUID
@@ -118,21 +124,30 @@ export class UsersAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query('users').select(['totp'])
-                                    .where('id = $1', String(id))
+    const query = {
+      text: `UPDATE
+               ${DATATABLE}
+             SET
+               totp = encode(digest(uuid_generate_v4()::text, 'sha256'), 'hex')
+             WHERE
+               id = $1
+             RETURNING
+               totp`,
+      values: [String(id)]
+    }
 
-    ctx.debug('=== SQL Query [/users/:id] ===\n%s', query)
+    ctx.debug(`=== SQL Query [POST /${ROUTE_BASE}/:id/otp] ===\n%s`, query)
 
-    const result = await db.query(query.valueOf())
+    const result = await db.query(query)
 
-    ctx.debug('=== SQL Result [/users/:id] ===\n%s', result.rows)
+    ctx.debug(`=== SQL Result [POST /${ROUTE_BASE}/:id/otp] ===\n%s`, result.rows)
 
-    if (result.rowCount === 0) {
+    if (result.rowCount !== 1) {
       ctx.set(404)
       return
     }
 
-    let secret = result.rows[0].totp
+    const secret = result.rows[0].totp
 
     if (!secret) {
       ctx.set(204)
@@ -143,86 +158,14 @@ export class UsersAPI extends RouteMiddleware {
     ctx.set({ secret: otp.base32Secret })
   }
 
-  @Post('/users')
+  @Post(`/${ROUTE_BASE}/:id/password`)
   @ACL([
     UserRoleEnum.Administrator,
     UserRoleEnum.Su,
   ])
-  async add(ctx: Context, next: INext) {
-    const db = ctx.db as Client
-
-    const data = await ctx.request.json()
-
-    const item = new User(data)
-    delete item.id
-
-    const query = new Query('users').insert(item)
-                                    .returning()
-
-    ctx.debug('=== SQL Query [POST /users] ===\n%s', query)
-
-    const result = await db.query(query.valueOf())
-
-    ctx.debug('=== SQL Result [POST /users] ===\n%s', result.rows)
-
-    if (result.rowCount > 0) {
-      const item = new User(result.rows[0])
-      ctx.set( item )
-      return
-    }
-
-    ctx.set(404)
-  }
-
-  @Post('/users/:id')
-  @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
-  ])
-  async update(ctx: Context, next: INext) {
+  async password(ctx: Context, next: INext) {
     const route = ctx.route as Route
-    const db = ctx.db as Client
 
-    let id: UUID
-
-    try {
-      id = new UUID(route.data.id)
-    } catch (error) {
-      ctx.set(400, error.message)
-      return
-    }
-
-    const data = await ctx.request.json()
-
-    const item = new User(data)
-    delete item.id
-
-    const query = new Query('user').update(item)
-                                   .where('id = $1', String(id))
-                                   .returning()
-
-    ctx.debug('=== SQL Query [POST /user/:id] ===\n%s', query)
-
-    const result = await db.query(query.valueOf())
-
-    ctx.debug('=== SQL Result [POST /user/:id] ===\n%s', result.rows)
-
-    if (result.rowCount > 0) {
-      const item = new User(result.rows[0])
-      ctx.set( item )
-      return
-    }
-
-    ctx.set(404)
-  }
-
-  @Post('/users/:id/password')
-  @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
-  ])
-  async setPassword(ctx: Context, next: INext) {
-    const route = ctx.route as Route
     const db = ctx.db as Client
 
     let id: UUID
@@ -244,17 +187,17 @@ export class UsersAPI extends RouteMiddleware {
     }
 
     const query = {
-      text: "UPDATE users SET password = encode(digest($1, 'sha512'), 'hex') WHERE id = $2 RETURNING id",
+      text: `UPDATE ${DATATABLE} SET password = encode(digest($1, 'sha512'), 'hex') WHERE id = $2 RETURNING id`,
       values: [password, String(id)]
     }
 
-    ctx.debug('=== SQL Query [POST /users/:id/password] ===\n%s', query)
+    ctx.debug(`=== SQL Query [POST /${ROUTE_BASE}/:id/password] ===\n%s`, query)
 
     const result = await db.query(query)
 
-    ctx.debug('=== SQL Result [POST /users/:id/password] ===\n%s', result.rows)
+    ctx.debug(`=== SQL Result [POST /${ROUTE_BASE}/:id/password] ===\n%s`, result.rows)
 
-    if (result.rowCount === 0) {
+    if (result.rowCount !== 1) {
       ctx.set(404)
       return
     }
@@ -262,13 +205,45 @@ export class UsersAPI extends RouteMiddleware {
     ctx.set(204)
   }
 
-  @Post('/users/:id/otp')
+  @Post(`/${ROUTE_BASE}`)
   @ACL([
     UserRoleEnum.Administrator,
     UserRoleEnum.Su,
   ])
-  async resetTOTP(ctx: Context, next: INext) {
+  async add(ctx: Context, next: INext) {
+    const db = ctx.db as Client
+
+    const data = await ctx.request.json()
+
+    const item = new User(data)
+
+    const query = new Query(DATATABLE).insert(item.valueOf())
+                                      .returning()
+
+    ctx.debug(`=== SQL Query [POST /${ROUTE_BASE}] ===\n%s`, query)
+
+    const result = await db.query(query.valueOf())
+
+    ctx.debug(`=== SQL Result [POST /${ROUTE_BASE}] ===\n%s`, result.rows)
+
+    if (result.rowCount !== 1) {
+      ctx.set(404)
+      return
+    }
+
+    const resultItem = new User(result.rows[0])
+
+    ctx.set( resultItem )
+  }
+
+  @Post(`/${ROUTE_BASE}/:id`)
+  @ACL([
+    UserRoleEnum.Administrator,
+    UserRoleEnum.Su,
+  ])
+  async update(ctx: Context, next: INext) {
     const route = ctx.route as Route
+
     const db = ctx.db as Client
 
     let id: UUID
@@ -280,18 +255,98 @@ export class UsersAPI extends RouteMiddleware {
       return
     }
 
-    const query = {
-      text: "UPDATE users SET totp = encode(digest(uuid_generate_v4()::text, 'sha256'), 'hex') WHERE id = $1 RETURNING totp",
-      values: [String(id)]
+    const data = await ctx.request.json()
+
+    const item = new User(data)
+
+    const query = new Query(DATATABLE).update(item.valueOf())
+                                      .where('id = $1', String(id))
+                                      .returning()
+
+    ctx.debug(`=== SQL Query [POST /${ROUTE_BASE}/:id] ===\n%s`, query)
+
+    const result = await db.query(query.valueOf())
+
+    ctx.debug(`=== SQL Result [POST /${ROUTE_BASE}/:id] ===\n%s`, result.rows)
+
+    if (result.rowCount !== 1) {
+      ctx.set(404)
+      return
     }
 
-    ctx.debug('=== SQL Query [POST /users/:id/otp] ===\n%s', query)
+    const resultItem = new User(result.rows[0])
 
-    const result = await db.query(query)
+    ctx.set( resultItem )
+  }
 
-    ctx.debug('=== SQL Result [POST /users/:id/otp] ===\n%s', result.rows)
+  @Delete(`/${ROUTE_BASE}/:id`)
+  @ACL([
+    UserRoleEnum.Administrator,
+    UserRoleEnum.Su,
+  ])
+  async delete(ctx: Context, next: INext) {
+    const route = ctx.route as Route
 
-    if (result.rowCount === 0) {
+    const db = ctx.db as Client
+
+    let id: UUID
+
+    try {
+      id = new UUID(route.data.id)
+    } catch (error) {
+      ctx.set(400, error.message)
+      return
+    }
+
+    const query = new Query(DATATABLE).delete()
+                                      .where('id = $1', String(id))
+                                      .returning()
+
+    ctx.debug(`=== SQL Query [DELETE /${ROUTE_BASE}/:id] ===\n%s`, query)
+
+    const result = await db.query(query.valueOf())
+
+    ctx.debug(`=== SQL Result [DELETE /${ROUTE_BASE}/:id] ===\n%s`, result.rows)
+
+    if (result.rowCount !== 1) {
+      ctx.set(404)
+      return
+    }
+
+    const resultItem = new User(result.rows[0])
+
+    ctx.set( resultItem )
+  }
+
+  @Get(`/${ROUTE_BASE}/:id/otp`)
+  @ACL([
+    UserRoleEnum.Administrator,
+    UserRoleEnum.Su,
+  ])
+  async getOTP(ctx: Context, next: INext) {
+    const route = ctx.route as Route
+
+    const db = ctx.db as Client
+
+    let id: UUID
+
+    try {
+      id = new UUID(route.data.id)
+    } catch (error) {
+      ctx.set(400, error.message)
+      return
+    }
+
+    const query = new Query(DATATABLE).select(['totp'])
+                                      .where('id = $1', String(id))
+
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/:id/otp] ===\n%s`, query)
+
+    const result = await db.query(query.valueOf())
+
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}/:id/otp] ===\n%s`, result.rows)
+
+    if (result.rowCount !== 1) {
       ctx.set(404)
       return
     }

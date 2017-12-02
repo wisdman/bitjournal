@@ -1,36 +1,28 @@
-import { Component, OnInit, Inject } from '@angular/core'
+import { Component, Inject } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
 
-import { CurrentUserService } from '../../services'
+import { UserService } from '../../services'
 
 @Component({
   selector: 'auth-dialog',
   templateUrl: './auth-dialog.component.html',
   styleUrls: ['./auth-dialog.component.css'],
 })
-export class AuthDialogComponent implements OnInit {
+export class AuthDialogComponent {
   authForm: FormGroup
 
   constructor(
     private dialogRef: MatDialogRef<AuthDialogComponent>,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public user: CurrentUserService
+    @Inject(MAT_DIALOG_DATA) public user: UserService
   ) {
     this.dialogRef.disableClose = true
     this.authForm = this.fb.group({
       email:    ['', [ Validators.required, Validators.email ] ],
       password: ['', [ Validators.required ] ],
-      totp:     ['', [ Validators.required ] ],
-    })
-  }
-
-  ngOnInit() {
-    this.authForm.setValue({
-      email: '',
-      password: '',
-      totp: '',
+      otp:      ['', [ Validators.required, Validators.minLength(6), Validators.maxLength(6) ] ],
     })
   }
 
@@ -38,15 +30,12 @@ export class AuthDialogComponent implements OnInit {
     if (!this.authForm.valid)
       return
 
-    let result = await this.user.login(this.authForm.value)
-
-    if (result)
-      return
-
-    this.authForm.setValue({
-      email: '',
-      password: '',
-      totp: '',
+    this.user.login(this.authForm.value).subscribe( result => {
+      if (!result)
+        this.authForm.patchValue({
+          password: '',
+          otp: '',
+        })
     })
   }
 }

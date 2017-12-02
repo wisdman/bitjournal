@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:carbon-alpine
 MAINTAINER Wisdman <wisdman@ajaw.it>
 
 COPY ./dist/main.bundle.js /app/main.js

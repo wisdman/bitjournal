@@ -16,12 +16,13 @@
     </mat-error>
   </mat-form-field>
   <mat-form-field class="auth-form-row">
-    <input matInput type="text" maxlength="6" placeholder="OTP Key" formControlName="totp">
-    <mat-hint align="end">{{authForm.controls.totp.value.length}} / 6</mat-hint>
-    <mat-error *ngIf="authForm.controls.totp.hasError('required')">
+    <input #otpInput matInput type="text" maxlength="6" placeholder="OTP Key" formControlName="otp">
+    <mat-hint align="end">{{ otpInput.value.length }} / 6</mat-hint>
+    <mat-error *ngIf="authForm.controls.otp.hasError('required')">
       OTP Key is <strong>required</strong>
     </mat-error>
   </mat-form-field>
+  <input type="submit" hidden>
 </form>
 <mat-dialog-actions>
   <button type="submit" mat-button class="auth-form-button" color="primary" [disabled]="authForm.invalid" (click)="onSubmit()">Submit</button>

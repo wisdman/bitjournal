@@ -1,15 +1,15 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+
 import { Router, ActivatedRoute } from '@angular/router'
-import { MatDialog } from '@angular/material'
-
-import { ErrorDialogComponent } from '../error'
-import { QuestionDialogComponent } from '../question'
-
 import { UUID } from '@core/uuid'
 
-import { Section } from '@common/models'
-import { SectionService } from '../../services'
+import {
+  APIService,
+  DialogService,
+} from '../../services'
+
+const ROUTE_BASE = 'sections'
 
 @Component({
   selector: 'section-item',
@@ -18,20 +18,20 @@ import { SectionService } from '../../services'
 })
 export class SectionItemComponent implements OnInit {
 
-  item: Section = new Section()
+  private _id: UUID = new UUID(null)
 
   get isNew() {
-    return this.item.id.version === null
+    return this._id.version === null
   }
 
   itemForm: FormGroup
 
   constructor(
-    private readonly _sectionService: SectionService,
+    private readonly _fb: FormBuilder,
     private readonly _router: Router,
     private readonly _route: ActivatedRoute,
-    private readonly _dialog: MatDialog,
-    private readonly _fb: FormBuilder
+    private readonly _apiService: APIService,
+    private readonly _dialog: DialogService
   ) {
     this.itemForm = this._fb.group({
       enable:        [true, Validators.required],
@@ -47,51 +47,48 @@ export class SectionItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    const id = this._route.params.subscribe(params => {
-
-      let id: UUID
+    this._route.params.subscribe(params => {
 
       try {
-        id = new UUID(params['id'])
+        this._id = new UUID(params['id'])
       } catch (error) {
-        this._dialog.open(ErrorDialogComponent, { data: error })
-        this._router.navigate([SectionService.BaseURL])
+        this._dialog.open({ title: 'Оштбка', message: 'Неверный ID' })
+        this._router.navigate([ROUTE_BASE])
         return
       }
 
-      if (id.version !== null)
-        this._sectionService.get(id).subscribe(item => {
-          this.item = item
-          this.itemForm.patchValue(this.item)
+      if (!this.isNew)
+        this._apiService.get<any>(`/${ROUTE_BASE}/${this._id}`).subscribe( (item: any) => {
+          this.itemForm.patchValue(item)
         })
     })
   }
 
   save() {
-    this.itemForm.updateValueAndValidity()
-
     if (this.itemForm.invalid)
       return
 
-    Object.assign(this.item, this.itemForm.value)
+    const postURL = this.isNew ? `/${ROUTE_BASE}` : `/${ROUTE_BASE}/${this._id}`
 
-    if (this.isNew)
-      this._sectionService.add(this.item).subscribe( item => this._router.navigate([SectionService.BaseURL]) )
-    else
-      this._sectionService.update(this.item).subscribe( item => this._router.navigate([SectionService.BaseURL]) )
+    this._apiService.post<any>(postURL, this.itemForm.value)
+                    .subscribe( _ => this._router.navigate([ROUTE_BASE]) )
   }
 
   delete() {
-    const dialogRef = this._dialog.open(QuestionDialogComponent, {
-      data: {
-        title: 'Удалить раздел?',
-        message: `Вы уверены, что хотите удалить раздел "${this.item.title}"?`
-      }
-    })
+    if (this.isNew)
+      return
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result)
-        this._sectionService.delete(this.item).subscribe( item => this._router.navigate([SectionService.BaseURL]) )
+    this._dialog.open({
+      title: 'Удалить ICO?',
+      message: `Вы уверены, что хотите удалить ICO "${this.itemForm.value.title}"?`,
+      buttons: {
+        'Отмена': false,
+        'Удалить': true
+      }
+    }).subscribe( result => {
+      if (result === true)
+        this._apiService.delete(`/${ROUTE_BASE}/${this._id}`)
+                        .subscribe( _ => this._router.navigate([ROUTE_BASE]) )
     })
   }
 }

@@ -8,51 +8,55 @@ export class Publication {
     'ts',
     'url',
     'enable',
-    'lastModified',
     'weight',
     'title',
+    'lastModified',
   ]
 
-  id: UUID
+  readonly id: UUID
 
-  ts: Timestamp
-  url: string
+  readonly ts: Timestamp
+  readonly url: string
 
-  enable: boolean
+  readonly enable: boolean
 
-  lastModified: Timestamp
+  readonly currencies: Array<UUID>
+  readonly exchanges: Array<UUID>
+  readonly ico: Array<UUID>
+  readonly markets: Array<UUID>
+  readonly sections: Array<UUID>
 
-  weight: number
+  readonly weight: number
 
-  sections: Array<string>
+  readonly bigTitle: string
+  readonly title: string
+  readonly ogTitle: string
 
-  bigTitle: string
-  title: string
-  ogTitle: string
+  readonly description: string
+  readonly ogDescription: string
 
-  description: string
-  ogDescription: string
+  readonly image: number | null
+  readonly ogImage: number | null
 
-  image: number | null
-  ogImage: number | null
+  readonly authors: Array<UUID>
+  readonly tags: Array<string>
 
-  authors: Array<string>
-  tags: Array<string>
+  readonly sharing: boolean
+  readonly comments: boolean
+  readonly advertising: boolean
 
-  sharing: boolean
-  comments: boolean
-  advertising: boolean
+  readonly rss: boolean
 
-  rss: boolean
+  readonly yandexNews: boolean
+  readonly yandexZen: boolean
 
-  yandexNews: boolean
-  yandexZen: boolean
+  readonly facebookIA: boolean
 
-  facebookIA: boolean
+  readonly content: string
 
-  branding: object
+  readonly branding: object
 
-  content: string
+  readonly lastModified: Timestamp
 
   constructor(value: any = {}) {
     if (!value)
@@ -62,28 +66,55 @@ export class Publication {
 
     this.ts = new Timestamp(value.ts)
 
-    this.url = String(value.url || '')
+    this.url = String(value.url || '').trim()
 
     this.enable = !!value.enable
 
-    this.lastModified = new Timestamp(value.lastModified)
+    this.currencies = Array.isArray(value.currencies) ? value.currencies
+                                                             .map( (item:any) => new UUID(value && value.id || value) )
+                                                             .filter( (item: UUID) => item.version !== null)
+                                                      : new Array<UUID>()
+
+    this.exchanges = Array.isArray(value.exchanges) ? value.exchanges
+                                                           .map( (item:any) => new UUID(value && value.id || value) )
+                                                           .filter( (item: UUID) => item.version !== null)
+                                                    : new Array<UUID>()
+
+    this.ico = Array.isArray(value.ico) ? value.ico
+                                               .map( (item:any) => new UUID(value && value.id || value) )
+                                               .filter( (item: UUID) => item.version !== null)
+                                        : new Array<UUID>()
+
+    this.markets = Array.isArray(value.markets) ? value.markets
+                                                       .map( (item:any) => new UUID(value && value.id || value) )
+                                                       .filter( (item: UUID) => item.version !== null)
+                                                : new Array<UUID>()
+
+    this.sections = Array.isArray(value.sections) ? value.sections
+                                                         .map( (item:any) => new UUID(value && value.id || value) )
+                                                         .filter( (item: UUID) => item.version !== null)
+                                                  : new Array<UUID>()
 
     this.weight = Math.max(~~value.weight, 0)
 
-    this.sections = new Array<string>()
+    this.bigTitle = String(value.bigTitle || '').trim()
+    this.title = String(value.title || '').trim()
+    this.ogTitle = String(value.ogTitle || '').trim()
 
-    this.bigTitle = String(value.bigTitle || '')
-    this.title = String(value.title || '')
-    this.ogTitle = String(value.ogTitle || '')
-
-    this.description = String(value.description || '')
-    this.ogDescription = String(value.ogDescription || '')
+    this.description = String(value.description || '').trim()
+    this.ogDescription = String(value.ogDescription || '').trim()
 
     this.image = Math.max(~~value.image, 0) || null
     this.ogImage = Math.max(~~value.ogImage, 0) || null
 
-    this.authors = new Array<string>()
-    this.tags = new Array<string>()
+    this.authors = Array.isArray(value.authors) ? value.authors
+                                                       .map( (item:any) => new UUID(value && value.id || value) )
+                                                       .filter( (item: UUID) => item.version !== null)
+                                                : new Array<UUID>()
+
+    this.tags = Array.isArray(value.tags) ? value.tags.map( (item:any) => String(item).trim().toLowerCase() )
+                                                      .filter( (item:string) => !!item )
+                                          : new Array<string>()
 
     this.sharing = !!value.sharing
     this.comments = !!value.comments
@@ -96,9 +127,128 @@ export class Publication {
 
     this.facebookIA = !!value.facebookIA
 
+    this.content = String(value.content || '').trim()
+
     this.branding = {}
 
-    this.content = String(value.content || '')
+    this.lastModified = new Timestamp(value.lastModified)
+  }
+
+  valueOf() {
+    return {
+      ts: this.ts,
+
+      url: this.url,
+      enable: this.enable,
+
+      currencies: this.currencies,
+      exchanges: this.exchanges,
+      ico: this.ico,
+      markets: this.markets,
+      sections: this.sections,
+
+      weight: this.weight,
+
+      bigTitle: this.bigTitle,
+      title: this.title,
+      ogTitle: this.ogTitle,
+
+      description: this.description,
+      ogDescription: this.ogDescription,
+
+      image: this.image,
+      ogImage: this.ogImage,
+
+      authors: this.authors,
+      tags: this.tags,
+
+      sharing: this.sharing,
+      comments: this.comments,
+      advertising: this.advertising,
+
+      rss: this.rss,
+
+      yandexNews: this.yandexNews,
+      yandexZen: this.yandexZen,
+
+      facebookIA: this.facebookIA,
+
+      branding: this.branding,
+
+      content: this.content,
+
+      lastModified: this.lastModified,
+    }
+  }
+
+  toJSON(): any {
+    return {
+      id: this.id,
+
+      ts: this.ts,
+
+      url: this.url,
+      enable: this.enable,
+
+      currencies: this.currencies,
+      exchanges: this.exchanges,
+      ico: this.ico,
+      markets: this.markets,
+      sections: this.sections,
+
+      weight: this.weight,
+
+      bigTitle: this.bigTitle,
+      title: this.title,
+      ogTitle: this.ogTitle,
+
+      description: this.description,
+      ogDescription: this.ogDescription,
+
+      image: this.image,
+      ogImage: this.ogImage,
+
+      authors: this.authors,
+      tags: this.tags,
+
+      sharing: this.sharing,
+      comments: this.comments,
+      advertising: this.advertising,
+
+      rss: this.rss,
+
+      yandexNews: this.yandexNews,
+      yandexZen: this.yandexZen,
+
+      facebookIA: this.facebookIA,
+
+      branding: this.branding,
+
+      content: this.content,
+
+      lastModified: this.lastModified,
+    }
+  }
+
+  toNumber(): number {
+    return NaN
+  }
+
+  toString(): string {
+    return this.title
+  }
+
+  [Symbol.toPrimitive](hint : 'default' | 'string' | 'number') {
+    switch (hint) {
+      case 'default':
+        return this.valueOf()
+      case 'number':
+        return this.toNumber()
+      case 'string':
+        return this.toString()
+      default:
+        throw new TypeError('Cannot convert Publication value to unknown value')
+    }
   }
 
   [Symbol.toStringTag]() {

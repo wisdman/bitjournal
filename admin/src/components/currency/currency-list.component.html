@@ -1,6 +1,61 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <h1>Валюты</h1>
+    <button mat-button (click)="add()">
+      <mat-icon>add</mat-icon>
+      <span>Добавить</span>
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
-<main>403 Forbidden</main>
+<main>
+  <mat-form-field class="col-100">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
+  </mat-form-field>
+  <mat-table #table [dataSource]="dataSource" class="m-col--max">
+
+    <!-- Enabled Column -->
+    <ng-container matColumnDef="enable">
+      <mat-header-cell *matHeaderCellDef style="flex: 0 0 30px">#</mat-header-cell>
+      <mat-cell *matCellDef="let element" style="flex: 0 0 30px"><mat-icon *ngIf="element.enable">check</mat-icon></mat-cell>
+    </ng-container>
+
+    <!-- Image Column -->
+    <ng-container matColumnDef="image">
+      <mat-header-cell *matHeaderCellDef>IMG</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.image }}</mat-cell>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="symbol">
+      <mat-header-cell *matHeaderCellDef>Symbol</mat-header-cell>
+      <mat-cell *matCellDef="let element">/{{ element.symbol }}</mat-cell>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef>Название</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
+    </ng-container>
+
+    <!-- BTC Column -->
+    <ng-container matColumnDef="btc">
+      <mat-header-cell *matHeaderCellDef>BTC</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.btc }}</mat-cell>
+    </ng-container>
+
+    <!-- USD Column -->
+    <ng-container matColumnDef="usd">
+      <mat-header-cell *matHeaderCellDef>USD</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.usd }}</mat-cell>
+    </ng-container>
+
+    <!-- RUB Column -->
+    <ng-container matColumnDef="rub">
+      <mat-header-cell *matHeaderCellDef>RUB</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.rub }}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="select(row.symbol)" class="pointer"></mat-row>
+  </mat-table>
+</main>
