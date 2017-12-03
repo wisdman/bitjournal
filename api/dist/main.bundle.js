@@ -1,26 +1,1989 @@
-#!/usr/bin/env node
-(function(e){var n={};function t(r){if(n[r]){return n[r].exports}var i=n[r]={i:r,l:false,exports:{}};e[r].call(i.exports,i,i.exports,t);i.l=true;return i.exports}t.m=e;t.c=n;t.d=function(e,n,r){if(!t.o(e,n)){Object.defineProperty(e,n,{configurable:false,enumerable:true,get:r})}};t.n=function(e){var n=e&&e.__esModule?function(){return e['default']}:function(){return e};t.d(n,'a',n);return n};t.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)};t.p='';return t(t.s=18)})([function(e){e.exports=require('util')},function(e){e.exports=require('events')},function(e,t,n){'use strict';e.exports={host:'localhost',user:'win32'===process.platform?process.env.USERNAME:process.env.USER,database:'win32'===process.platform?process.env.USERNAME:process.env.USER,password:null,connectionString:undefined,port:5432,rows:0,binary:false,max:10,idleTimeoutMillis:3e4,client_encoding:'',ssl:false,application_name:undefined,fallback_application_name:undefined,parseInputDatesAsUTC:false,statement_timeout:false};var r=n(3),i=r.getTypeParser(20,'text'),s=r.getTypeParser(1016,'text');e.exports.__defineSetter__('parseInt8',function(e){r.setTypeParser(20,'text',e?r.getTypeParser(23,'text'):i);r.setTypeParser(1016,'text',e?r.getTypeParser(1007,'text'):s)})},function(e,t,n){var i=n(22),s=n(27),o=n(10);t.getTypeParser=function(e,t){t=t||'text';if(!a[t]){return r}return a[t][e]||r};t.setTypeParser=function(e,t,n){if('function'==typeof t){n=t;t='text'}a[t][e]=n};t.arrayParser=o;var a={text:{},binary:{}};function r(e){return String(e)}i.init(function(e,t){a.text[e]=t});s.init(function(e,t){a.binary[e]=t})},function(e){e.exports=require('http')},function(e){e.exports=require('crypto')},function(e,t,n){'use strict';const u=n(5),p=n(2);function r(e){var t=e.replace(/\\/g,'\\\\').replace(/"/g,'\\"');return'"'+t+'"'}function s(e){for(var t='{',n=0;n<e.length;n++){if(0<n){t=t+','}if(null===e[n]||'undefined'===typeof e[n]){t=t+'NULL'}else if(Array.isArray(e[n])){t=t+s(e[n])}else if(e[n]instanceof Buffer){t+='\\\\x'+e[n].toString('hex')}else{t+=r(l(e[n]))}}t=t+'}';return t}var l=function(e,t){if(e instanceof Buffer){return e}if(ArrayBuffer.isView(e)){var n=Buffer.from(e.buffer,e.byteOffset,e.byteLength);if(n.length===e.byteLength){return n}return n.slice(e.byteOffset,e.byteOffset+e.byteLength)}if(e instanceof Date){if(p.parseInputDatesAsUTC){return d(e)}else{return a(e)}}if(Array.isArray(e)){return s(e)}if(null===e||'undefined'===typeof e){return null}if('object'===typeof e){return i(e,t)}return e.toString()};function i(e,t){if(e&&'function'===typeof e.toPostgres){t=t||[];if(-1!==t.indexOf(e)){throw new Error('circular reference detected while preparing "'+e+'" for query')}t.push(e);return l(e.toPostgres(l),t)}return JSON.stringify(e)}function o(e,t){e=''+e;while(e.length<t){e='0'+e}return e}function a(e){var t=-e.getTimezoneOffset(),n=o(e.getFullYear(),4)+'-'+o(e.getMonth()+1,2)+'-'+o(e.getDate(),2)+'T'+o(e.getHours(),2)+':'+o(e.getMinutes(),2)+':'+o(e.getSeconds(),2)+'.'+o(e.getMilliseconds(),3);if(0>t){n+='-';t*=-1}else{n+='+'}return n+o(Math.floor(t/60),2)+':'+o(t%60,2)}function d(e){var t=o(e.getUTCFullYear(),4)+'-'+o(e.getUTCMonth()+1,2)+'-'+o(e.getUTCDate(),2)+'T'+o(e.getUTCHours(),2)+':'+o(e.getUTCMinutes(),2)+':'+o(e.getUTCSeconds(),2)+'.'+o(e.getUTCMilliseconds(),3);return t+'+00:00'}const c=function(e){return u.createHash('md5').update(e,'utf-8').digest('hex')};e.exports={prepareValue:function(e){return l(e)},normalizeQueryConfig:function(e,t,n){e='string'===typeof e?{text:e}:e;if(t){if('function'===typeof t){e.callback=t}else{e.values=t}}if(n){e.callback=n}return e},postgresMd5PasswordHash:function(e,t,n){var r=c(t+e),i=c(Buffer.concat([Buffer.from(r),n]));return'md5'+i},md5:c}},function(e){e.exports=require('string_decoder')},function(e,t,n){'use strict';var r=n(0),i=n(21),s=n(2),o=n(15),a=n(43);const d=(e)=>{var t=function(t){var n=Object.assign({Client:e},t);return new a(n)};r.inherits(t,a);return t};var u=function(e){this.defaults=s;this.Client=e;this.Query=this.Client.Query;this.Pool=d(this.Client);this._pools=[];this.Connection=o;this.types=n(3)};if('undefined'!==typeof process.env.NODE_PG_FORCE_NATIVE){e.exports=new u(n(17))}else{e.exports=new u(i);e.exports.__defineGetter__('native',function(){delete e.exports.native;var t=null;try{t=new u(n(17))}catch(e){if('MODULE_NOT_FOUND'!==e.code){throw e}console.error(e.message)}e.exports.native=t;return t})}},function(e,t){'use strict';t.parse=function(e,t){return new n(e,t).parse()};function n(e,t){this.source=e;this.transform=t||r;this.position=0;this.entries=[];this.recorded=[];this.dimension=0}n.prototype.isEof=function(){return this.position>=this.source.length};n.prototype.nextCharacter=function(){var e=this.source[this.position++];if('\\'===e){return{value:this.source[this.position++],escaped:true}}return{value:e,escaped:false}};n.prototype.record=function(e){this.recorded.push(e)};n.prototype.newEntry=function(e){var t;if(0<this.recorded.length||e){t=this.recorded.join('');if('NULL'===t&&!e){t=null}if(null!==t)t=this.transform(t);this.entries.push(t);this.recorded=[]}};n.prototype.parse=function(e){var t,r,i;while(!this.isEof()){t=this.nextCharacter();if('{'===t.value&&!i){this.dimension++;if(1<this.dimension){r=new n(this.source.substr(this.position-1),this.transform);this.entries.push(r.parse(true));this.position+=r.position-2}}else if('}'===t.value&&!i){this.dimension--;if(!this.dimension){this.newEntry();if(e)return this.entries}}else if('"'===t.value&&!t.escaped){if(i)this.newEntry(true);i=!i}else if(','===t.value&&!i){this.newEntry()}else{this.record(t.value)}}if(0!==this.dimension){throw new Error('array dimension not balanced')}return this.entries};function r(e){return e}},function(e,t,n){var r=n(9);e.exports={create:function(e,t){return{parse:function(){return r.parse(e,t)}}}}},function(e){e.exports=require('path')},function(e){e.exports=require('stream')},function(e,t,n){'use strict';var i=n(3);function r(e){this._types=e||i;this.text={};this.binary={}}r.prototype.getOverrides=function(e){switch(e){case'text':return this.text;case'binary':return this.binary;default:return{};}};r.prototype.setTypeParser=function(e,t,n){if('function'===typeof t){n=t;t='text'}this.getOverrides(t)[e]=n};r.prototype.getTypeParser=function(e,t){t=t||'text';return this.getOverrides(t)[e]||this._types.getTypeParser(e,t)};e.exports=r},function(e,t,n){'use strict';var r=n(33),i=n(2),s=n(34).parse,o=function(e,t,n){if(n===undefined){n=process.env['PG'+e.toUpperCase()]}else if(!(false===n)){n=process.env[n]}return t[e]||n||i[e]},a=function(){switch(process.env.PGSSLMODE){case'disable':return false;case'prefer':case'require':case'verify-ca':case'verify-full':return true;}return i.ssl},d=function(e){e='string'===typeof e?s(e):e||{};if(e.connectionString){e=Object.assign({},e,s(e.connectionString))}this.user=o('user',e);this.database=o('database',e);this.port=parseInt(o('port',e),10);this.host=o('host',e);this.password=o('password',e);this.binary=o('binary',e);this.ssl='undefined'===typeof e.ssl?a():e.ssl;this.client_encoding=o('client_encoding',e);this.replication=o('replication',e);this.isDomainSocket=!(this.host||'').indexOf('/');this.application_name=o('application_name',e,'PGAPPNAME');this.fallback_application_name=o('fallback_application_name',e,false);this.statement_timeout=o('statement_timeout',e,false)},u=function(e){return'\''+(''+e).replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\''},p=function(e,t,n){var r=t[n];if(r){e.push(n+'='+u(r))}};d.prototype.getLibpqConnectionString=function(e){var t=[];p(t,this,'user');p(t,this,'password');p(t,this,'port');p(t,this,'application_name');p(t,this,'fallback_application_name');var n='object'===typeof this.ssl?this.ssl:{sslmode:this.ssl};p(t,n,'sslmode');p(t,n,'sslca');p(t,n,'sslkey');p(t,n,'sslcert');p(t,n,'sslrootcert');if(this.database){t.push('dbname='+u(this.database))}if(this.replication){t.push('replication='+u(this.replication))}if(this.host){t.push('host='+u(this.host))}if(this.isDomainSocket){return e(null,t.join(' '))}if(this.client_encoding){t.push('client_encoding='+u(this.client_encoding))}r.lookup(this.host,function(n,r){if(n)return e(n,null);t.push('hostaddr='+u(r));return e(null,t.join(' '))})};e.exports=d},function(e,t,n){'use strict';var r=n(39),i=n(1).EventEmitter,s=n(0),o=n(40),a=n(41),d=0,u=function(e){i.call(this);e=e||{};this.stream=e.stream||new r.Stream;this._keepAlive=e.keepAlive;this.lastBuffer=false;this.lastOffset=0;this.buffer=null;this.offset=null;this.encoding=e.encoding||'utf8';this.parsedStatements={};this.writer=new o;this.ssl=e.ssl||false;this._ending=false;this._mode=d;this._emitMessage=false;this._reader=new a({headerSize:1,lengthPadding:-4});var t=this;this.on('newListener',function(e){if('message'===e){t._emitMessage=true}})};s.inherits(u,i);u.prototype.connect=function(e,t){if('closed'===this.stream.readyState){this.stream.connect(e,t)}else if('open'===this.stream.readyState){this.emit('connect')}var r=this;this.stream.on('connect',function(){if(r._keepAlive){r.stream.setKeepAlive(true)}r.emit('connect')});this.stream.on('error',function(e){if(r._ending&&'ECONNRESET'===e.code){return}r.emit('error',e)});this.stream.on('close',function(){r.emit('end')});if(!this.ssl){return this.attachListeners(this.stream)}this.stream.once('data',function(e){var i=e.toString('utf8');if('S'!==i){return r.emit('error',new Error('The server does not support SSL connections'))}var s=n(42);r.stream=s.connect({socket:r.stream,servername:t,rejectUnauthorized:r.ssl.rejectUnauthorized,ca:r.ssl.ca,pfx:r.ssl.pfx,key:r.ssl.key,passphrase:r.ssl.passphrase,cert:r.ssl.cert,NPNProtocols:r.ssl.NPNProtocols});r.attachListeners(r.stream);r.emit('sslconnect');r.stream.on('error',function(e){r.emit('error',e)})})};u.prototype.attachListeners=function(e){var t=this;e.on('data',function(e){t._reader.addChunk(e);var n=t._reader.read();while(n){var r=t.parseMessage(n);if(t._emitMessage){t.emit('message',r)}t.emit(r.name,r);n=t._reader.read()}});e.on('end',function(){t.emit('end')})};u.prototype.requestSsl=function(){var e=this.writer.addInt16(1234).addInt16(5679).flush(),t=e.length+4,n=new o().addInt32(t).add(e).join();this.stream.write(n)};u.prototype.startup=function(e){var t=this.writer.addInt16(3).addInt16(0);Object.keys(e).forEach(function(n){var r=e[n];t.addCString(n).addCString(r)});t.addCString('client_encoding').addCString('\'utf-8\'');var n=t.addCString('').flush(),r=n.length+4,i=new o().addInt32(r).add(n).join();this.stream.write(i)};u.prototype.cancel=function(e,t){var n=this.writer.addInt16(1234).addInt16(5678).addInt32(e).addInt32(t).flush(),r=n.length+4,i=new o().addInt32(r).add(n).join();this.stream.write(i)};u.prototype.password=function(e){this._send(112,this.writer.addCString(e))};u.prototype._send=function(e,t){if(!this.stream.writable){return false}if(true===t){this.writer.addHeader(e)}else{return this.stream.write(this.writer.flush(e))}};u.prototype.query=function(e){this.stream.write(this.writer.addCString(e).flush(81))};u.prototype.parse=function(e,t){e.name=e.name||'';if(63<e.name.length){console.error('Warning! Postgres only supports 63 characters for query names.');console.error('You supplied',e.name,'(',e.name.length,')');console.error('This can cause conflicts and silent errors executing queries')}e.types=e.types||[];for(var n=e.types.length,r=this.writer.addCString(e.name).addCString(e.text).addInt16(n),s=0;s<n;s++){r.addInt32(e.types[s])}this._send(80,t)};u.prototype.bind=function(e,t){e=e||{};e.portal=e.portal||'';e.statement=e.statement||'';e.binary=e.binary||false;for(var n=e.values||[],r=n.length,s=false,o=0;o<r;o++){s|=n[o]instanceof Buffer}var a=this.writer.addCString(e.portal).addCString(e.statement);if(!s){a.addInt16(0)}else{a.addInt16(r);for(o=0;o<r;o++){a.addInt16(n[o]instanceof Buffer)}}a.addInt16(r);for(var d=0,i;d<r;d++){i=n[d];if(null===i||'undefined'===typeof i){a.addInt32(-1)}else if(i instanceof Buffer){a.addInt32(i.length);a.add(i)}else{a.addInt32(Buffer.byteLength(i));a.addString(i)}}if(e.binary){a.addInt16(1);a.addInt16(1)}else{a.addInt16(0)}this._send(66,t)};u.prototype.execute=function(e,t){e=e||{};e.portal=e.portal||'';e.rows=e.rows||'';this.writer.addCString(e.portal).addInt32(e.rows);this._send(69,t)};var p=Buffer.alloc(0);u.prototype.flush=function(){this.writer.add(p);this._send(72)};u.prototype.sync=function(){this.writer.flush(0);this.writer.add(p);this._ending=true;this._send(83)};const l=Buffer.from([88,0,0,0,4]);u.prototype.end=function(){this.writer.add(p);this._ending=true;return this.stream.write(l)};u.prototype.close=function(e,t){this.writer.addCString(e.type+(e.name||''));this._send(67,t)};u.prototype.describe=function(e,t){this.writer.addCString(e.type+(e.name||''));this._send(68,t)};u.prototype.sendCopyFromChunk=function(e){this.stream.write(this.writer.add(e).flush(100))};u.prototype.endCopyFrom=function(){this.stream.write(this.writer.add(p).flush(99))};u.prototype.sendCopyFail=function(e){this.writer.addCString(e);this._send(102)};var c=function(e,t){this.name=e;this.length=t};u.prototype.parseMessage=function(e){this.offset=0;var t=e.length+4;switch(this._reader.header){case 82:return this.parseR(e,t);case 83:return this.parseS(e,t);case 75:return this.parseK(e,t);case 67:return this.parseC(e,t);case 90:return this.parseZ(e,t);case 84:return this.parseT(e,t);case 68:return this.parseD(e,t);case 69:return this.parseE(e,t);case 78:return this.parseN(e,t);case 49:return new c('parseComplete',t);case 50:return new c('bindComplete',t);case 51:return new c('closeComplete',t);case 65:return this.parseA(e,t);case 110:return new c('noData',t);case 73:return new c('emptyQuery',t);case 115:return new c('portalSuspended',t);case 71:return this.parseG(e,t);case 72:return this.parseH(e,t);case 87:return new c('replicationStart',t);case 99:return new c('copyDone',t);case 100:return this.parsed(e,t);}};u.prototype.parseR=function(e,t){var n=0,r=new c('authenticationOk',t);if(8===r.length){n=this.parseInt32(e);if(3===n){r.name='authenticationCleartextPassword'}return r}if(12===r.length){n=this.parseInt32(e);if(5===n){r.name='authenticationMD5Password';r.salt=Buffer.alloc(4);e.copy(r.salt,0,this.offset,this.offset+4);this.offset+=4;return r}}throw new Error('Unknown authenticationOk message type'+s.inspect(r))};u.prototype.parseS=function(e,t){var n=new c('parameterStatus',t);n.parameterName=this.parseCString(e);n.parameterValue=this.parseCString(e);return n};u.prototype.parseK=function(e,t){var n=new c('backendKeyData',t);n.processID=this.parseInt32(e);n.secretKey=this.parseInt32(e);return n};u.prototype.parseC=function(e,t){var n=new c('commandComplete',t);n.text=this.parseCString(e);return n};u.prototype.parseZ=function(e,t){var n=new c('readyForQuery',t);n.name='readyForQuery';n.status=this.readString(e,1);return n};u.prototype.parseT=function(e,t){var n=new c('rowDescription',t);n.fieldCount=this.parseInt16(e);for(var r=[],s=0;s<n.fieldCount;s++){r.push(this.parseField(e))}n.fields=r;return n};var g=function(){this.name=null;this.tableID=null;this.columnID=null;this.dataTypeID=null;this.dataTypeSize=null;this.dataTypeModifier=null;this.format=null};u.prototype.parseField=function(e){var t=new g;t.name=this.parseCString(e);t.tableID=this.parseInt32(e);t.columnID=this.parseInt16(e);t.dataTypeID=this.parseInt32(e);t.dataTypeSize=this.parseInt16(e);t.dataTypeModifier=this.parseInt32(e);if(this.parseInt16(e)===d){this._mode=d;t.format='text'}else{this._mode=1;t.format='binary'}return t};var f=function(e,t){this.name='dataRow';this.length=e;this.fieldCount=t;this.fields=[]};u.prototype.parseD=function(e,t){for(var n=this.parseInt16(e),r=new f(t,n),s=0;s<n;s++){r.fields.push(this._readValue(e))}return r};u.prototype._readValue=function(e){var t=this.parseInt32(e);if(-1===t)return null;if(this._mode===d){return this.readString(e,t)}return this.readBytes(e,t)};u.prototype.parseE=function(e,t){var n={},r,i,s=new c('error',t),o=this.readString(e,1);while('\0'!==o){n[o]=this.parseCString(e);o=this.readString(e,1)}if('error'===s.name){r=new Error(n.M);for(i in s){if(s.hasOwnProperty(i)){r[i]=s[i]}}}else{r=s;r.message=n.M}r.severity=n.S;r.code=n.C;r.detail=n.D;r.hint=n.H;r.position=n.P;r.internalPosition=n.p;r.internalQuery=n.q;r.where=n.W;r.schema=n.s;r.table=n.t;r.column=n.c;r.dataType=n.d;r.constraint=n.n;r.file=n.F;r.line=n.L;r.routine=n.R;return r};u.prototype.parseN=function(e,t){var n=this.parseE(e,t);n.name='notice';return n};u.prototype.parseA=function(e,t){var n=new c('notification',t);n.processId=this.parseInt32(e);n.channel=this.parseCString(e);n.payload=this.parseCString(e);return n};u.prototype.parseG=function(e,t){var n=new c('copyInResponse',t);return this.parseGH(e,n)};u.prototype.parseH=function(e,t){var n=new c('copyOutResponse',t);return this.parseGH(e,n)};u.prototype.parseGH=function(e,t){var n=0!==e[this.offset];this.offset++;t.binary=n;var r=this.parseInt16(e);t.columnTypes=[];for(var s=0;s<r;s++){t.columnTypes.push(this.parseInt16(e))}return t};u.prototype.parsed=function(e,t){var n=new c('copyData',t);n.chunk=this.readBytes(e,n.length-4);return n};u.prototype.parseInt32=function(e){var t=e.readInt32BE(this.offset,true);this.offset+=4;return t};u.prototype.parseInt16=function(e){var t=e.readInt16BE(this.offset,true);this.offset+=2;return t};u.prototype.readString=function(e,t){return e.toString(this.encoding,this.offset,this.offset+=t)};u.prototype.readBytes=function(e,t){return e.slice(this.offset,this.offset+=t)};u.prototype.parseCString=function(e){var t=this.offset,n=e.indexOf(0,t);this.offset=n+1;return e.toString(this.encoding,t,n)};e.exports=u},function(e){e.exports=require('assert')},function(e,t,n){'use strict';e.exports=n(44)},function(e,t,n){e.exports=n(19)},function(e,t,n){'use strict';var p=Number.parseFloat,l=Number.isNaN,c=Math.max,g=Math.floor;Object.defineProperty(t,'__esModule',{value:true});var f={};n.d(f,'AuthAPI',function(){return nt});n.d(f,'ExchangesAPI',function(){return at});n.d(f,'ICOAPI',function(){return ct});n.d(f,'MarketsAPI',function(){return ht});n.d(f,'PublicationsAPI',function(){return Et});n.d(f,'SectionsAPI',function(){return Ct});n.d(f,'StatusesAPI',function(){return Dt});n.d(f,'UsersAPI',function(){return Mt});n.d(f,'VideoAPI',function(){return Gt});var m=n(4),y=n.n(m);class h extends Error{constructor(e,t,n){if(t instanceof Error){n=t;t=n.message}if(n===undefined){n=new Error(t||'Unknown internal server error')}if(!t||500<=e){t=m.STATUS_CODES[e]||'Undefined error'}super(t);this.status=e;this.originError=n}}var b=n(7),w=n.n(b),v=n(20),_=n.n(v);class E{constructor(e){this.req=e}getHeader(e){let t=this.req.headers[e.toLowerCase()];return Array.isArray(t)?t.join(';'):t}get socket(){return this.req.socket}get ip(){return this.getHeader('X-Real-IP')||this.getHeader('X-Forwarded-For')||this.req.connection.remoteAddress||''}get host(){let e=this.getHeader('X-Forwarded-Host')||this.getHeader('Host');return e&&e.split(/\s*,\s*/)[0]||''}get hostname(){if(!this.host)return'';if('['===this.host[0]){let e=/^\[[a-f0-9:]+\]/.exec(this.host);return e&&e[0]||''}return this.host.split(':')[0]||''}get port(){let e=/\:([0-9]+)$/.exec(this.host);return e&&~~e[1]||80}get method(){return(this.req.method||'').toUpperCase()}get path(){return this.req.url||''}get pathname(){return(this.req.url||'').split('?')[0].split(/\/+/).filter((e)=>!!e)}get query(){let e=(this.req.url||'').split('?').slice(1).join('?');return Object(v.parse)(e)}get type(){let e=this.getHeader('Content-Type');if('string'!==typeof e)return;return e.split(';')[0].trim()}get length(){return~~(this.getHeader('content-length')||'')}async raw(){const e=this.length;return new Promise((t,n)=>{let r=Buffer.alloc(0);const i=()=>{u();n(new h(400,'Request aborted'))},s=()=>{u();n(new h(400,'Receive data error'))},o=(e)=>{r=Buffer.concat([r,e])},a=()=>{u();if(0<e&&r.length!==e){n(new h(400,'Request size did not match content length'))}t(r)},d=()=>{u()};var u=()=>{this.req.removeListener('aborted',i);this.req.removeListener('end',s);this.req.removeListener('data',o);this.req.removeListener('error',a);this.req.removeListener('close',d);this.req.unpipe()};this.req.on('aborted',i);this.req.on('error',s);this.req.on('data',o);this.req.on('end',a);this.req.on('close',d)})}async text(){let e=await this.raw();try{let t=new b.StringDecoder('utf8');return t.end(e)}catch(e){throw new h(400,'Receive data is not a UTF8 string',e)}}async json(){if('application/json'!==this.type){throw new h(400,'Only application/json data are allowed')}let e=await this.text();try{return JSON.parse(e)}catch(e){throw new h(400,'Invalid json received')}}valueOf(){return{heders:this.req.headers,ip:this.ip,host:this.host,hostname:this.hostname,port:this.port,method:this.method,path:this.path,pathname:this.pathname,query:this.query,type:this.type,length:this.length}}toJSON(){return this.valueOf()}}var I=[{mime:'image/jpeg',extension:'jpg',offset:0,header:new Uint8Array([255,216,255])},{mime:'image/png',extension:'png',offset:0,header:new Uint8Array([137,80,78,71,13,10,26,10])},{mime:'image/gif',extension:'gif',offset:0,header:new Uint8Array([71,73,70])},{mime:'image/webp',extension:'webp',offset:8,header:new Uint8Array([87,69,66,80])}];class S{constructor(e){const t=e instanceof Uint8Array?e:new Uint8Array(e);if(1>=t.length)return this;for(let n of I)if(this.check(t,n.header,n.offset)){this.mime=n.mime;this.extension=n.extension;return this}this.mime='application/octet-stream';this.extension=''}check(e,t,n=0){for(let r=0;r<t.length;r++)if(t[r]!==e[r+n])return false;return true}toJSON(){return{extension:this.extension,mime:this.mime}}toString(){return this.mime}[Symbol.toPrimitive](e){switch(e){case'number':throw new TypeError('Cannot convert a FileType value to a number value');case'string':case'default':return this.mime;default:throw new TypeError('Cannot convert a FileType value to unknown value');}}[Symbol.toStringTag](){return'FileType'}}class O{constructor(e){this.res=e;this.set(404)}get finished(){return this.res.finished}hasHeader(e){return this.res.hasHeader(e)}getHeader(e){let t=this.res.getHeader(e);return Array.isArray(t)?t.join(';'):t}setHeader(e,t){this.res.setHeader(e,t)}removeHeader(e){return this.res.removeHeader(e)}flushHeaders(){return this.res.flushHeaders()}get type(){let e=this.getHeader('Content-Type');if('string'!==typeof e)return;return e.split(';')[0].trim()}get length(){return~~(this.getHeader('Content-Length')||'')}get status(){return this.res.statusCode}get body(){return this._body}set(e,t){if(this.finished)return;if(this.res.headersSent)throw new Error('Headears was sended');if('number'!==typeof e){t=e;e=undefined}if(t===undefined||null===t){this.res.statusCode=e||404;this._body=m.STATUS_CODES[this.res.statusCode];this.removeHeader('Content-Type');this.removeHeader('Content-Length');this.removeHeader('Transfer-Encoding');return}if(null===t){this.res.statusCode=e||204;this._body=null;this.removeHeader('Content-Type');this.removeHeader('Content-Length');this.removeHeader('Transfer-Encoding');return}this.res.statusCode=e||200;if('string'===typeof t){this._body=t;this.setHeader('Content-Type',(/^\s*</.test(t)?'text/html':'text/plain')+'; charset=utf-8');this.setHeader('Content-Length',Buffer.byteLength(t));return}if(Buffer.isBuffer(t)){let e=new S(t);this._body=t;this.setHeader('Content-Type',e.mime||'application/octet-stream');this.setHeader('Content-Length',t.length);return}if('object'===typeof t){let e=JSON.stringify(t);this._body=e;this.setHeader('Content-Type','application/json; charset=utf-8');this.setHeader('Content-Length',Buffer.byteLength(e));return}throw TypeError('Unknown response body type')}respond(){if(this.finished)return;if(null===this._body||this._body===undefined){this.res.end()}else{this.res.end(this._body)}}end(e,t){this.set(e,t);this.respond()}valueOf(){return{heders:this.res.getHeaders(),status:this.status,type:this.type,length:this.length,body:this.body}}toJSON(){return this.valueOf()}}var T=n(0),C=n.n(T);function r(e,t){if(!e.status||500<=e.status)console.error('\x1B[31m=== Internal context error ===\n',e,'\x1B[0m\n=== with Context ===\n',t===undefined?undefined:Object(T.inspect)(t.valueOf(),{depth:3,colors:true}))}class A{constructor(e,t){try{this.request=new E(e);this.response=new O(t)}catch(e){this.throw(e)}}get finished(){return this.response.finished}set(e,t){this.response.set(e,t)}respond(){this.response.respond()}end(e,t){this.response.end(e,t)}throw(e){if(e instanceof h)this.end(e.status,e.message);else this.end(500);r(e,this)}valueOf(){return{request:this.request.valueOf(),response:this.response.valueOf()}}toJSON(){return this.valueOf()}}function i(e){return async function(t,n=()=>Promise.resolve()){let r=-1;const s=(o)=>async()=>{if(o<=r){throw new Error('next() called multiple times')}r=o;if(o>=e.length){return await n()}await e[o].call(this,t,s(o+1))};await s(0)()}}class x extends Function{constructor(e){super('throw new TypeError("CallableClass was called")');return Object.setPrototypeOf(e,new.target.prototype)}}class R extends x{constructor(){super(async(e,t)=>await this.main(e,t))}async main(e,t){await t()}}class P extends Array{static get(e){return this.List.get(e)||new P}static set(e,t){this.List.set(e,t)}}P.List=new WeakMap;const D=/^\*+$/,N=/^\:+(.*)$/,q=/^[a-z][a-z0-9]*$/i,L=(e)=>e.replace(/([.+*?=^!:${}()[\]|/\\])/g,'\\$1');class k{constructor(e=''){this.keys=['*'];let t=e.split(/\s*\/\s*/).filter((e)=>e.length).map((e)=>{if(D.test(e))return'[^/]+';let t=N.exec(e);if(!t)return L(e);let n=t[1];if(!q.test(n))throw TypeError(`Key name "${n}" does not match "${q.source}" pattern`);this.keys.push(n);return'([^/]+)'}).join('(?:/+)');this.pattern=new RegExp('^(?:/+)?'+t+'(?:/+)?$')}exec(e=''){let t=this.pattern.exec(e);if(!t)return;return t.reduce((e,t,n)=>{e[this.keys[n]]=t;return e},{})}}function s(e,t,n,r){const i=new k(t);return async function(s,o){const a=s.route;if(!a)return await o();if(a.finished)return await o();if(a.method!==e||'HEAD'===a.method&&'GET'!==e)return await o();const d=i.exec(a.pathname);if(!d)return await o();for(let e of n)if(!(e in a.query))return await o();a.data=d;s.debug('=== Route %s [%s] ===\n%s %s => %s\nData: %s\nQuery: %s',a.method,a.path,t,n,r,a.data,a.query);await this[r](s,o)}}function o(e,t='',...n){return(r,i)=>{if('symbol'===typeof i)throw new TypeError('Property name must be a string');let o=P.get(r.constructor);o.push(s(e,t,n,i));P.set(r.constructor,o)}}const M=(e,...t)=>o('DELETE',e,...t),j=(e,...t)=>o('GET',e,...t),F=(e,...t)=>o('POST',e,...t);class Q{constructor(e){this.finished=false;this.data={};this.method=e.request.method;this.path=e.request.path;this.pathname='/'+e.request.pathname.join('/');this.query=e.request.query}valueOf(){return{method:this.method,path:this.path,pathname:this.pathname,query:this.query,finished:this.finished,data:this.data}}toJSON(){return this.valueOf()}}const U=Symbol('Route');class G extends R{constructor(e=Q){super();this.BaseClass=e;this[U]=i(P.get(this.constructor))}async main(e,t){e.route=new this.BaseClass(e);return this[U].call(this,e,t)}}const H=process.env.SERVICE_HOSTNAME||'0.0.0.0',$=c(~~(process.env.SERVICE_PORT||'')||0,0)||80,V=c(~~(process.env.SERVICE_TIMEOUT||'')||0,0)||120,B=c(~~(process.env.SERVICE_KEEP_ALIVE||'')||0,0)||5,X=(process.env.NODE_DEBUG||'').split(/\s*,\s*/).map((e)=>e.toLowerCase().trim()).filter((e)=>!!e);class z extends R{constructor(){super(...arguments);this.enable=X.includes('service'.toLowerCase())}log(...e){let t=e.shift();e=e.map((e)=>Object(T.inspect)(e&&e.valueOf instanceof Function?e.valueOf():e,{depth:3,colors:true}));console.log(t,...e)}async main(e,t){e.debug=this.enable?(...e)=>this.log(...e):()=>undefined;e.debug('=== Input context ===\n%s',e);await t();e.debug('=== Output context ===\n%s',e)}}class Y extends m.Server{constructor(...e){super();e.unshift(new z);const t=i(e.map((e)=>e));this.on('request',(e,n)=>{const i=new A(e,n);t(i,()=>Promise.resolve()).then(()=>i.respond()).catch((e)=>{r(e,i);try{i.throw(e)}catch(e){}})});this.on('clientError',(e,t)=>{t.end('HTTP/1.1 400 Bad Request\r\n\r\n');r(e)});this.timeout=V;this.keepAliveTimeout=B;this.listen($,H,()=>{const e=this.address();console.log(`Opened HTTP server on ${e.address}:${e.port}`)})}}function a(e=[]){const t=e.map((e)=>e.id);return(n,r,i)=>{if(!i)return i;const s=i.value;i.value=async function(n,r){n.session;if(!n.session){n.debug('=== ACL %s Denied ===\nSession is undefined',t);n.set(403);return await r()}if(!n.session.valid){n.debug('=== ACL %s Denied ===\nSession: %s',t,n.session);n.set(403);return await r()}if(!n.session.user.checkRole(e)){n.debug('=== ACL %s Denied ===\nSession: %s',t,n.session);n.set(403);return await r()}n.debug('=== ACL %s Allow ===\nSession: %s',t,n.session);await s.call(this,n,r)};return i}}class Z{constructor(e={}){if(!e)e={};this.symbol=String(e.symbol||'').trim();this.enable=!!e.enable;this.title=String(e.title||'').trim();this.ogTitle=String(e.ogTitle||'').trim();this.description=String(e.description||'').trim();this.ogDescription=String(e.ogDescription||'').trim();this.image=c(~~e.image,0)||null;this.ogImage=c(~~e.ogImage,0)||null;this.content=String(e.content||'').trim();this.branding={}}valueOf(){return{symbol:this.symbol,enable:this.enable,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,content:this.content,branding:this.branding}}toJSON(){return{symbol:this.symbol,enable:this.enable,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,content:this.content,branding:this.branding}}toNumber(){return NaN}toString(){return this.title}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Currency value to unknown value');}}[Symbol.toStringTag](){return'Currency'}}Z.MainFields=['symbol','enable','title','image'];var K=n(5),W=n.n(K),J=K.randomBytes;const ee=['00','01','02','03','04','05','06','07','08','09','0a','0b','0c','0d','0e','0f','10','11','12','13','14','15','16','17','18','19','1a','1b','1c','1d','1e','1f','20','21','22','23','24','25','26','27','28','29','2a','2b','2c','2d','2e','2f','30','31','32','33','34','35','36','37','38','39','3a','3b','3c','3d','3e','3f','40','41','42','43','44','45','46','47','48','49','4a','4b','4c','4d','4e','4f','50','51','52','53','54','55','56','57','58','59','5a','5b','5c','5d','5e','5f','60','61','62','63','64','65','66','67','68','69','6a','6b','6c','6d','6e','6f','70','71','72','73','74','75','76','77','78','79','7a','7b','7c','7d','7e','7f','80','81','82','83','84','85','86','87','88','89','8a','8b','8c','8d','8e','8f','90','91','92','93','94','95','96','97','98','99','9a','9b','9c','9d','9e','9f','a0','a1','a2','a3','a4','a5','a6','a7','a8','a9','aa','ab','ac','ad','ae','af','b0','b1','b2','b3','b4','b5','b6','b7','b8','b9','ba','bb','bc','bd','be','bf','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9','ca','cb','cc','cd','ce','cf','d0','d1','d2','d3','d4','d5','d6','d7','d8','d9','da','db','dc','dd','de','df','e0','e1','e2','e3','e4','e5','e6','e7','e8','e9','ea','eb','ec','ed','ee','ef','f0','f1','f2','f3','f4','f5','f6','f7','f8','f9','fa','fb','fc','fd','fe','ff'];var te=(e)=>ee[e[0]]+ee[e[1]]+ee[e[2]]+ee[e[3]]+'-'+ee[e[4]]+ee[e[5]]+'-'+ee[e[6]]+ee[e[7]]+'-'+ee[e[8]]+ee[e[9]]+'-'+ee[e[10]]+ee[e[11]]+ee[e[12]]+ee[e[13]]+ee[e[14]]+ee[e[15]];const ne=J(16),re=[1|ne[0],ne[1],ne[2],ne[3],ne[4],ne[5]];let ie=16383&(ne[6]<<8|ne[7]),se=0,oe=0;var ae=()=>{let e=new Date().getTime(),t=oe+1,n=e-se+(t-oe)/1e4,r=0>n?16383&ie+1:ie;if(0>n||e>se){t=0}if(1e4<=t)throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');se=e;oe=t;ie=r;e+=1.22192928e13;let s=0,i=new Uint8Array(16),o=(1e4*(268435455&e)+t)%4294967296;i[s++]=255&o>>>24;i[s++]=255&o>>>16;i[s++]=255&o>>>8;i[s++]=255&o;let a=268435455&1e4*(e/4294967296);i[s++]=255&a>>>8;i[s++]=255&a;i[s++]=16|15&a>>>24;i[s++]=255&a>>>16;i[s++]=128|r>>>8;i[s++]=255&r;for(let e=0;6>e;++e)i[s+e]=re[e];return te(i)};const de=/^[a-f0-9]{8}-[a-f0-9]{4}-1[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i,ue=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i,pe=/^00000000-0000-0000-0000-000000000000$/;class le{constructor(e=null){if(e instanceof le){this.version=e.version;this.uuid=e.uuid;return this}if('string'===typeof e){let t=e.toLowerCase();if(pe.test(t)){this.version=null;this.uuid=t;return this}if(de.test(t)){this.version=1;this.uuid=t;return this}if(ue.test(t)){this.version=4;this.uuid=t;return this}throw new Error(`UUID "${e}" does not match the UUID string`)}if(null===e){this.version=null;this.uuid='00000000-0000-0000-0000-000000000000';return this}if(1===e){this.version=1;this.uuid=ae();return this}if(4===e){this.version=4;this.uuid=ae();return this}throw new Error(`Illegal UUID version of "${e}"`)}get value(){return this.uuid}valueOf(){return this.uuid}toNumber(){return NaN}toString(){return this.uuid}toJSON(){return this.uuid}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert UUID value to unknown value');}}[Symbol.toStringTag](){return'UUID'}}class ce{constructor(e={}){if(!e)e={};this.id=new le(e.id||null);this.enable=!!e.enable;this.url=String(e.url||'').trim()||null;this.title=String(e.title||'').trim();this.ogTitle=String(e.ogTitle||'').trim();this.description=String(e.description||'').trim();this.ogDescription=String(e.ogDescription||'').trim();this.image=c(~~e.image,0)||null;this.ogImage=c(~~e.ogImage,0)||null;this.content=String(e.content||'').trim();this.branding={}}valueOf(){return{enable:this.enable,url:this.url,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,content:this.content,branding:this.branding}}toJSON(){return{id:this.id,enable:this.enable,url:this.url,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,content:this.content,branding:this.branding}}toNumber(){return NaN}toString(){return this.title}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Exchange value to unknown value');}}[Symbol.toStringTag](){return'Exchange'}}ce.MainFields=['id','enable','url','title'];class ge{constructor(e={}){if(!e)e={};this.id=new le(e.id||null);this.enable=!!e.enable;this.url=String(e.url||'').trim()||null;this.title=String(e.title||'').trim();this.ogTitle=String(e.ogTitle||'').trim();this.description=String(e.description||'').trim();this.ogDescription=String(e.ogDescription||'').trim();this.image=c(~~e.image,0)||null;this.ogImage=c(~~e.ogImage,0)||null;this.content=String(e.content||'').trim();this.branding={}}valueOf(){return{enable:this.enable,url:this.url,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,content:this.content,branding:this.branding}}toJSON(){return{id:this.id,enable:this.enable,url:this.url,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,content:this.content,branding:this.branding}}toNumber(){return NaN}toString(){return this.title}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert ICO value to unknown value');}}[Symbol.toStringTag](){return'ICO'}}ge.MainFields=['id','enable','url','title'];class fe{constructor(e={}){if(!e)e={};this.id=new le(e.id||null);this.enable=!!e.enable;this.url=String(e.url||'').trim()||null;this.title=String(e.title||'').trim();this.ogTitle=String(e.ogTitle||'').trim();this.description=String(e.description||'').trim();this.ogDescription=String(e.ogDescription||'').trim();this.image=c(~~e.image,0)||null;this.ogImage=c(~~e.ogImage,0)||null;this.content=String(e.content||'').trim();this.branding={}}valueOf(){return{enable:this.enable,url:this.url,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,content:this.content,branding:this.branding}}toJSON(){return{id:this.id,enable:this.enable,url:this.url,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,content:this.content,branding:this.branding}}toNumber(){return NaN}toString(){return this.title}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Market value to unknown value');}}[Symbol.toStringTag](){return'Market'}}fe.MainFields=['id','enable','url','title'];class me extends Date{constructor(e){super(e)}get isValid(){return!l(this.getTime())}get isInvalid(){return!this.isValid}valueOf(){return new Date(this)}toNumber(){return this.getTime()}toString(){return this.toISOString()}toJSON(){return this.toISOString()}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Model value to unknown value');}}[Symbol.toStringTag](){return'Timestamp'}}class ye{constructor(e={}){if(!e)e={};this.id=new le(e.id||null);this.ts=new me(e.ts);this.url=String(e.url||'').trim();this.enable=!!e.enable;this.currencies=Array.isArray(e.currencies)?e.currencies.map(()=>new le(e&&e.id||e)).filter((e)=>null!==e.version):new Array;this.exchanges=Array.isArray(e.exchanges)?e.exchanges.map(()=>new le(e&&e.id||e)).filter((e)=>null!==e.version):new Array;this.ico=Array.isArray(e.ico)?e.ico.map(()=>new le(e&&e.id||e)).filter((e)=>null!==e.version):new Array;this.markets=Array.isArray(e.markets)?e.markets.map(()=>new le(e&&e.id||e)).filter((e)=>null!==e.version):new Array;this.sections=Array.isArray(e.sections)?e.sections.map(()=>new le(e&&e.id||e)).filter((e)=>null!==e.version):new Array;this.weight=c(~~e.weight,0);this.bigTitle=String(e.bigTitle||'').trim();this.title=String(e.title||'').trim();this.ogTitle=String(e.ogTitle||'').trim();this.description=String(e.description||'').trim();this.ogDescription=String(e.ogDescription||'').trim();this.image=c(~~e.image,0)||null;this.ogImage=c(~~e.ogImage,0)||null;this.authors=Array.isArray(e.authors)?e.authors.map(()=>new le(e&&e.id||e)).filter((e)=>null!==e.version):new Array;this.tags=Array.isArray(e.tags)?e.tags.map((e)=>String(e).trim().toLowerCase()).filter((e)=>!!e):new Array;this.sharing=!!e.sharing;this.comments=!!e.comments;this.advertising=!!e.advertising;this.rss=!!e.rss;this.yandexNews=!!e.yandexNews;this.yandexZen=!!e.yandexZen;this.facebookIA=!!e.facebookIA;this.content=String(e.content||'').trim();this.branding={};this.lastModified=new me(e.lastModified)}valueOf(){return{ts:this.ts,url:this.url,enable:this.enable,currencies:this.currencies,exchanges:this.exchanges,ico:this.ico,markets:this.markets,sections:this.sections,weight:this.weight,bigTitle:this.bigTitle,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,authors:this.authors,tags:this.tags,sharing:this.sharing,comments:this.comments,advertising:this.advertising,rss:this.rss,yandexNews:this.yandexNews,yandexZen:this.yandexZen,facebookIA:this.facebookIA,branding:this.branding,content:this.content,lastModified:this.lastModified}}toJSON(){return{id:this.id,ts:this.ts,url:this.url,enable:this.enable,currencies:this.currencies,exchanges:this.exchanges,ico:this.ico,markets:this.markets,sections:this.sections,weight:this.weight,bigTitle:this.bigTitle,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,authors:this.authors,tags:this.tags,sharing:this.sharing,comments:this.comments,advertising:this.advertising,rss:this.rss,yandexNews:this.yandexNews,yandexZen:this.yandexZen,facebookIA:this.facebookIA,branding:this.branding,content:this.content,lastModified:this.lastModified}}toNumber(){return NaN}toString(){return this.title}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Publication value to unknown value');}}[Symbol.toStringTag](){return'Publication'}}ye.MainFields=['id','ts','url','enable','weight','title','lastModified'];class he{constructor(e={}){if(!e)e={};this.id=new le(e.id||null);this.enable=e.enable===undefined?true:!!e.enable;this.url=String(e.url||'').trim()||null;this.title=String(e.title||'').trim();this.ogTitle=String(e.ogTitle||'').trim();this.description=String(e.description||'').trim();this.ogDescription=String(e.ogDescription||'').trim();this.image=c(~~e.image,0)||null;this.ogImage=c(~~e.ogImage,0)||null;this.branding={}}valueOf(){return{enable:this.enable,url:this.url,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,branding:this.branding}}toJSON(){return{id:this.id,enable:this.enable,url:this.url,title:this.title,ogTitle:this.ogTitle,description:this.description,ogDescription:this.ogDescription,image:this.image,ogImage:this.ogImage,branding:this.branding}}toNumber(){return NaN}toString(){return this.title}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Section value to unknown value');}}[Symbol.toStringTag](){return'Section'}}he.MainFields=['id','enable','url','title'];class be{constructor(e={}){if(!e)e={};this.id=new le(e.id||null);this.enable=e.enable===undefined?true:!!e.enable;this.title=String(e.title||'').trim();this.image=c(~~e.image,0)||null}valueOf(){return{enable:this.enable,title:this.title,image:this.image}}toJSON(){return{id:this.id,enable:this.enable,title:this.title,image:this.image}}toNumber(){return NaN}toString(){return this.title}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Status value to unknown value');}}[Symbol.toStringTag](){return'Status'}}be.MainFields=['id','enable','title','image'];const we=/^[a-z][a-z0-9]*$/;class ve{constructor(e,t){this.id=e;this.value=t;if(!we.test(e))throw new TypeError(`Enum ID "${e}" does not matc the pattern "${we.source}"`)}static*[Symbol.iterator](){const e=Object.keys(this);for(let t of e){yield this[t]}}static get(e){let t=String(e&&e.id||e);for(let n of this)if(n.id===t)return n}static getArray(e){return new Array().concat(e).map((e)=>this.get(e)).filter((e)=>e!==undefined)}valueOf(){return this.id}toNumber(){return NaN}toString(){return this.value}toJSON(){return this.id}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Enum value to unknown value');}}[Symbol.toStringTag](){return'Enum'}}class _e extends ve{constructor(e,t,n){super(e,t);this.icon=n}[Symbol.toStringTag](){return'UserRole'}}_e.User=new _e('user','\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C',null);_e.Author=new _e('author','\u0410\u0432\u0442\u043E\u0440',null);_e.Publisher=new _e('publisher','\u041F\u0443\u0431\u043B\u0438\u043A\u0430\u0442\u043E\u0440',null);_e.Chief=new _e('chief','\u0420\u0435\u0434\u0430\u043A\u0442\u043E\u0440',null);_e.Administrator=new _e('administrator','\u0410\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440',null);_e.Su=new _e('su','Super user',null);const Ee=/^\{([a-z0-9,]+)\}$/;class Ie{constructor(e={}){if(!e)e={};this.id=new le(e.id||null);this.enable=!!e.enable;if(e.roles){const t=Ee.exec(e.roles),n=t&&t[1].split(',')||e.roles;this.roles=_e.getArray(n)}else this.roles=new Array;this.url=String(e.url||'').trim()||null;this.title=String(e.title||'').trim();this.description=String(e.description||'').trim();this.email=String(e.email||'').trim();this.phone=String(e.phone||'').trim()||null;this.image=c(~~e.image,0)||null;this.card={};this.statuses=Array.isArray(e.statuses)?e.statuses.map(()=>new le(e&&e.id||e)).filter((e)=>null!==e.version):new Array}checkRole(e){for(let t of e)if(this.roles.includes(t))return true;return false}get valid(){return null!==this.id&&null!==this.id.version}valueOf(){return{enable:this.enable,roles:this.roles,url:this.url,title:this.title,description:this.description,email:this.email,phone:this.phone,image:this.image,card:this.card,statuses:this.statuses}}toJSON(){return{id:this.id,enable:this.enable,roles:this.roles,url:this.url,title:this.title,description:this.description,email:this.email,phone:this.phone,image:this.image,card:this.card,statuses:this.statuses}}toNumber(){return NaN}toString(){return this.title}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert User value to unknown value');}}[Symbol.toStringTag](){return'User'}}Ie.MainFields=['id','enable','roles','url','title','description','email','phone','image','statuses'];class Se{constructor(e={}){if(!e)e={};this.id=String(e.id||'').trim();this.enable=e.enable===undefined?true:!!e.enable}valueOf(){return{id:this.id,enable:this.enable}}toJSON(){return{id:this.id,enable:this.enable}}toNumber(){return NaN}toString(){return this.id}[Symbol.toPrimitive](e){switch(e){case'default':return this.valueOf();case'number':return this.toNumber();case'string':return this.toString();default:throw new TypeError('Cannot convert Video value to unknown value');}}[Symbol.toStringTag](){return'Video'}}Se.MainFields=['id','enable'];const Oe=/^[0-9a-z]{128}$/,Te=/token\s+([0-9a-f]{128})/;class Ce{constructor(e){this._ctx=e;this._id='';this._user=null;const t=Te.exec(e.request.getHeader('Authorization')||'');this._id=t&&t[1]||''}get id(){return this._id}set id(e){this._id=Oe.test(e)?e:''}get user(){return this._user}set user(e){if(!e)this._user=null;else{let t=e instanceof Ie?e:new Ie(e);this._user=t.valid?t:null}}get ip(){return this._ctx.request.ip}get valid(){return 0<this.id.length&&this._user instanceof Ie&&this._user.valid}valueOf(){return{id:this._id,user:this._user}}toJSON(){return this.valueOf()}}var Ae=n(8),xe=n.n(Ae);const Re=process.env.POSTGRES_HOST||'localhost',Pe=c(~~(process.env.POSTGRES_PORT||''),0)||5432,De=process.env.POSTGRES_DB||'postgres',Ne=process.env.POSTGRES_USER||'postgres',qe=process.env.POSTGRES_PASSWORD||'',Le=c(~~(process.env.POSTGRES_IDLE_TIMEOUT||'')||0,0)||10,ke=c(~~(process.env.POSTGRES_POOL_SIZE||'')||0,0)||10,Me={host:Re,port:Pe,user:Ne,password:qe,database:De,idleTimeoutMillis:1e3*Le,max:ke},je=new Ae.Pool(Me);class Fe{constructor(){}static*[Symbol.iterator](){const e=Object.keys(this);for(let t of e){yield this[t]}}static parseError(e){const t=e&&parseInt(e.code)||NaN;if(!t)return NaN;for(let n of this)if(n===t)return n;return NaN}}Fe.UNIQUE_VIOLATION=23505;class Qe{constructor(e){this.name=e}valueOf(){return{text:this.text,values:this.values}}}class Ue{constructor(e=null,t=0,n=[]){this.text='';this.values=[];if(null===e){this.values=[];this.text='';return this}if('string'===typeof e){let r=t;this.values=[];this.text=' WHERE '+e.replace(/\$\d+/g,(e)=>{let t=~~/\d+/.exec(e)[0]-1;if(n[t]===undefined)return'DEFAULT';this.values.push(n[t]);return`$${++r}`});return this}throw new TypeError('value is not a null, array, object or string')}}class Ge{constructor(e=null){if(null===e){this.text='';return this}if(Array.isArray(e)){this.text=' ORDER BY '+e.map((e)=>`"${e}" ASC`).join(', ');return this}if('object'===typeof e){let t=Object.keys(e);if(0===t.length){this.text='';return this}this.text=' ORDER BY '+t.map((t)=>`"${t}" ${e[t]}`).join(', ');return this}if('string'===typeof e){this.text=` ORDER BY "${e}" ASC`;return this}throw new TypeError('value is not a null, array, object or string')}}class He{constructor(e=Infinity){if(l(e))throw new TypeError('limit is not a number');if(0>=e)throw new TypeError('limit is less than or equal to zero');if(e<Infinity)this.text=' LIMIT ${limit}';else this.text=''}}class $e{constructor(e=0){if(l(e))throw new TypeError('offset is not a number');if(0>e)throw new TypeError('offset is less than zero');if(e===Infinity)throw new TypeError('offset is Infinity');if(0<e)this.text=' OFFSET ${offset}';else this.text=''}}class Ve extends Qe{constructor(e,t=[]){super('SELECT');this._where=new Ue;this._order=new Ge;this._limit=new He;this._offset=new $e;let n=Array.isArray(t)?t:Object.keys(t);n=n.map((e)=>`"${e}"`);this._command=`SELECT ${n.join(', ')||'*'} FROM "${e.scheme}"."${e.table}"`}where(e,...t){this._where=new Ue(e,0,t);return this}order(e){this._order=new Ge(e);return this}limit(e){this._limit=new He(e);return this}offset(e){this._offset=new $e(e);return this}get text(){return this._command+this._where.text+this._order.text+this._limit.text+this._offset.text}get values(){return this._where.values}}class Be{constructor(e=[]){let t=Array.isArray(e)?e:Object.keys(e);t=t.map((e)=>`"${e}"`);this.text=` RETURNING ${t.join(', ')||'*'}`}}class Xe extends Qe{constructor(e,t={}){super('INSERT');this._returning=new Be;let n=Object.keys(t);if(0===n.length)throw new TypeError('filtred value is an empty object');this.values=[];let r=[];n.forEach((e)=>{if(t[e]===undefined){r.push('DEFAULT');return}let n=this.values.push(t[e]);r.push(`$${n}`)});n=n.map((e)=>`"${e}"`);this._command=`INSERT INTO "${e.scheme}"."${e.table}" (${n.join(', ')}) VALUES (${r.join(', ')})`}returning(e){this._returning=new Be(e);return this}get text(){return this._command+this._returning.text}}class ze extends Qe{constructor(e,t=[]){super('UPDATE');this._returning=new Be;this._where=new Ue;let n=Object.keys(t);if(0===n.length)throw new TypeError('filtred value is an empty object');this._values=[];n=n.map((e)=>{let n=`"${e}" = `;if(t[e]===undefined){return n+'DEFAULT'}let r=this._values.push(t[e]);return n+`$${r}`});this._command=`UPDATE "${e.scheme}"."${e.table}" SET ${n.join(', ')}`}where(e,...t){this._where=new Ue(e,this._values.length,t);return this}returning(e){this._returning=new Be(e);return this}get text(){return this._command+this._where.text+this._returning.text}get values(){return[...this._values,...this._where.values]}}class Ye extends Qe{constructor(e){super('DELETE');this._where=new Ue;this._returning=new Be;this._command=`DELETE FROM "${e.scheme}"."${e.table}"`}where(e,...t){this._where=new Ue(e,0,t);return this}returning(e){this._returning=new Be(e);return this}get text(){return this._command+this._where.text+this._returning.text}get values(){return this._where.values}}class Ze{constructor(e,t='public'){this.table=e;this.scheme=t}select(e){return new Ve(this,e)}insert(e){return new Xe(this,e)}update(e){return new ze(this,e)}delete(){return new Ye(this)}}const Ke=[255,255,26,27,28,29,30,31,255,255,255,255,255,255,255,255,255,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,255,255,255,255,255,255,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,255,255,255,255,255];function d(e){const t=Buffer.isBuffer(e)?e:new Buffer(e);let n=0,r=0,i=0,s=0;const o=g(t.length/5),a=0===t.length%5?o:o+1,d=new Buffer(8*a);while(n<t.length){let e=t[n];if(3<i){s=e&255>>i;i=(i+5)%8;s=s<<i|(n+1<t.length?t[n+1]:0)>>8-i;n++}else{s=31&e>>8-(i+5);i=(i+5)%8;if(0===i)n++}d[r]='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'.charCodeAt(s);r++}for(n=r;n<d.length;n++)d[n]=61;return d}function u(e){const t=Buffer.isBuffer(e)?e:new Buffer(e);let n=0,r=0,i=0,s=0;const o=new Buffer(Math.ceil(5*t.length/8));for(let a=0;a<t.length;a++){if(61===t[a])break;let e=t[a]-48;if(e<Ke.length){r=Ke[e];if(3>=n){n=(n+5)%8;if(0===n){i|=r;o[s]=i;s++;i=0}else i|=255&r<<8-n}else{n=(n+5)%8;i|=255&r>>>n;o[s]=i;s++;i=255&r<<8-n}}else throw new Error('Invalid input - it is not base32 encoded string')}return o.slice(0,s)}class We{constructor({digits:t=6,step:n=30,secret:e,length:r=32}={}){this._digits=c(g(t),1);this._step=c(g(n),1);this._secret=e?e:Object(K.randomBytes)(c(g(r),1)).toString('hex')}hotpToken(e){const t=Number(e).toString(16).padStart(16,'0'),n=u(this.base32Secret).toString('hex'),r=Object(K.createHmac)('sha1',new Buffer(n,'hex')).update(new Buffer(t,'hex')).digest(),i=15&r[r.length-1],s=(127&r[i])<<24|(255&r[i+1])<<16|(255&r[i+2])<<8|255&r[i+3];return String(s%Math.pow(10,this._digits)).padStart(this._digits,'0')}hotpCheck(e,t){const n=this.hotpToken(t);if(1>n.length)return false;return p(e)===p(n)}totpToken(e=0){const t=g(Date.now()/this._step/1e3)+e;return this.hotpToken(t)}totpCheck(e,t=0){const n=[];if(0<t){for(let e=-1*t;e<=t;e++)n.push(p(this.totpToken(e)))}else n.push(p(this.totpToken()));return n.includes(p(e))}get base32Secret(){return d(this._secret).toString().replace(/=/g,'')}}var Je=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},et=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const tt='auth';class nt extends G{async auth(e){if(e.session.valid)e.set(204);else e.set(403)}async logout(e){if(e.session.valid){const t=e.session.user,n=e.db,r=new Ze('sessions').delete().where('owner = $1',String(t.id));e.debug(`=== SQL Query [GET /${tt}/logout] ===\n%s`,r);const i=await n.query(r.valueOf());e.debug(`=== SQL Result [GET /${tt}/logout] ===\n%s`,i.rows)}e.session.user=null;e.session.id='';e.set(204)}async login(e){const t=await e.request.json();if('object'!==typeof t||!t.email||!t.password){e.set(403);return}const n=e.db,r={text:`SELECT
-               *
-             FROM
-               "users"
-             WHERE
-               "users"."email" = $1
-               AND
-               "users"."password" = encode(digest($2, 'sha512'), 'hex')
-               AND
-               enable`,values:[t.email,t.password]};e.debug(`=== SQL Query [POST /${tt}/login] ===\n%s`,r);const i=await n.query(r);e.debug(`=== SQL Result [POST /${tt}/login] ===\n%s`,i.rows);if(1!==i.rowCount){e.set(403);return}const s=i.rows[0].totp;if(s){if(!t.otp){e.set(403);return}const n=new We({secret:s});if(!n.totpCheck(t.otp,2)){e.set(403);return}}e.session.user=new Ie(i.rows[0]);if(!e.session.user){e.set(403);return}const o={text:`INSERT INTO
-               "sessions" ("owner", "ip")
-             VALUES
-               ($1, $2)
-             RETURNING
-               "id"`,values:[String(e.session.user.id),e.session.ip]};e.debug(`=== SQL Query [POST /${tt}/login] NEW ===\n%s`,o);const a=await n.query(o);e.debug(`=== SQL Result [POST /${tt}/login] NEW ===\n%s`,a.rows);e.session.id=a.rows[0]&&a.rows[0].id||'';e.set({token:e.session.id})}}Je([j(`/${tt}`),et('design:type',Function),et('design:paramtypes',[A,Function]),et('design:returntype',Promise)],nt.prototype,'auth',null);Je([j(`/${tt}/logout`),et('design:type',Function),et('design:paramtypes',[A,Function]),et('design:returntype',Promise)],nt.prototype,'logout',null);Je([F(`/${tt}/login`),et('design:type',Function),et('design:paramtypes',[A,Function]),et('design:returntype',Promise)],nt.prototype,'login',null);var rt=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},it=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const st='exchanges',ot='exchanges';class at extends G{async getAll(e){const t=e.db,n=new Ze(ot).select(ce.MainFields);e.debug(`=== SQL Query [GET /${st}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${st}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new ce(e));e.set(i)}async getAllEnabled(e){const t=e.db,n=new Ze(ot).select(ce.MainFields).where('enable');e.debug(`=== SQL Query [GET /${st}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${st}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new ce(e));e.set(i)}async getOne(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(ot).select().where('id = $1',String(r));e.debug(`=== SQL Query [GET /${st}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${st}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ce(s.rows[0]);e.set(o)}async getOneEnabled(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(ot).select().where('id = $1 AND enable',String(r));e.debug(`=== SQL Query [GET /${st}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${st}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ce(s.rows[0]);e.set(o)}async add(e){const t=e.db,n=await e.request.json(),r=new ce(n),i=new Ze(ot).insert(r.valueOf()).returning();e.debug(`=== SQL Query [POST /${st}] ===\n%s`,i);const s=await t.query(i.valueOf());e.debug(`=== SQL Result [POST /${st}] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ce(s.rows[0]);e.set(o)}async update(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=await e.request.json(),s=new ce(i),o=new Ze(ot).update(s.valueOf()).where('id = $1',String(r)).returning();e.debug(`=== SQL Query [POST /${st}/:id] ===\n%s`,o);const a=await n.query(o.valueOf());e.debug(`=== SQL Result [POST /${st}/:id] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}const d=new ce(a.rows[0]);e.set(d)}async delete(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(ot).delete().where('id = $1',String(r)).returning();e.debug(`=== SQL Query [DELETE /${st}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [DELETE /${st}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ce(s.rows[0]);e.set(o)}}rt([j(`/${st}`),a([_e.Administrator,_e.Su]),it('design:type',Function),it('design:paramtypes',[A,Function]),it('design:returntype',Promise)],at.prototype,'getAll',null);rt([j(`/${st}`),it('design:type',Function),it('design:paramtypes',[A,Function]),it('design:returntype',Promise)],at.prototype,'getAllEnabled',null);rt([j(`/${st}/:id`),a([_e.Administrator,_e.Su]),it('design:type',Function),it('design:paramtypes',[A,Function]),it('design:returntype',Promise)],at.prototype,'getOne',null);rt([j(`/${st}/:id`),it('design:type',Function),it('design:paramtypes',[A,Function]),it('design:returntype',Promise)],at.prototype,'getOneEnabled',null);rt([F(`/${st}`),a([_e.Administrator,_e.Su]),it('design:type',Function),it('design:paramtypes',[A,Function]),it('design:returntype',Promise)],at.prototype,'add',null);rt([F(`/${st}/:id`),a([_e.Administrator,_e.Su]),it('design:type',Function),it('design:paramtypes',[A,Function]),it('design:returntype',Promise)],at.prototype,'update',null);rt([M(`/${st}/:id`),a([_e.Administrator,_e.Su]),it('design:type',Function),it('design:paramtypes',[A,Function]),it('design:returntype',Promise)],at.prototype,'delete',null);var dt=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},ut=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const pt='ico',lt='ico';class ct extends G{async getAll(e){const t=e.db,n=new Ze(lt).select(ge.MainFields);e.debug(`=== SQL Query [GET /${pt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${pt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new ge(e));e.set(i)}async getAllEnabled(e){const t=e.db,n=new Ze(lt).select(ge.MainFields).where('enable');e.debug(`=== SQL Query [GET /${pt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${pt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new ge(e));e.set(i)}async getOne(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(lt).select().where('id = $1',String(r));e.debug(`=== SQL Query [GET /${pt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${pt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ge(s.rows[0]);e.set(o)}async getOneEnabled(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(lt).select().where('id = $1 AND enable',String(r));e.debug(`=== SQL Query [GET /${pt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${pt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ge(s.rows[0]);e.set(o)}async add(e){const t=e.db,n=await e.request.json(),r=new ge(n),i=new Ze(lt).insert(r.valueOf()).returning();e.debug(`=== SQL Query [POST /${pt}] ===\n%s`,i);const s=await t.query(i.valueOf());e.debug(`=== SQL Result [POST /${pt}] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ge(s.rows[0]);e.set(o)}async update(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=await e.request.json(),s=new ge(i),o=new Ze(lt).update(s.valueOf()).where('id = $1',String(r)).returning();e.debug(`=== SQL Query [POST /${pt}/:id] ===\n%s`,o);const a=await n.query(o.valueOf());e.debug(`=== SQL Result [POST /${pt}/:id] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}const d=new ge(a.rows[0]);e.set(d)}async delete(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(lt).delete().where('id = $1',String(r)).returning();e.debug(`=== SQL Query [DELETE /${pt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [DELETE /${pt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ge(s.rows[0]);e.set(o)}}dt([j(`/${pt}`),a([_e.Administrator,_e.Su]),ut('design:type',Function),ut('design:paramtypes',[A,Function]),ut('design:returntype',Promise)],ct.prototype,'getAll',null);dt([j(`/${pt}`),ut('design:type',Function),ut('design:paramtypes',[A,Function]),ut('design:returntype',Promise)],ct.prototype,'getAllEnabled',null);dt([j(`/${pt}/:id`),a([_e.Administrator,_e.Su]),ut('design:type',Function),ut('design:paramtypes',[A,Function]),ut('design:returntype',Promise)],ct.prototype,'getOne',null);dt([j(`/${pt}/:id`),ut('design:type',Function),ut('design:paramtypes',[A,Function]),ut('design:returntype',Promise)],ct.prototype,'getOneEnabled',null);dt([F(`/${pt}`),a([_e.Administrator,_e.Su]),ut('design:type',Function),ut('design:paramtypes',[A,Function]),ut('design:returntype',Promise)],ct.prototype,'add',null);dt([F(`/${pt}/:id`),a([_e.Administrator,_e.Su]),ut('design:type',Function),ut('design:paramtypes',[A,Function]),ut('design:returntype',Promise)],ct.prototype,'update',null);dt([M(`/${pt}/:id`),a([_e.Administrator,_e.Su]),ut('design:type',Function),ut('design:paramtypes',[A,Function]),ut('design:returntype',Promise)],ct.prototype,'delete',null);var gt=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},ft=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const mt='markets',yt='markets';class ht extends G{async getAll(e){const t=e.db,n=new Ze(yt).select(fe.MainFields);e.debug(`=== SQL Query [GET /${mt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${mt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new fe(e));e.set(i)}async getAllEnabled(e){const t=e.db,n=new Ze(yt).select(fe.MainFields).where('enable');e.debug(`=== SQL Query [GET /${mt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${mt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new fe(e));e.set(i)}async getOne(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(yt).select().where('id = $1',String(r));e.debug(`=== SQL Query [GET /${mt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${mt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new fe(s.rows[0]);e.set(o)}async getOneEnabled(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(yt).select().where('id = $1 AND enable',String(r));e.debug(`=== SQL Query [GET /${mt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${mt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new fe(s.rows[0]);e.set(o)}async add(e){const t=e.db,n=await e.request.json(),r=new fe(n),i=new Ze(yt).insert(r.valueOf()).returning();e.debug(`=== SQL Query [POST /${mt}] ===\n%s`,i);const s=await t.query(i.valueOf());e.debug(`=== SQL Result [POST /${mt}] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new fe(s.rows[0]);e.set(o)}async update(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=await e.request.json(),s=new fe(i),o=new Ze(yt).update(s.valueOf()).where('id = $1',String(r)).returning();e.debug(`=== SQL Query [POST /${mt}/:id] ===\n%s`,o);const a=await n.query(o.valueOf());e.debug(`=== SQL Result [POST /${mt}/:id] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}const d=new fe(a.rows[0]);e.set(d)}async delete(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(yt).delete().where('id = $1',String(r)).returning();e.debug(`=== SQL Query [DELETE /${mt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [DELETE /${mt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new fe(s.rows[0]);e.set(o)}}gt([j(`/${mt}`),a([_e.Administrator,_e.Su]),ft('design:type',Function),ft('design:paramtypes',[A,Function]),ft('design:returntype',Promise)],ht.prototype,'getAll',null);gt([j(`/${mt}`),ft('design:type',Function),ft('design:paramtypes',[A,Function]),ft('design:returntype',Promise)],ht.prototype,'getAllEnabled',null);gt([j(`/${mt}/:id`),a([_e.Administrator,_e.Su]),ft('design:type',Function),ft('design:paramtypes',[A,Function]),ft('design:returntype',Promise)],ht.prototype,'getOne',null);gt([j(`/${mt}/:id`),ft('design:type',Function),ft('design:paramtypes',[A,Function]),ft('design:returntype',Promise)],ht.prototype,'getOneEnabled',null);gt([F(`/${mt}`),a([_e.Administrator,_e.Su]),ft('design:type',Function),ft('design:paramtypes',[A,Function]),ft('design:returntype',Promise)],ht.prototype,'add',null);gt([F(`/${mt}/:id`),a([_e.Administrator,_e.Su]),ft('design:type',Function),ft('design:paramtypes',[A,Function]),ft('design:returntype',Promise)],ht.prototype,'update',null);gt([M(`/${mt}/:id`),a([_e.Administrator,_e.Su]),ft('design:type',Function),ft('design:paramtypes',[A,Function]),ft('design:returntype',Promise)],ht.prototype,'delete',null);var bt=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},wt=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const vt='publications',_t='publications';class Et extends G{async getAll(e){const t=e.db,n=new Ze(_t).select(ye.MainFields);e.debug(`=== SQL Query [GET /${vt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${vt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new ye(e));e.set(i)}async getAllEnabled(e){const t=e.db,n=new Ze(_t).select(ye.MainFields).where('enable AND ts <= timezone(\'UTC\', now())');e.debug(`=== SQL Query [GET /${vt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${vt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new ye(e));e.set(i)}async getOne(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(_t).select().where('id = $1',String(r));e.debug(`=== SQL Query [GET /${vt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${vt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ye(s.rows[0]);e.set(o)}async getOneEnabled(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(_t).select().where('id = $1 AND enable',String(r));e.debug(`=== SQL Query [GET /${vt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${vt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ye(s.rows[0]);e.set(o)}async add(e){const t=e.db,n=await e.request.json(),r=new ye(n),i=new Ze(_t).insert(r.valueOf()).returning();e.debug(`=== SQL Query [POST /${vt}] ===\n%s`,i);const s=await t.query(i.valueOf());e.debug(`=== SQL Result [POST /${vt}] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ye(s.rows[0]);e.set(o)}async update(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=await e.request.json(),s=new ye(i),o=new Ze(_t).update(s.valueOf()).where('id = $1',String(r)).returning();e.debug(`=== SQL Query [POST /${vt}/:id] ===\n%s`,o);const a=await n.query(o.valueOf());e.debug(`=== SQL Result [POST /${vt}/:id] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}const d=new ye(a.rows[0]);e.set(d)}async delete(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(_t).delete().where('id = $1',String(r)).returning();e.debug(`=== SQL Query [DELETE /${vt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [DELETE /${vt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new ye(s.rows[0]);e.set(o)}}bt([j(`/${vt}`),a([_e.Administrator,_e.Su]),wt('design:type',Function),wt('design:paramtypes',[A,Function]),wt('design:returntype',Promise)],Et.prototype,'getAll',null);bt([j(`/${vt}`),wt('design:type',Function),wt('design:paramtypes',[A,Function]),wt('design:returntype',Promise)],Et.prototype,'getAllEnabled',null);bt([j(`/${vt}/:id`),a([_e.Administrator,_e.Su]),wt('design:type',Function),wt('design:paramtypes',[A,Function]),wt('design:returntype',Promise)],Et.prototype,'getOne',null);bt([j(`/${vt}/:id`),wt('design:type',Function),wt('design:paramtypes',[A,Function]),wt('design:returntype',Promise)],Et.prototype,'getOneEnabled',null);bt([F(`/${vt}`),a([_e.Administrator,_e.Su]),wt('design:type',Function),wt('design:paramtypes',[A,Function]),wt('design:returntype',Promise)],Et.prototype,'add',null);bt([F(`/${vt}/:id`),a([_e.Administrator,_e.Su]),wt('design:type',Function),wt('design:paramtypes',[A,Function]),wt('design:returntype',Promise)],Et.prototype,'update',null);bt([M(`/${vt}/:id`),a([_e.Administrator,_e.Su]),wt('design:type',Function),wt('design:paramtypes',[A,Function]),wt('design:returntype',Promise)],Et.prototype,'delete',null);var It=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},St=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const Ot='sections',Tt='sections';class Ct extends G{async getAll(e){const t=e.db,n=new Ze(Tt).select(he.MainFields);e.debug(`=== SQL Query [GET /${Ot}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${Ot}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new he(e));e.set(i)}async getAllEnabled(e){const t=e.db,n=new Ze(Tt).select(he.MainFields).where('enable');e.debug(`=== SQL Query [GET /${Ot}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${Ot}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new he(e));e.set(i)}async getOne(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(Tt).select().where('id = $1',String(r));e.debug(`=== SQL Query [GET /${Ot}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${Ot}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new he(s.rows[0]);e.set(o)}async getOneEnabled(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(Tt).select().where('id = $1 AND enable',String(r));e.debug(`=== SQL Query [GET /${Ot}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${Ot}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new he(s.rows[0]);e.set(o)}async add(e){const t=e.db,n=await e.request.json(),r=new he(n),i=new Ze(Tt).insert(r.valueOf()).returning();e.debug(`=== SQL Query [POST /${Ot}] ===\n%s`,i);const s=await t.query(i.valueOf());e.debug(`=== SQL Result [POST /${Ot}] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new he(s.rows[0]);e.set(o)}async update(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=await e.request.json(),s=new he(i),o=new Ze(Tt).update(s.valueOf()).where('id = $1',String(r)).returning();e.debug(`=== SQL Query [POST /${Ot}/:id] ===\n%s`,o);const a=await n.query(o.valueOf());e.debug(`=== SQL Result [POST /${Ot}/:id] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}const d=new he(a.rows[0]);e.set(d)}async delete(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(Tt).delete().where('id = $1',String(r)).returning();e.debug(`=== SQL Query [DELETE /${Ot}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [DELETE /${Ot}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new he(s.rows[0]);e.set(o)}}It([j(`/${Ot}`),a([_e.Administrator,_e.Su]),St('design:type',Function),St('design:paramtypes',[A,Function]),St('design:returntype',Promise)],Ct.prototype,'getAll',null);It([j(`/${Ot}`),St('design:type',Function),St('design:paramtypes',[A,Function]),St('design:returntype',Promise)],Ct.prototype,'getAllEnabled',null);It([j(`/${Ot}/:id`),a([_e.Administrator,_e.Su]),St('design:type',Function),St('design:paramtypes',[A,Function]),St('design:returntype',Promise)],Ct.prototype,'getOne',null);It([j(`/${Ot}/:id`),St('design:type',Function),St('design:paramtypes',[A,Function]),St('design:returntype',Promise)],Ct.prototype,'getOneEnabled',null);It([F(`/${Ot}`),a([_e.Administrator,_e.Su]),St('design:type',Function),St('design:paramtypes',[A,Function]),St('design:returntype',Promise)],Ct.prototype,'add',null);It([F(`/${Ot}/:id`),a([_e.Administrator,_e.Su]),St('design:type',Function),St('design:paramtypes',[A,Function]),St('design:returntype',Promise)],Ct.prototype,'update',null);It([M(`/${Ot}/:id`),a([_e.Administrator,_e.Su]),St('design:type',Function),St('design:paramtypes',[A,Function]),St('design:returntype',Promise)],Ct.prototype,'delete',null);var At=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},xt=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const Rt='statuses',Pt='statuses';class Dt extends G{async getAll(e){const t=e.db,n=new Ze(Pt).select(be.MainFields).order('title');e.debug(`=== SQL Query [GET /${Rt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${Rt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new be(e));e.set(i)}async getAllEnabled(e){const t=e.db,n=new Ze(Pt).select(be.MainFields).where('enable').order('title');e.debug(`=== SQL Query [GET /${Rt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${Rt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new be(e));e.set(i)}async getOne(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(Pt).select().where('id = $1',String(r));e.debug(`=== SQL Query [GET /${Rt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${Rt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new be(s.rows[0]);e.set(o)}async getOneEnabled(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(Pt).select().where('id = $1 AND enable',String(r));e.debug(`=== SQL Query [GET /${Rt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${Rt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new be(s.rows[0]);e.set(o)}async add(e){const t=e.db,n=await e.request.json(),r=new be(n),i=new Ze(Pt).insert(r.valueOf()).returning();e.debug(`=== SQL Query [POST /${Rt}] ===\n%s`,i);const s=await t.query(i.valueOf());e.debug(`=== SQL Result [POST /${Rt}] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new be(s.rows[0]);e.set(o)}async update(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=await e.request.json(),s=new be(i),o=new Ze(Pt).update(s.valueOf()).where('id = $1',String(r)).returning();e.debug(`=== SQL Query [POST /${Rt}/:id] ===\n%s`,o);const a=await n.query(o.valueOf());e.debug(`=== SQL Result [POST /${Rt}/:id] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}const d=new be(a.rows[0]);e.set(d)}async delete(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(Pt).delete().where('id = $1',String(r)).returning();e.debug(`=== SQL Query [DELETE /${Rt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [DELETE /${Rt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new be(s.rows[0]);e.set(o)}}At([j(`/${Rt}`),a([_e.Administrator,_e.Su]),xt('design:type',Function),xt('design:paramtypes',[A,Function]),xt('design:returntype',Promise)],Dt.prototype,'getAll',null);At([j(`/${Rt}`),xt('design:type',Function),xt('design:paramtypes',[A,Function]),xt('design:returntype',Promise)],Dt.prototype,'getAllEnabled',null);At([j(`/${Rt}/:id`),a([_e.Administrator,_e.Su]),xt('design:type',Function),xt('design:paramtypes',[A,Function]),xt('design:returntype',Promise)],Dt.prototype,'getOne',null);At([j(`/${Rt}/:id`),xt('design:type',Function),xt('design:paramtypes',[A,Function]),xt('design:returntype',Promise)],Dt.prototype,'getOneEnabled',null);At([F(`/${Rt}`),a([_e.Administrator,_e.Su]),xt('design:type',Function),xt('design:paramtypes',[A,Function]),xt('design:returntype',Promise)],Dt.prototype,'add',null);At([F(`/${Rt}/:id`),a([_e.Administrator,_e.Su]),xt('design:type',Function),xt('design:paramtypes',[A,Function]),xt('design:returntype',Promise)],Dt.prototype,'update',null);At([M(`/${Rt}/:id`),a([_e.Administrator,_e.Su]),xt('design:type',Function),xt('design:paramtypes',[A,Function]),xt('design:returntype',Promise)],Dt.prototype,'delete',null);var Nt=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},qt=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const Lt='users',kt='users';class Mt extends G{async getAll(e){const t=e.db,n=new Ze(kt).select(Ie.MainFields);e.debug(`=== SQL Query [GET /${Lt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${Lt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new Ie(e));e.set(i)}async getMe(e){if(!e.session.valid){e.set(403);return}const t=e.db,n=e.session.user,r=new Ze(kt).select().where('id = $1 AND enable',String(n.id));e.debug(`=== SQL Query [GET /${Lt}/me] ===\n%s`,r);const i=await t.query(r.valueOf());e.debug(`=== SQL Result [GET /${Lt}/me] ===\n%s`,i.rows);if(1!==i.rowCount){e.set(403);return}const s=new Ie(i.rows[0]);e.set(s)}async getOne(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(kt).select().where('id = $1',String(r));e.debug(`=== SQL Query [GET /${Lt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${Lt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new Ie(s.rows[0]);e.set(o)}async resetOTP(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i={text:`UPDATE
-               ${kt}
-             SET
-               totp = encode(digest(uuid_generate_v4()::text, 'sha256'), 'hex')
-             WHERE
-               id = $1
-             RETURNING
-               totp`,values:[String(r)]};e.debug(`=== SQL Query [POST /${Lt}/:id/otp] ===\n%s`,i);const s=await n.query(i);e.debug(`=== SQL Result [POST /${Lt}/:id/otp] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=s.rows[0].totp;if(!o){e.set(204);return}const a=new We({secret:o});e.set({secret:a.base32Secret})}async password(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=await e.request.json(),s=i.password;if(!s){e.set(400,'Password is empty');return}const o={text:`UPDATE ${kt} SET password = encode(digest($1, 'sha512'), 'hex') WHERE id = $2 RETURNING id`,values:[s,String(r)]};e.debug(`=== SQL Query [POST /${Lt}/:id/password] ===\n%s`,o);const a=await n.query(o);e.debug(`=== SQL Result [POST /${Lt}/:id/password] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}e.set(204)}async add(e){const t=e.db,n=await e.request.json(),r=new Ie(n),i=new Ze(kt).insert(r.valueOf()).returning();e.debug(`=== SQL Query [POST /${Lt}] ===\n%s`,i);const s=await t.query(i.valueOf());e.debug(`=== SQL Result [POST /${Lt}] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new Ie(s.rows[0]);e.set(o)}async update(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=await e.request.json(),s=new Ie(i),o=new Ze(kt).update(s.valueOf()).where('id = $1',String(r)).returning();e.debug(`=== SQL Query [POST /${Lt}/:id] ===\n%s`,o);const a=await n.query(o.valueOf());e.debug(`=== SQL Result [POST /${Lt}/:id] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}const d=new Ie(a.rows[0]);e.set(d)}async delete(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(kt).delete().where('id = $1',String(r)).returning();e.debug(`=== SQL Query [DELETE /${Lt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [DELETE /${Lt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new Ie(s.rows[0]);e.set(o)}async getOTP(e){const t=e.route,n=e.db;let r;try{r=new le(t.data.id)}catch(t){e.set(400,t.message);return}const i=new Ze(kt).select(['totp']).where('id = $1',String(r));e.debug(`=== SQL Query [GET /${Lt}/:id/otp] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${Lt}/:id/otp] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}let o=s.rows[0].totp;if(!o){e.set(204);return}const a=new We({secret:o});e.set({secret:a.base32Secret})}}Nt([j(`/${Lt}`),a([_e.Administrator,_e.Su]),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'getAll',null);Nt([j(`/${Lt}/me`),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'getMe',null);Nt([j(`/${Lt}/:id`),a([_e.Administrator,_e.Su]),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'getOne',null);Nt([F(`/${Lt}/:id/otp`),a([_e.Administrator,_e.Su]),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'resetOTP',null);Nt([F(`/${Lt}/:id/password`),a([_e.Administrator,_e.Su]),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'password',null);Nt([F(`/${Lt}`),a([_e.Administrator,_e.Su]),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'add',null);Nt([F(`/${Lt}/:id`),a([_e.Administrator,_e.Su]),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'update',null);Nt([M(`/${Lt}/:id`),a([_e.Administrator,_e.Su]),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'delete',null);Nt([j(`/${Lt}/:id/otp`),a([_e.Administrator,_e.Su]),qt('design:type',Function),qt('design:paramtypes',[A,Function]),qt('design:returntype',Promise)],Mt.prototype,'getOTP',null);var jt=this&&this.__decorate||function(e,t,n,s){var o=arguments.length,a=3>o?t:null===s?s=Object.getOwnPropertyDescriptor(t,n):s,r;if('object'===typeof Reflect&&'function'===typeof Reflect.decorate)a=Reflect.decorate(e,t,n,s);else for(var d=e.length-1;0<=d;d--)if(r=e[d])a=(3>o?r(a):3<o?r(t,n,a):r(t,n))||a;return 3<o&&a&&Object.defineProperty(t,n,a),a},Ft=this&&this.__metadata||function(e,t){if('object'===typeof Reflect&&'function'===typeof Reflect.metadata)return Reflect.metadata(e,t)};const Qt='video',Ut='video';class Gt extends G{async getAll(e){const t=e.db,n=new Ze(Ut).select(Se.MainFields);e.debug(`=== SQL Query [GET /${Qt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${Qt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new Se(e));e.set(i)}async getAllEnabled(e){const t=e.db,n=new Ze(Ut).select(Se.MainFields).where('enable');e.debug(`=== SQL Query [GET /${Qt}] ===\n%s`,n);const r=await t.query(n.valueOf());e.debug(`=== SQL Result [GET /${Qt}] ===\n%s`,r.rows);const i=r.rows.map((e)=>new Se(e));e.set(i)}async getOne(e){const t=e.route,n=e.db,r=String(t.data.id),i=new Ze(Ut).select().where('id = $1',String(r));e.debug(`=== SQL Query [GET /${Qt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${Qt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new Se(s.rows[0]);e.set(o)}async getOneEnabled(e){const t=e.route,n=e.db,r=String(t.data.id),i=new Ze(Ut).select().where('id = $1 AND enable',String(r));e.debug(`=== SQL Query [GET /${Qt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [GET /${Qt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new Se(s.rows[0]);e.set(o)}async add(e){const t=e.db,n=await e.request.json(),r=new Se(n),i=new Ze(Ut).insert(r.valueOf()).returning();e.debug(`=== SQL Query [POST /${Qt}] ===\n%s`,i);let s;try{s=await t.query(i.valueOf())}catch(t){if(Fe.parseError(t)===Fe.UNIQUE_VIOLATION){e.set(409);return}e.throw(t);return}e.debug(`=== SQL Result [POST /${Qt}] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new Se(s.rows[0]);e.set(o)}async update(e){const t=e.route,n=e.db,r=String(t.data.id),i=await e.request.json(),s=new Se(i),o=new Ze(Ut).update(s.valueOf()).where('id = $1',String(r)).returning();e.debug(`=== SQL Query [POST /${Qt}/:id] ===\n%s`,o);const a=await n.query(o.valueOf());e.debug(`=== SQL Result [POST /${Qt}/:id] ===\n%s`,a.rows);if(1!==a.rowCount){e.set(404);return}const d=new Se(a.rows[0]);e.set(d)}async delete(e){const t=e.route,n=e.db,r=String(t.data.id),i=new Ze(Ut).delete().where('id = $1',String(r)).returning();e.debug(`=== SQL Query [DELETE /${Qt}/:id] ===\n%s`,i);const s=await n.query(i.valueOf());e.debug(`=== SQL Result [DELETE /${Qt}/:id] ===\n%s`,s.rows);if(1!==s.rowCount){e.set(404);return}const o=new Se(s.rows[0]);e.set(o)}}jt([j(`/${Qt}`),a([_e.Administrator,_e.Su]),Ft('design:type',Function),Ft('design:paramtypes',[A,Function]),Ft('design:returntype',Promise)],Gt.prototype,'getAll',null);jt([j(`/${Qt}`),Ft('design:type',Function),Ft('design:paramtypes',[A,Function]),Ft('design:returntype',Promise)],Gt.prototype,'getAllEnabled',null);jt([j(`/${Qt}/:id`),a([_e.Administrator,_e.Su]),Ft('design:type',Function),Ft('design:paramtypes',[A,Function]),Ft('design:returntype',Promise)],Gt.prototype,'getOne',null);jt([j(`/${Qt}/:id`),Ft('design:type',Function),Ft('design:paramtypes',[A,Function]),Ft('design:returntype',Promise)],Gt.prototype,'getOneEnabled',null);jt([F(`/${Qt}`),a([_e.Administrator,_e.Su]),Ft('design:type',Function),Ft('design:paramtypes',[A,Function]),Ft('design:returntype',Promise)],Gt.prototype,'add',null);jt([F(`/${Qt}/:id`),a([_e.Administrator,_e.Su]),Ft('design:type',Function),Ft('design:paramtypes',[A,Function]),Ft('design:returntype',Promise)],Gt.prototype,'update',null);jt([M(`/${Qt}/:id`),a([_e.Administrator,_e.Su]),Ft('design:type',Function),Ft('design:paramtypes',[A,Function]),Ft('design:returntype',Promise)],Gt.prototype,'delete',null);process.env.TZ='UTC';new Y(new class extends R{constructor(e=Me){super();this.pool=new Ae.Pool(e)}async main(e,t){e.db=await je.connect();await t();e.db.release()}}(),new class extends R{async main(e,t){const n=new Ce(e),r=e.db,i={text:`SELECT
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 58);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXTERNAL MODULE: external "http"
+var external__http_ = __webpack_require__(9);
+var external__http__default = /*#__PURE__*/__webpack_require__.n(external__http_);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/error.ts
+
+class error_HttpError extends Error {
+    constructor(status, message, originError) {
+        if (message instanceof Error) {
+            originError = message;
+            message = originError.message;
+        }
+        if (originError === undefined) {
+            originError = new Error(message || 'Unknown internal server error');
+        }
+        if (!message || status >= 500) {
+            message = external__http_["STATUS_CODES"][status] || 'Undefined error';
+        }
+        super(message);
+        this.status = status;
+        this.originError = originError;
+    }
+}
+
+// EXTERNAL MODULE: external "string_decoder"
+var external__string_decoder_ = __webpack_require__(12);
+var external__string_decoder__default = /*#__PURE__*/__webpack_require__.n(external__string_decoder_);
+
+// EXTERNAL MODULE: external "querystring"
+var external__querystring_ = __webpack_require__(26);
+var external__querystring__default = /*#__PURE__*/__webpack_require__.n(external__querystring_);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/context/request.ts
+
+
+
+class request_Request {
+    constructor(req) {
+        this.req = req;
+    }
+    getHeader(key) {
+        let value = this.req.headers[key.toLowerCase()];
+        return Array.isArray(value) ? value.join(';') : value;
+    }
+    get socket() {
+        return this.req.socket;
+    }
+    get ip() {
+        return this.getHeader('X-Real-IP') || this.getHeader('X-Forwarded-For') || this.req.connection.remoteAddress || '';
+    }
+    get host() {
+        let host = this.getHeader('X-Forwarded-Host') || this.getHeader('Host');
+        return host && host.split(/\s*,\s*/)[0] || '';
+    }
+    get hostname() {
+        if (!this.host)
+            return '';
+        if (this.host[0] === '[') {
+            let hostname = /^\[[a-f0-9:]+\]/.exec(this.host);
+            return hostname && hostname[0] || '';
+        }
+        return this.host.split(':')[0] || '';
+    }
+    get port() {
+        let port = /\:([0-9]+)$/.exec(this.host);
+        return port && ~~port[1] || 80;
+    }
+    get method() {
+        return (this.req.method || '').toUpperCase();
+    }
+    get path() {
+        return this.req.url || '';
+    }
+    get pathname() {
+        return (this.req.url || '').split('?')[0]
+            .split(/\/+/)
+            .filter(item => !!item);
+    }
+    get query() {
+        let query = (this.req.url || '').split('?')
+            .slice(1)
+            .join('?');
+        return Object(external__querystring_["parse"])(query);
+    }
+    get type() {
+        let type = this.getHeader('Content-Type');
+        if (typeof type !== 'string')
+            return undefined;
+        return type.split(';')[0].trim();
+    }
+    get length() {
+        return ~~(this.getHeader('content-length') || '');
+    }
+    async raw() {
+        const contentLength = this.length;
+        return new Promise((resolve, reject) => {
+            let buffer = Buffer.alloc(0);
+            const onAborted = () => {
+                cleanup();
+                reject(new error_HttpError(400, 'Request aborted'));
+            };
+            const onError = (error) => {
+                cleanup();
+                reject(new error_HttpError(400, 'Receive data error'));
+            };
+            const onData = (chunk) => {
+                buffer = Buffer.concat([buffer, chunk]);
+            };
+            const onEnd = () => {
+                cleanup();
+                if (contentLength > 0 && buffer.length !== contentLength) {
+                    reject(new error_HttpError(400, 'Request size did not match content length'));
+                }
+                resolve(buffer);
+            };
+            const onClose = () => {
+                cleanup();
+            };
+            var cleanup = () => {
+                this.req.removeListener('aborted', onAborted);
+                this.req.removeListener('end', onError);
+                this.req.removeListener('data', onData);
+                this.req.removeListener('error', onEnd);
+                this.req.removeListener('close', onClose);
+                this.req.unpipe();
+            };
+            this.req.on('aborted', onAborted);
+            this.req.on('error', onError);
+            this.req.on('data', onData);
+            this.req.on('end', onEnd);
+            this.req.on('close', onClose);
+        });
+    }
+    async text() {
+        let raw = await this.raw();
+        try {
+            let decoder = new external__string_decoder_["StringDecoder"]('utf8');
+            return decoder.end(raw);
+        }
+        catch (error) {
+            throw new error_HttpError(400, 'Receive data is not a UTF8 string', error);
+        }
+    }
+    async json() {
+        if (this.type !== 'application/json') {
+            throw new error_HttpError(400, 'Only application/json data are allowed');
+        }
+        let text = await this.text();
+        try {
+            return JSON.parse(text);
+        }
+        catch (err) {
+            throw new error_HttpError(400, 'Invalid json received');
+        }
+    }
+    valueOf() {
+        return {
+            heders: this.req.headers,
+            ip: this.ip,
+            host: this.host,
+            hostname: this.hostname,
+            port: this.port,
+            method: this.method,
+            path: this.path,
+            pathname: this.pathname,
+            query: this.query,
+            type: this.type,
+            length: this.length
+        };
+    }
+    toJSON() {
+        return this.valueOf();
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/file-type/magic.ts
+/* harmony default export */ var magic = ([
+    { mime: 'image/jpeg', extension: 'jpg',
+        offset: 0, header: new Uint8Array([0xFF, 0xD8, 0xFF]) },
+    { mime: 'image/png', extension: 'png',
+        offset: 0, header: new Uint8Array([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]) },
+    { mime: 'image/gif', extension: 'gif',
+        offset: 0, header: new Uint8Array([0x47, 0x49, 0x46]) },
+    { mime: 'image/webp', extension: 'webp',
+        offset: 8, header: new Uint8Array([0x57, 0x45, 0x42, 0x50]) },
+]);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/file-type/file-type.ts
+
+class file_type_FileType {
+    constructor(input) {
+        const buffer = (input instanceof Uint8Array) ? input : new Uint8Array(input);
+        if (buffer.length <= 1)
+            return this;
+        for (let pattern of magic)
+            if (this.check(buffer, pattern.header, pattern.offset)) {
+                this.mime = pattern.mime;
+                this.extension = pattern.extension;
+                return this;
+            }
+        this.mime = 'application/octet-stream';
+        this.extension = '';
+    }
+    check(buffer, header, offset = 0) {
+        for (let i = 0; i < header.length; i++)
+            if (header[i] !== buffer[i + offset])
+                return false;
+        return true;
+    }
+    toJSON() {
+        return {
+            extension: this.extension,
+            mime: this.mime,
+        };
+    }
+    toString() {
+        return this.mime;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'number':
+                throw new TypeError('Cannot convert a FileType value to a number value');
+            case 'string':
+            case 'default':
+                return this.mime;
+            default:
+                throw new TypeError('Cannot convert a FileType value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'FileType';
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/file-type/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/context/response.ts
+
+
+class response_Response {
+    constructor(res) {
+        this.res = res;
+        this.set(404);
+    }
+    get finished() {
+        return this.res.finished;
+    }
+    hasHeader(key) {
+        return this.res.hasHeader(key);
+    }
+    getHeader(key) {
+        let value = this.res.getHeader(key);
+        return Array.isArray(value) ? value.join(';') : value;
+    }
+    setHeader(key, value) {
+        this.res.setHeader(key, value);
+    }
+    removeHeader(key) {
+        return this.res.removeHeader(key);
+    }
+    flushHeaders() {
+        return this.res.flushHeaders();
+    }
+    get type() {
+        let type = this.getHeader('Content-Type');
+        if (typeof type !== 'string')
+            return undefined;
+        return type.split(';')[0].trim();
+    }
+    get length() {
+        return ~~(this.getHeader('Content-Length') || '');
+    }
+    get status() {
+        return this.res.statusCode;
+    }
+    get body() {
+        return this._body;
+    }
+    set(status, value) {
+        if (this.finished)
+            return;
+        if (this.res.headersSent)
+            throw new Error('Headears was sended');
+        if (typeof status !== 'number') {
+            value = status;
+            status = undefined;
+        }
+        if (value === undefined || value === null) {
+            this.res.statusCode = status || 404;
+            this._body = external__http_["STATUS_CODES"][this.res.statusCode];
+            this.removeHeader('Content-Type');
+            this.removeHeader('Content-Length');
+            this.removeHeader('Transfer-Encoding');
+            return;
+        }
+        if (value === null) {
+            this.res.statusCode = status || 204;
+            this._body = null;
+            this.removeHeader('Content-Type');
+            this.removeHeader('Content-Length');
+            this.removeHeader('Transfer-Encoding');
+            return;
+        }
+        this.res.statusCode = status || 200;
+        if (typeof value === 'string') {
+            this._body = value;
+            this.setHeader('Content-Type', (/^\s*</.test(value) ? 'text/html' : 'text/plain') + '; charset=utf-8');
+            this.setHeader('Content-Length', Buffer.byteLength(value));
+            return;
+        }
+        if (Buffer.isBuffer(value)) {
+            let type = new file_type_FileType(value);
+            this._body = value;
+            this.setHeader('Content-Type', type.mime || 'application/octet-stream');
+            this.setHeader('Content-Length', value.length);
+            return;
+        }
+        if (typeof value === 'object') {
+            let jsonString = JSON.stringify(value);
+            this._body = jsonString;
+            this.setHeader('Content-Type', 'application/json; charset=utf-8');
+            this.setHeader('Content-Length', Buffer.byteLength(jsonString));
+            return;
+        }
+        throw TypeError('Unknown response body type');
+    }
+    respond() {
+        if (this.finished)
+            return;
+        if (this._body === null || this._body === undefined) {
+            this.res.end();
+            return;
+        }
+        else {
+            this.res.end(this._body);
+        }
+    }
+    end(status, value) {
+        this.set(status, value);
+        this.respond();
+    }
+    valueOf() {
+        return {
+            heders: this.res.getHeaders(),
+            status: this.status,
+            type: this.type,
+            length: this.length,
+            body: this.body
+        };
+    }
+    toJSON() {
+        return this.valueOf();
+    }
+}
+
+// EXTERNAL MODULE: external "util"
+var external__util_ = __webpack_require__(4);
+var external__util__default = /*#__PURE__*/__webpack_require__.n(external__util_);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/log-error.ts
+
+function logError(error, ctx) {
+    if (!error.status || error.status >= 500)
+        console.error('\x1b[31m=== Internal context error ===\n', error, '\x1b[0m\n=== with Context ===\n', ctx === undefined ? undefined : Object(external__util_["inspect"])(ctx.valueOf(), {
+            depth: 3,
+            colors: true
+        }));
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/context/context.ts
+
+
+
+
+class context_Context {
+    constructor(req, res) {
+        try {
+            this.request = new request_Request(req);
+            this.response = new response_Response(res);
+        }
+        catch (error) {
+            this.throw(error);
+        }
+    }
+    get finished() {
+        return this.response.finished;
+    }
+    set(status, value) {
+        this.response.set(status, value);
+    }
+    respond() {
+        this.response.respond();
+    }
+    end(status, value) {
+        this.response.end(status, value);
+    }
+    throw(error) {
+        if (error instanceof error_HttpError)
+            this.end(error.status, error.message);
+        else
+            this.end(500);
+        logError(error, this);
+    }
+    valueOf() {
+        return {
+            request: this.request.valueOf(),
+            response: this.response.valueOf(),
+        };
+    }
+    toJSON() {
+        return this.valueOf();
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/context/index.ts
+
+
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/middleware/compose.ts
+function Compose(middlewareList) {
+    return async function (ctx, next = () => Promise.resolve()) {
+        let index = -1;
+        const dispatch = (i) => async () => {
+            if (i <= index) {
+                throw new Error('next() called multiple times');
+            }
+            index = i;
+            if (i >= middlewareList.length) {
+                return await next();
+            }
+            await middlewareList[i].call(this, ctx, dispatch(i + 1));
+        };
+        await dispatch(0)();
+    };
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/callable/callable.ts
+class CallableClass extends Function {
+    constructor(fn) {
+        super('throw new TypeError("CallableClass was called")');
+        return Object.setPrototypeOf(fn, new.target.prototype);
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/callable/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/middleware/middleware.ts
+
+class Middleware extends CallableClass {
+    constructor() {
+        super(async (ctx, next) => await this.main(ctx, next));
+    }
+    async main(ctx, next) {
+        await next();
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/middleware/index.ts
+
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/methods.ts
+class Methods extends Array {
+    static get(target) {
+        return this.List.get(target) || new Methods();
+    }
+    static set(target, fields) {
+        this.List.set(target, fields);
+    }
+}
+Methods.List = new WeakMap();
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/path-route/pattern.ts
+const ANY_SYMBOLS = /^\*+$/;
+const ANY_SYMBOLS_PATTERN = '[^\/]+';
+const ANY_SYMBOLS_KEY_PATTERN = '([^\/]+)';
+const KEY_SYMBOLS = /^\:+(.*)$/;
+const KEY_PATTERN = /^[a-z][a-z0-9]*$/i;
+const START_PATTERN = '^(?:\/+)?';
+const END_PATTERN = '(?:\/+)?$';
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/path-route/escape-regexp.ts
+const escapeRegExpString = (st) => st.replace(/([.+*?=^!:${}()[\]|/\\])/g, '\\$1');
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/path-route/path-route.ts
+
+
+class path_route_PathRoute {
+    constructor(path = '') {
+        this.keys = ['*'];
+        let patternString = path.split(/\s*\/\s*/)
+            .filter(item => item.length)
+            .map(item => {
+            if (ANY_SYMBOLS.test(item))
+                return ANY_SYMBOLS_PATTERN;
+            let key = KEY_SYMBOLS.exec(item);
+            if (!key)
+                return escapeRegExpString(item);
+            let id = key[1];
+            if (!KEY_PATTERN.test(id))
+                throw TypeError(`Key name "${id}" does not match "${KEY_PATTERN.source}" pattern`);
+            this.keys.push(id);
+            return ANY_SYMBOLS_KEY_PATTERN;
+        })
+            .join('(?:\/+)');
+        this.pattern = new RegExp(START_PATTERN + patternString + END_PATTERN);
+    }
+    exec(path = '') {
+        let result = this.pattern.exec(path);
+        if (!result)
+            return undefined;
+        return result.reduce((prev, item, i) => {
+            prev[this.keys[i]] = item;
+            return prev;
+        }, {});
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/path-route/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/route-function.ts
+
+function generateRouteFunction(method, pattern, queryKeyList, propertyKey) {
+    const pathRoute = new path_route_PathRoute(pattern);
+    return async function (ctx, next) {
+        const route = ctx.route;
+        if (!route)
+            return await next();
+        if (route.finished)
+            return await next();
+        if (route.method !== method || (route.method === 'HEAD' && method !== 'GET'))
+            return await next();
+        const match = pathRoute.exec(route.pathname);
+        if (!match)
+            return await next();
+        for (let key of queryKeyList)
+            if (!(key in route.query))
+                return await next();
+        route.data = match;
+        ctx.debug('=== Route %s [%s] ===\n%s %s => %s\nData: %s\nQuery: %s', route.method, route.path, pattern, queryKeyList, propertyKey, route.data, route.query);
+        await this[propertyKey](ctx, next);
+    };
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/method.ts
+
+
+function Method(method, pattern = '', ...queryKeyList) {
+    return (target, propertyKey) => {
+        if (typeof propertyKey === 'symbol')
+            throw new TypeError('Property name must be a string');
+        let methods = Methods.get(target.constructor);
+        methods.push(generateRouteFunction(method, pattern, queryKeyList, propertyKey));
+        Methods.set(target.constructor, methods);
+    };
+}
+const Delete = (pattern, ...queryKeyList) => Method('DELETE', pattern, ...queryKeyList);
+const Get = (pattern, ...queryKeyList) => Method('GET', pattern, ...queryKeyList);
+const Post = (pattern, ...queryKeyList) => Method('POST', pattern, ...queryKeyList);
+const Put = (pattern, ...queryKeyList) => Method('PUT', pattern, ...queryKeyList);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/route.ts
+class Route {
+    constructor(ctx) {
+        this.finished = false;
+        this.data = {};
+        this.method = ctx.request.method;
+        this.path = ctx.request.path;
+        this.pathname = '/' + ctx.request.pathname.join('/');
+        this.query = ctx.request.query;
+    }
+    valueOf() {
+        return {
+            method: this.method,
+            path: this.path,
+            pathname: this.pathname,
+            query: this.query,
+            finished: this.finished,
+            data: this.data,
+        };
+    }
+    toJSON() {
+        return this.valueOf();
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/route.middleware.ts
+
+
+
+const RouteFunction = Symbol('Route');
+class route_middleware_RouteMiddleware extends Middleware {
+    constructor(BaseClass = Route) {
+        super();
+        this.BaseClass = BaseClass;
+        this[RouteFunction] = Compose(Methods.get(this.constructor));
+    }
+    async main(ctx, next) {
+        ctx.route = new this.BaseClass(ctx);
+        return this[RouteFunction].call(this, ctx, next);
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/route/index.ts
+
+
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/environments.ts
+const SERVICE_HOSTNAME = process.env.SERVICE_HOSTNAME || '0.0.0.0';
+const SERVICE_PORT = Math.max(~~(process.env.SERVICE_PORT || '') || 0, 0) || 80;
+const SERVICE_TIMEOUT = Math.max(~~(process.env.SERVICE_TIMEOUT || '') || 0, 0) || 120;
+const SERVICE_KEEP_ALIVE = Math.max(~~(process.env.SERVICE_KEEP_ALIVE || '') || 0, 0) || 5;
+const DEBUG = (process.env.NODE_DEBUG || '').split(/\s*,\s*/)
+    .map(item => item.toLowerCase().trim())
+    .filter(item => !!item);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/debug/debug.middleware.ts
+const DEBUGER_NAME = 'service';
+
+
+
+class debug_middleware_DebugMiddleware extends Middleware {
+    constructor() {
+        super(...arguments);
+        this.enable = DEBUG.includes(DEBUGER_NAME.toLowerCase());
+    }
+    log(...args) {
+        let first = args.shift();
+        args = args.map(item => Object(external__util_["inspect"])(item && item.valueOf instanceof Function ? item.valueOf() : item, { depth: 3, colors: true }));
+        console.log(first, ...args);
+    }
+    async main(ctx, next) {
+        ctx.debug = this.enable ? (...args) => this.log(...args) : () => void 1;
+        ctx.debug('=== Input context ===\n%s', ctx);
+        await next();
+        ctx.debug('=== Output context ===\n%s', ctx);
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/debug/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/service.ts
+
+
+
+
+
+
+class service_Service extends external__http_["Server"] {
+    constructor(...items) {
+        super();
+        items.unshift(new debug_middleware_DebugMiddleware());
+        const middleware = Compose(items.map(item => item));
+        this.on('request', (req, res) => {
+            const context = new context_Context(req, res);
+            middleware(context, () => Promise.resolve())
+                .then(() => context.respond())
+                .catch(error => {
+                logError(error, context);
+                try {
+                    context.throw(error);
+                }
+                catch (_) { }
+            });
+        });
+        this.on('clientError', (error, socket) => {
+            socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+            logError(error);
+        });
+        this.timeout = SERVICE_TIMEOUT;
+        this.keepAliveTimeout = SERVICE_KEEP_ALIVE;
+        this.listen(SERVICE_PORT, SERVICE_HOSTNAME, () => {
+            const address = this.address();
+            console.log(`Opened HTTP server on ${address.address}:${address.port}`);
+        });
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/service/index.ts
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "a", function() { return context_Context; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return request_Request; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return response_Response; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return error_HttpError; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return Compose; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "d", function() { return Middleware; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "b", function() { return Delete; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "c", function() { return Get; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "e", function() { return Post; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "f", function() { return Put; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return Route; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "g", function() { return route_middleware_RouteMiddleware; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "h", function() { return service_Service; });
+
+
+
+
+
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXTERNAL MODULE: external "crypto"
+var external__crypto_ = __webpack_require__(10);
+var external__crypto__default = /*#__PURE__*/__webpack_require__.n(external__crypto_);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/uuid/randomBytes.ts
+
+/* harmony default export */ var randomBytes = (external__crypto_["randomBytes"]);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/uuid/bytesToUuid.ts
+const BTH = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0a", "0b", "0c", "0d", "0e", "0f",
+    "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1a", "1b", "1c", "1d", "1e", "1f",
+    "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2a", "2b", "2c", "2d", "2e", "2f",
+    "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "3a", "3b", "3c", "3d", "3e", "3f",
+    "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "4a", "4b", "4c", "4d", "4e", "4f",
+    "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "5a", "5b", "5c", "5d", "5e", "5f",
+    "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "6a", "6b", "6c", "6d", "6e", "6f",
+    "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "7a", "7b", "7c", "7d", "7e", "7f",
+    "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "8a", "8b", "8c", "8d", "8e", "8f",
+    "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "9a", "9b", "9c", "9d", "9e", "9f",
+    "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "aa", "ab", "ac", "ad", "ae", "af",
+    "b0", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9", "ba", "bb", "bc", "bd", "be", "bf",
+    "c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "ca", "cb", "cc", "cd", "ce", "cf",
+    "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "da", "db", "dc", "dd", "de", "df",
+    "e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "ea", "eb", "ec", "ed", "ee", "ef",
+    "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "fa", "fb", "fc", "fd", "fe", "ff"];
+/* harmony default export */ var bytesToUuid = ((buf) => BTH[buf[0]] + BTH[buf[1]] +
+    BTH[buf[2]] + BTH[buf[3]] + '-' +
+    BTH[buf[4]] + BTH[buf[5]] + '-' +
+    BTH[buf[6]] + BTH[buf[7]] + '-' +
+    BTH[buf[8]] + BTH[buf[9]] + '-' +
+    BTH[buf[10]] + BTH[buf[11]] +
+    BTH[buf[12]] + BTH[buf[13]] +
+    BTH[buf[14]] + BTH[buf[15]]);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/uuid/v1.ts
+
+
+const SEED_BYTES = randomBytes(16);
+const NODE_ID = [
+    SEED_BYTES[0] | 0x01,
+    SEED_BYTES[1],
+    SEED_BYTES[2],
+    SEED_BYTES[3],
+    SEED_BYTES[4],
+    SEED_BYTES[5],
+];
+let _clockseq = (SEED_BYTES[6] << 8 | SEED_BYTES[7]) & 0x3fff;
+let lastMSecs = 0;
+let lastNSecs = 0;
+/* harmony default export */ var v1 = (() => {
+    let msecs = new Date().getTime();
+    let nsecs = lastNSecs + 1;
+    let dt = (msecs - lastMSecs) + (nsecs - lastNSecs) / 10000;
+    let clockseq = dt < 0 ? _clockseq + 1 & 0x3fff : _clockseq;
+    if (dt < 0 || msecs > lastMSecs) {
+        nsecs = 0;
+    }
+    if (nsecs >= 10000)
+        throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
+    lastMSecs = msecs;
+    lastNSecs = nsecs;
+    _clockseq = clockseq;
+    msecs += 12219292800000;
+    let i = 0;
+    let b = new Uint8Array(16);
+    let tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+    b[i++] = tl >>> 24 & 0xff;
+    b[i++] = tl >>> 16 & 0xff;
+    b[i++] = tl >>> 8 & 0xff;
+    b[i++] = tl & 0xff;
+    let tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
+    b[i++] = tmh >>> 8 & 0xff;
+    b[i++] = tmh & 0xff;
+    b[i++] = tmh >>> 24 & 0xf | 0x10;
+    b[i++] = tmh >>> 16 & 0xff;
+    b[i++] = clockseq >>> 8 | 0x80;
+    b[i++] = clockseq & 0xff;
+    for (let n = 0; n < 6; ++n)
+        b[i + n] = NODE_ID[n];
+    return bytesToUuid(b);
+});
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/uuid/patterns.ts
+const UUIDv1_PATTERN = '[a-f0-9]{8}-[a-f0-9]{4}-1[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}';
+const UUIDv1_REGEXP = /^[a-f0-9]{8}-[a-f0-9]{4}-1[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
+const UUIDv4_PATTERN = '[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}';
+const UUIDv4_REGEXP = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
+const UUIDnil_PATTERN = '00000000-0000-0000-0000-000000000000';
+const UUIDnil_REGEXP = /^00000000-0000-0000-0000-000000000000$/;
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/uuid/uuid.ts
+
+
+class uuid_UUID {
+    constructor(uuid = null) {
+        if (uuid instanceof uuid_UUID) {
+            this.version = uuid.version;
+            this.uuid = uuid.uuid;
+            return this;
+        }
+        if (typeof uuid === 'string') {
+            let value = uuid.toLowerCase();
+            if (UUIDnil_REGEXP.test(value)) {
+                this.version = null;
+                this.uuid = value;
+                return this;
+            }
+            if (UUIDv1_REGEXP.test(value)) {
+                this.version = 1;
+                this.uuid = value;
+                return this;
+            }
+            if (UUIDv4_REGEXP.test(value)) {
+                this.version = 4;
+                this.uuid = value;
+                return this;
+            }
+            throw new Error(`UUID "${uuid}" does not match the UUID string`);
+        }
+        if (uuid === null) {
+            this.version = null;
+            this.uuid = UUIDnil_PATTERN;
+            return this;
+        }
+        if (uuid === 1) {
+            this.version = 1;
+            this.uuid = v1();
+            return this;
+        }
+        if (uuid === 4) {
+            this.version = 4;
+            this.uuid = v1();
+            return this;
+        }
+        throw new Error(`Illegal UUID version of "${uuid}"`);
+    }
+    get value() {
+        return this.uuid;
+    }
+    valueOf() {
+        return this.uuid;
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.uuid;
+    }
+    toJSON() {
+        return this.uuid;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert UUID value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'UUID';
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/uuid/index.ts
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "a", function() { return uuid_UUID; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return UUIDv1_PATTERN; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return UUIDv1_REGEXP; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return UUIDv4_PATTERN; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return UUIDv4_REGEXP; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return UUIDnil_PATTERN; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return UUIDnil_REGEXP; });
+
+
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/currency/currency.ts
+class Currency {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.symbol = String(value.symbol || '').trim();
+        this.enable = !!value.enable;
+        this.title = String(value.title || '').trim();
+        this.ogTitle = String(value.ogTitle || '').trim();
+        this.description = String(value.description || '').trim();
+        this.ogDescription = String(value.ogDescription || '').trim();
+        this.image = Math.max(~~value.image, 0) || null;
+        this.ogImage = Math.max(~~value.ogImage, 0) || null;
+        this.content = String(value.content || '').trim();
+        this.branding = {};
+    }
+    valueOf() {
+        return {
+            symbol: this.symbol,
+            enable: this.enable,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            content: this.content,
+            branding: this.branding,
+        };
+    }
+    toJSON() {
+        return {
+            symbol: this.symbol,
+            enable: this.enable,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            content: this.content,
+            branding: this.branding,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.title;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Currency value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Currency';
+    }
+}
+Currency.MainFields = [
+    'symbol',
+    'enable',
+    'title',
+    'image'
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/currency/index.ts
+
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/core/uuid/index.ts + 5 modules
+var uuid = __webpack_require__(1);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/exchange/exchange.ts
+
+class exchange_Exchange {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid["a" /* UUID */](value.id || null);
+        this.enable = !!value.enable;
+        this.url = String(value.url || '').trim() || null;
+        this.title = String(value.title || '').trim();
+        this.ogTitle = String(value.ogTitle || '').trim();
+        this.description = String(value.description || '').trim();
+        this.ogDescription = String(value.ogDescription || '').trim();
+        this.image = Math.max(~~value.image, 0) || null;
+        this.ogImage = Math.max(~~value.ogImage, 0) || null;
+        this.content = String(value.content || '').trim();
+        this.branding = {};
+    }
+    valueOf() {
+        return {
+            enable: this.enable,
+            url: this.url,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            content: this.content,
+            branding: this.branding,
+        };
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            enable: this.enable,
+            url: this.url,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            content: this.content,
+            branding: this.branding,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.title;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Exchange value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Exchange';
+    }
+}
+exchange_Exchange.MainFields = [
+    'id',
+    'enable',
+    'url',
+    'title',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/exchange/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/ico/ico.ts
+
+class ico_ICO {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid["a" /* UUID */](value.id || null);
+        this.enable = !!value.enable;
+        this.url = String(value.url || '').trim() || null;
+        this.title = String(value.title || '').trim();
+        this.ogTitle = String(value.ogTitle || '').trim();
+        this.description = String(value.description || '').trim();
+        this.ogDescription = String(value.ogDescription || '').trim();
+        this.image = Math.max(~~value.image, 0) || null;
+        this.ogImage = Math.max(~~value.ogImage, 0) || null;
+        this.content = String(value.content || '').trim();
+        this.branding = {};
+    }
+    valueOf() {
+        return {
+            enable: this.enable,
+            url: this.url,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            content: this.content,
+            branding: this.branding,
+        };
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            enable: this.enable,
+            url: this.url,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            content: this.content,
+            branding: this.branding,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.title;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert ICO value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'ICO';
+    }
+}
+ico_ICO.MainFields = [
+    'id',
+    'enable',
+    'url',
+    'title',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/ico/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/market/market.ts
+
+class market_Market {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid["a" /* UUID */](value.id || null);
+        this.enable = !!value.enable;
+        this.url = String(value.url || '').trim() || null;
+        this.title = String(value.title || '').trim();
+        this.ogTitle = String(value.ogTitle || '').trim();
+        this.description = String(value.description || '').trim();
+        this.ogDescription = String(value.ogDescription || '').trim();
+        this.image = Math.max(~~value.image, 0) || null;
+        this.ogImage = Math.max(~~value.ogImage, 0) || null;
+        this.content = String(value.content || '').trim();
+        this.branding = {};
+    }
+    valueOf() {
+        return {
+            enable: this.enable,
+            url: this.url,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            content: this.content,
+            branding: this.branding,
+        };
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            enable: this.enable,
+            url: this.url,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            content: this.content,
+            branding: this.branding,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.title;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Market value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Market';
+    }
+}
+market_Market.MainFields = [
+    'id',
+    'enable',
+    'url',
+    'title',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/market/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/timestamp/timestamp.ts
+class Timestamp extends Date {
+    constructor(value) {
+        super(value);
+    }
+    get isValid() {
+        return !Number.isNaN(this.getTime());
+    }
+    get isInvalid() {
+        return !this.isValid;
+    }
+    valueOf() {
+        return new Date(this);
+    }
+    toNumber() {
+        return this.getTime();
+    }
+    toString() {
+        return this.toISOString();
+    }
+    toJSON() {
+        return this.toISOString();
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Model value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Timestamp';
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/timestamp/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/publication/publication.ts
+
+
+class publication_Publication {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid["a" /* UUID */](value.id || null);
+        this.ts = new Timestamp(value.ts);
+        this.url = String(value.url || '').trim();
+        this.enable = !!value.enable;
+        this.currencies = Array.isArray(value.currencies) ? value.currencies
+            .map((item) => new uuid["a" /* UUID */](value && value.id || value))
+            .filter((item) => item.version !== null)
+            : new Array();
+        this.exchanges = Array.isArray(value.exchanges) ? value.exchanges
+            .map((item) => new uuid["a" /* UUID */](value && value.id || value))
+            .filter((item) => item.version !== null)
+            : new Array();
+        this.ico = Array.isArray(value.ico) ? value.ico
+            .map((item) => new uuid["a" /* UUID */](value && value.id || value))
+            .filter((item) => item.version !== null)
+            : new Array();
+        this.markets = Array.isArray(value.markets) ? value.markets
+            .map((item) => new uuid["a" /* UUID */](value && value.id || value))
+            .filter((item) => item.version !== null)
+            : new Array();
+        this.sections = Array.isArray(value.sections) ? value.sections
+            .map((item) => new uuid["a" /* UUID */](value && value.id || value))
+            .filter((item) => item.version !== null)
+            : new Array();
+        this.weight = Math.max(~~value.weight, 0);
+        this.bigTitle = String(value.bigTitle || '').trim();
+        this.title = String(value.title || '').trim();
+        this.ogTitle = String(value.ogTitle || '').trim();
+        this.description = String(value.description || '').trim();
+        this.ogDescription = String(value.ogDescription || '').trim();
+        this.image = Math.max(~~value.image, 0) || null;
+        this.ogImage = Math.max(~~value.ogImage, 0) || null;
+        this.authors = Array.isArray(value.authors) ? value.authors
+            .map((item) => new uuid["a" /* UUID */](value && value.id || value))
+            .filter((item) => item.version !== null)
+            : new Array();
+        this.tags = Array.isArray(value.tags) ? value.tags.map((item) => String(item).trim().toLowerCase())
+            .filter((item) => !!item)
+            : new Array();
+        this.sharing = !!value.sharing;
+        this.comments = !!value.comments;
+        this.advertising = !!value.advertising;
+        this.rss = !!value.rss;
+        this.yandexNews = !!value.yandexNews;
+        this.yandexZen = !!value.yandexZen;
+        this.facebookIA = !!value.facebookIA;
+        this.content = String(value.content || '').trim();
+        this.branding = {};
+        this.lastModified = new Timestamp(value.lastModified);
+    }
+    valueOf() {
+        return {
+            ts: this.ts,
+            url: this.url,
+            enable: this.enable,
+            currencies: this.currencies,
+            exchanges: this.exchanges,
+            ico: this.ico,
+            markets: this.markets,
+            sections: this.sections,
+            weight: this.weight,
+            bigTitle: this.bigTitle,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            authors: this.authors,
+            tags: this.tags,
+            sharing: this.sharing,
+            comments: this.comments,
+            advertising: this.advertising,
+            rss: this.rss,
+            yandexNews: this.yandexNews,
+            yandexZen: this.yandexZen,
+            facebookIA: this.facebookIA,
+            branding: this.branding,
+            content: this.content,
+            lastModified: this.lastModified,
+        };
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            ts: this.ts,
+            url: this.url,
+            enable: this.enable,
+            currencies: this.currencies,
+            exchanges: this.exchanges,
+            ico: this.ico,
+            markets: this.markets,
+            sections: this.sections,
+            weight: this.weight,
+            bigTitle: this.bigTitle,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            authors: this.authors,
+            tags: this.tags,
+            sharing: this.sharing,
+            comments: this.comments,
+            advertising: this.advertising,
+            rss: this.rss,
+            yandexNews: this.yandexNews,
+            yandexZen: this.yandexZen,
+            facebookIA: this.facebookIA,
+            branding: this.branding,
+            content: this.content,
+            lastModified: this.lastModified,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.title;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Publication value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Publication';
+    }
+}
+publication_Publication.MainFields = [
+    'id',
+    'ts',
+    'url',
+    'enable',
+    'weight',
+    'title',
+    'lastModified',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/publication/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/section/section.ts
+
+class section_Section {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid["a" /* UUID */](value.id || null);
+        this.enable = value.enable === undefined ? true : !!value.enable;
+        this.url = String(value.url || '').trim() || null;
+        this.title = String(value.title || '').trim();
+        this.ogTitle = String(value.ogTitle || '').trim();
+        this.description = String(value.description || '').trim();
+        this.ogDescription = String(value.ogDescription || '').trim();
+        this.image = Math.max(~~value.image, 0) || null;
+        this.ogImage = Math.max(~~value.ogImage, 0) || null;
+        this.branding = {};
+    }
+    valueOf() {
+        return {
+            enable: this.enable,
+            url: this.url,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            branding: this.branding,
+        };
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            enable: this.enable,
+            url: this.url,
+            title: this.title,
+            ogTitle: this.ogTitle,
+            description: this.description,
+            ogDescription: this.ogDescription,
+            image: this.image,
+            ogImage: this.ogImage,
+            branding: this.branding,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.title;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Section value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Section';
+    }
+}
+section_Section.MainFields = [
+    'id',
+    'enable',
+    'url',
+    'title',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/section/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/status/status.ts
+
+class status_Status {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid["a" /* UUID */](value.id || null);
+        this.enable = value.enable === undefined ? true : !!value.enable;
+        this.title = String(value.title || '').trim();
+        this.image = Math.max(~~value.image, 0) || null;
+    }
+    valueOf() {
+        return {
+            enable: this.enable,
+            title: this.title,
+            image: this.image,
+        };
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            enable: this.enable,
+            title: this.title,
+            image: this.image,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.title;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Status value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Status';
+    }
+}
+status_Status.MainFields = [
+    'id',
+    'enable',
+    'title',
+    'image',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/status/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/enum/enum.ts
+const ENUM_ID_REGEXP = /^[a-z][a-z0-9]*$/;
+class Enum {
+    constructor(id, value) {
+        this.id = id;
+        this.value = value;
+        if (!ENUM_ID_REGEXP.test(id))
+            throw new TypeError(`Enum ID "${id}" does not matc the pattern "${ENUM_ID_REGEXP.source}"`);
+    }
+    static *[Symbol.iterator]() {
+        const keys = Object.keys(this);
+        for (let key of keys) {
+            yield this[key];
+        }
+    }
+    static get(value) {
+        let id = String(value && value.id || value);
+        for (let item of this)
+            if (item.id === id)
+                return item;
+        return undefined;
+    }
+    static getArray(value) {
+        return new Array().concat(value)
+            .map(item => this.get(item))
+            .filter(item => item !== undefined);
+    }
+    valueOf() {
+        return this.id;
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.value;
+    }
+    toJSON() {
+        return this.id;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Enum value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Enum';
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/enum/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/user-role.enum.ts
+
+class UserRoleEnum extends Enum {
+    constructor(id, value, icon) {
+        super(id, value);
+        this.icon = icon;
+    }
+    [Symbol.toStringTag]() {
+        return 'UserRole';
+    }
+}
+UserRoleEnum.User = new UserRoleEnum('user', 'Пользователь', null);
+UserRoleEnum.Author = new UserRoleEnum('author', 'Автор', null);
+UserRoleEnum.Publisher = new UserRoleEnum('publisher', 'Публикатор', null);
+UserRoleEnum.Chief = new UserRoleEnum('chief', 'Редактор', null);
+UserRoleEnum.Administrator = new UserRoleEnum('administrator', 'Администратор', null);
+UserRoleEnum.Su = new UserRoleEnum('su', 'Super user', null);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/user.ts
+
+
+const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/;
+class user_User {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = new uuid["a" /* UUID */](value.id || null);
+        this.enable = !!value.enable;
+        if (value.roles) {
+            const match = ENUM_PG_ARRAY_PATTERN.exec(value.roles);
+            const roles = match && match[1].split(',') || value.roles;
+            this.roles = UserRoleEnum.getArray(roles);
+        }
+        else
+            this.roles = new Array();
+        this.url = String(value.url || '').trim() || null;
+        this.title = String(value.title || '').trim();
+        this.description = String(value.description || '').trim();
+        this.email = String(value.email || '').trim();
+        this.phone = String(value.phone || '').trim() || null;
+        this.image = Math.max(~~value.image, 0) || null;
+        this.card = {};
+        this.statuses = Array.isArray(value.statuses) ? value.statuses
+            .map((item) => new uuid["a" /* UUID */](value && value.id || value))
+            .filter((item) => item.version !== null)
+            : new Array();
+    }
+    checkRole(roles) {
+        for (let role of roles)
+            if (this.roles.includes(role))
+                return true;
+        return false;
+    }
+    get valid() {
+        return this.id !== null
+            && this.id.version !== null;
+    }
+    valueOf() {
+        return {
+            enable: this.enable,
+            roles: this.roles,
+            url: this.url,
+            title: this.title,
+            description: this.description,
+            email: this.email,
+            phone: this.phone,
+            image: this.image,
+            card: this.card,
+            statuses: this.statuses,
+        };
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            enable: this.enable,
+            roles: this.roles,
+            url: this.url,
+            title: this.title,
+            description: this.description,
+            email: this.email,
+            phone: this.phone,
+            image: this.image,
+            card: this.card,
+            statuses: this.statuses,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.title;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert User value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'User';
+    }
+}
+user_User.MainFields = [
+    'id',
+    'enable',
+    'roles',
+    'url',
+    'title',
+    'description',
+    'email',
+    'phone',
+    'image',
+    'statuses',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/user/index.ts
+
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/video/video.ts
+class Video {
+    constructor(value = {}) {
+        if (!value)
+            value = {};
+        this.id = String(value.id || '').trim();
+        this.enable = value.enable === undefined ? true : !!value.enable;
+    }
+    valueOf() {
+        return {
+            id: this.id,
+            enable: this.enable,
+        };
+    }
+    toJSON() {
+        return {
+            id: this.id,
+            enable: this.enable,
+        };
+    }
+    toNumber() {
+        return NaN;
+    }
+    toString() {
+        return this.id;
+    }
+    [Symbol.toPrimitive](hint) {
+        switch (hint) {
+            case 'default':
+                return this.valueOf();
+            case 'number':
+                return this.toNumber();
+            case 'string':
+                return this.toString();
+            default:
+                throw new TypeError('Cannot convert Video value to unknown value');
+        }
+    }
+    [Symbol.toStringTag]() {
+        return 'Video';
+    }
+}
+Video.MainFields = [
+    'id',
+    'enable',
+];
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/video/index.ts
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/models/index.ts
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "a", function() { return Currency; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "b", function() { return exchange_Exchange; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "c", function() { return ico_ICO; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "d", function() { return market_Market; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "e", function() { return publication_Publication; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "f", function() { return section_Section; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "g", function() { return status_Status; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "h", function() { return user_User; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "i", function() { return UserRoleEnum; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "j", function() { return Video; });
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/acl.ts
+function ACL(roles = []) {
+    const rolesIds = roles.map(item => item.id);
+    return (target, propertyKey, descriptor) => {
+        if (!descriptor)
+            return descriptor;
+        const originalFunction = descriptor.value;
+        descriptor.value = async function (ctx, next) {
+            const session = ctx.session;
+            if (!ctx.session) {
+                ctx.debug('=== ACL %s Denied ===\nSession is undefined', rolesIds);
+                ctx.set(403);
+                return await next();
+            }
+            if (!ctx.session.valid) {
+                ctx.debug('=== ACL %s Denied ===\nSession: %s', rolesIds, ctx.session);
+                ctx.set(403);
+                return await next();
+            }
+            if (!ctx.session.user.checkRole(roles)) {
+                ctx.debug('=== ACL %s Denied ===\nSession: %s', rolesIds, ctx.session);
+                ctx.set(403);
+                return await next();
+            }
+            ctx.debug('=== ACL %s Allow ===\nSession: %s', rolesIds, ctx.session);
+            await originalFunction.call(this, ctx, next);
+        };
+        return descriptor;
+    };
+}
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/common/models/index.ts + 23 modules
+var models = __webpack_require__(2);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/session.ts
+
+const SESSION_ID_REGEXP = /^[0-9a-z]{128}$/;
+const SESSION_TOKEN_REGEXP = /token\s+([0-9a-f]{128})/;
+class session_Session {
+    constructor(_ctx) {
+        this._ctx = _ctx;
+        this._id = '';
+        this._user = null;
+        const id = SESSION_TOKEN_REGEXP.exec(_ctx.request.getHeader('Authorization') || '');
+        this._id = id && id[1] || '';
+    }
+    get id() {
+        return this._id;
+    }
+    set id(id) {
+        this._id = SESSION_ID_REGEXP.test(id) ? id : '';
+    }
+    get user() {
+        return this._user;
+    }
+    set user(value) {
+        if (!value)
+            this._user = null;
+        else {
+            let user = value instanceof models["h" /* User */] ? value : new models["h" /* User */](value);
+            this._user = user.valid ? user : null;
+        }
+    }
+    get ip() {
+        return this._ctx.request.ip;
+    }
+    get valid() {
+        return this.id.length > 0
+            && this._user instanceof models["h" /* User */]
+            && this._user.valid;
+    }
+    valueOf() {
+        return {
+            id: this._id,
+            user: this._user
+        };
+    }
+    toJSON() {
+        return this.valueOf();
+    }
+}
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/core/service/index.ts + 28 modules
+var service = __webpack_require__(0);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/session.middleware.ts
+
+
+
+class session_middleware_SessionMiddleware extends service["d" /* Middleware */] {
+    async main(ctx, next) {
+        const session = new session_Session(ctx);
+        const db = ctx.db;
+        const query = {
+            text: `SELECT
                "users".*
              FROM
                "sessions"
@@ -32,4 +1995,9286 @@
                AND
                "users"."enable"
                AND
-               "sessions"."expires" > timezone('UTC', now())`,values:[n.id]};e.debug(`=== SQL Query SESSION ===\n%s`,i);const s=await r.query(i);e.debug(`=== SQL Result SESSION ===\n%s`,s.rows);if(1===s.rowCount)n.user=new Ie(s.rows[0]);e.session=n;e.debug('=== Input session ===\n%s',e.session);await t();e.debug('=== Output session ===\n%s',e.session)}}(),...Object.values(f).map((e)=>new e))},function(e){e.exports=require('querystring')},function(e,t,n){'use strict';var r=n(1).EventEmitter,i=n(0),s=n(6),o=n(28),a=n(13),d=n(14),u=n(36),p=n(2),l=n(15),c=function(e){r.call(this);this.connectionParameters=new d(e);this.user=this.connectionParameters.user;this.database=this.connectionParameters.database;this.port=this.connectionParameters.port;this.host=this.connectionParameters.host;this.password=this.connectionParameters.password;this.replication=this.connectionParameters.replication;var t=e||{};this._types=new a(t.types);this._ending=false;this._connecting=false;this._connected=false;this._connectionError=false;this.connection=t.connection||new l({stream:t.stream,ssl:this.connectionParameters.ssl,keepAlive:t.keepAlive||false,encoding:this.connectionParameters.client_encoding||'utf8'});this.queryQueue=[];this.binary=t.binary||p.binary;this.processID=null;this.secretKey=null;this.ssl=this.connectionParameters.ssl||false};i.inherits(c,r);c.prototype.connect=function(e){var n=this,r=this.connection;if(this._connecting||this._connected){const t=new Error('Client has already been connected. You cannot reuse a client.');if(e){e(t);return}return Promise.reject(t)}this._connecting=true;if(this.host&&0===this.host.indexOf('/')){r.connect(this.host+'/.s.PGSQL.'+this.port)}else{r.connect(this.port,this.host)}r.on('connect',function(){if(n.ssl){r.requestSsl()}else{r.startup(n.getStartupConf())}});r.on('sslconnect',function(){r.startup(n.getStartupConf())});function t(e){return function(t){if(null!==n.password){e(t)}else{o(n.connectionParameters,function(r){if(undefined!==r){n.connectionParameters.password=n.password=r}e(t)})}}}r.on('authenticationCleartextPassword',t(function(){r.password(n.password)}));r.on('authenticationMD5Password',t(function(e){r.password(s.postgresMd5PasswordHash(n.user,n.password,e.salt))}));r.once('backendKeyData',function(e){n.processID=e.processID;n.secretKey=e.secretKey});const i=(t)=>{if(this._connectionError){return}this._connectionError=true;if(e){return e(t)}this.emit('error',t)},a=(e)=>{if(this.activeQuery){var t=n.activeQuery;this.activeQuery=null;return t.handleError(e,r)}this.emit('error',e)};r.on('error',i);r.once('readyForQuery',function(){n._connecting=false;n._connected=true;n._attachListeners(r);r.removeListener('error',i);r.on('error',a);if(e){e(null,n);e=null}n.emit('connect')});r.on('readyForQuery',function(){var e=n.activeQuery;n.activeQuery=null;n.readyForQuery=true;if(e){e.handleReadyForQuery(r)}n._pulseQueryQueue()});r.once('end',()=>{if(this.activeQuery){var t=new Error('Connection terminated');this.activeQuery.handleError(t,r);this.activeQuery=null}if(!this._ending){const t=new Error('Connection terminated unexpectedly');if(this._connecting&&!this._connectionError){if(e){e(t)}else{this.emit('error',t)}}else if(!this._connectionError){this.emit('error',t)}}this.emit('end')});r.on('notice',function(e){n.emit('notice',e)});if(!e){return new global.Promise((e,t)=>{this.once('error',t);this.once('connect',()=>{this.removeListener('error',t);e()})})}};c.prototype._attachListeners=function(e){const t=this;e.on('rowDescription',function(e){t.activeQuery.handleRowDescription(e)});e.on('dataRow',function(e){t.activeQuery.handleDataRow(e)});e.on('portalSuspended',function(){t.activeQuery.handlePortalSuspended(e)});e.on('emptyQuery',function(){t.activeQuery.handleEmptyQuery(e)});e.on('commandComplete',function(n){t.activeQuery.handleCommandComplete(n,e)});e.on('parseComplete',function(){if(t.activeQuery.name){e.parsedStatements[t.activeQuery.name]=true}});e.on('copyInResponse',function(){t.activeQuery.handleCopyInResponse(t.connection)});e.on('copyData',function(e){t.activeQuery.handleCopyData(e,t.connection)});e.on('notification',function(e){t.emit('notification',e)})};c.prototype.getStartupConf=function(){var e=this.connectionParameters,t={user:e.user,database:e.database},n=e.application_name||e.fallback_application_name;if(n){t.application_name=n}if(e.replication){t.replication=''+e.replication}if(e.statement_timeout){t.statement_timeout=String(parseInt(e.statement_timeout,10))}return t};c.prototype.cancel=function(e,t){if(e.activeQuery===t){var n=this.connection;if(this.host&&0===this.host.indexOf('/')){n.connect(this.host+'/.s.PGSQL.'+this.port)}else{n.connect(this.port,this.host)}n.on('connect',function(){n.cancel(e.processID,e.secretKey)})}else if(-1!==e.queryQueue.indexOf(t)){e.queryQueue.splice(e.queryQueue.indexOf(t),1)}};c.prototype.setTypeParser=function(e,t,n){return this._types.setTypeParser(e,t,n)};c.prototype.getTypeParser=function(e,t){return this._types.getTypeParser(e,t)};c.prototype.escapeIdentifier=function(e){for(var t='"',n=0,r;n<e.length;n++){r=e[n];if('"'===r){t+=r+r}else{t+=r}}t+='"';return t};c.prototype.escapeLiteral=function(e){for(var t=false,n='\'',r=0,i;r<e.length;r++){i=e[r];if('\''===i){n+=i+i}else if('\\'===i){n+=i+i;t=true}else{n+=i}}n+='\'';if(true===t){n=' E'+n}return n};c.prototype._pulseQueryQueue=function(){if(true===this.readyForQuery){this.activeQuery=this.queryQueue.shift();if(this.activeQuery){this.readyForQuery=false;this.hasExecuted=true;this.activeQuery.submit(this.connection)}else if(this.hasExecuted){this.activeQuery=null;this.emit('drain')}}};c.prototype.query=function(e,t,n){var r,i;if('function'===typeof e.submit){i=r=e;if('function'===typeof t){r.callback=r.callback||t}}else{r=new u(e,t,n);if(!r.callback){let e,t;i=new Promise((n,r)=>{e=n;t=r});r.callback=(n,r)=>n?t(n):e(r)}}if(this.binary&&!r.binary){r.binary=true}if(r._result){r._result._getTypeParser=this._types.getTypeParser.bind(this._types)}this.queryQueue.push(r);this._pulseQueryQueue();return i};c.prototype.end=function(e){this._ending=true;if(this.activeQuery){this.connection.stream.destroy(new Error('Connection terminated by user'));return e?e():Promise.resolve()}if(e){this.connection.end();this.connection.once('end',e)}else{return new global.Promise((e)=>{this.connection.end();this.connection.once('end',e)})}};c.Query=u;e.exports=c},function(e,t,n){var u=n(9),l=n(10),p=n(23),c=n(24),g=n(26);function r(e){return function(t){if(null===t)return t;return e(t)}}function i(e){if(null===e)return e;return'TRUE'===e||'t'===e||'true'===e||'y'===e||'yes'===e||'on'===e||'1'===e}function s(e){if(!e)return null;return u.parse(e,i)}function o(e){return parseInt(e,10)}function a(e){if(!e)return null;return u.parse(e,r(o))}function d(e){if(!e)return null;return u.parse(e,r(function(e){return v(e).trim()}))}var f=function(e){if(!e){return null}var t=l.create(e,function(e){if(null!==e){e=E(e)}return e});return t.parse()},m=function(e){if(!e){return null}var t=l.create(e,function(e){if(null!==e){e=parseFloat(e)}return e});return t.parse()},y=function(e){if(!e){return null}var t=l.create(e);return t.parse()},h=function(e){if(!e){return null}var t=l.create(e,function(e){if(null!==e){e=p(e)}return e});return t.parse()},b=function(e){if(!e){return null}return u.parse(e,r(g))},w=function(e){return parseInt(e,10)},v=function(e){var t=String(e);if(/^\d+$/.test(t)){return t}return e},_=function(e){var t=y(e);if(!t){return t}return t.map(function(e){return JSON.parse(e)})},E=function(e){if('('!==e[0]){return null}e=e.substring(1,e.length-1).split(',');return{x:parseFloat(e[0]),y:parseFloat(e[1])}},I=function(e){if('<'!==e[0]&&'('!==e[1]){return null}for(var t='(',n='',r=false,s=2;s<e.length-1;s++){if(!r){t+=e[s]}if(')'===e[s]){r=true;continue}else if(!r){continue}if(','===e[s]){continue}n+=e[s]}var i=E(t);i.radius=parseFloat(n);return i};e.exports={init:function(e){e(20,v);e(21,w);e(23,w);e(26,w);e(700,parseFloat);e(701,parseFloat);e(16,i);e(1082,p);e(1114,p);e(1184,p);e(600,E);e(651,y);e(718,I);e(1e3,s);e(1001,b);e(1005,a);e(1007,a);e(1028,a);e(1016,d);e(1017,f);e(1021,m);e(1022,m);e(1231,m);e(1014,y);e(1015,y);e(1008,y);e(1009,y);e(1040,y);e(1041,y);e(1115,h);e(1182,h);e(1185,h);e(1186,c);e(17,g);e(114,JSON.parse.bind(JSON));e(3802,JSON.parse.bind(JSON));e(199,_);e(3807,_);e(3907,y);e(2951,y);e(791,y);e(1183,y);e(1270,y)}}},function(e){'use strict';var r=/(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/,i=/^(\d{1,})-(\d{2})-(\d{2})$/,s=/([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?/,o=/BC$/,a=/^-?infinity$/;e.exports=function(e){if(a.test(e)){return Number(e.replace('i','I'))}var s=r.exec(e);if(!s){return i.test(e)?t(e):null}var d=o.test(e),u=parseInt(s[1],10),p=0<u&&100>u;u=(d?'-':'')+u;var l=parseInt(s[2],10)-1,c=s[3],g=parseInt(s[4],10),f=parseInt(s[5],10),m=parseInt(s[6],10),y=s[7];y=y?1e3*parseFloat(y):0;var h,b=n(e);if(null!=b){var w=Date.UTC(u,l,c,g,f,m,y);h=new Date(w-b)}else{h=new Date(u,l,c,g,f,m,y)}if(p){h.setUTCFullYear(u)}return h};function t(e){var t=i.exec(e),n=parseInt(t[1],10),r=parseInt(t[2],10)-1,s=t[3],o=new Date(n,r,s);o.setFullYear(n);return o}function n(e){var t=s.exec(e.split(' ')[1]);if(!t)return;var n=t[1];if('Z'===n){return 0}var r='-'===n?-1:1,i=3600*parseInt(t[2],10)+60*parseInt(t[3]||0,10)+parseInt(t[4]||0,10);return 1e3*(i*r)}},function(e,t,n){'use strict';var o=n(25);e.exports=r;function r(e){if(!(this instanceof r)){return new r(e)}o(this,s(e))}var a=['seconds','minutes','hours','days','months','years'];r.prototype.toPostgres=function(){var e=a.filter(this.hasOwnProperty,this);if(this.milliseconds&&0>e.indexOf('seconds')){e.push('seconds')}if(0===e.length)return'0';return e.map(function(e){var t=this[e]||0;if('seconds'===e&&this.milliseconds){t=(t+this.milliseconds/1e3).toFixed(6).replace(/0+$/,'')}return t+' '+e},this).join(' ')};var d={years:'Y',months:'M',days:'D',hours:'H',minutes:'M',seconds:'S'},u=['years','months','days'],p=['hours','minutes','seconds'];r.prototype.toISO=function(){var t=u.map(e,this).join(''),n=p.map(e,this).join('');return'P'+t+'T'+n;function e(e){var t=this[e]||0;if('seconds'===e&&this.milliseconds){t=(t+this.milliseconds/1e3).toFixed(6).replace(/0+$/,'')}return t+d[e]}};var l='([+-]?\\d+)',c=new RegExp([l+'\\s+years?',l+'\\s+mons?',l+'\\s+days?','([+-])?([\\d]*):(\\d\\d):(\\d\\d).?(\\d{1,6})?'].map(function(e){return'('+e+')?'}).join('\\s*')),g={years:2,months:4,days:6,hours:9,minutes:10,seconds:11,milliseconds:12},f=['hours','minutes','seconds','milliseconds'];function i(e){var t=e+'000000'.slice(e.length);return parseInt(t,10)/1e3}function s(e){if(!e)return{};var t=c.exec(e),n='-'===t[8];return Object.keys(g).reduce(function(e,r){var s=g[r],o=t[s];if(!o)return e;o='milliseconds'===r?i(o):parseInt(o,10);if(!o)return e;if(n&&~f.indexOf(r)){o*=-1}e[r]=o;return e},{})}},function(e){e.exports=function(e){for(var n=1,r;n<arguments.length;n++){r=arguments[n];for(var i in r){if(t.call(r,i)){e[i]=r[i]}}}return e};var t=Object.prototype.hasOwnProperty},function(e){'use strict';var t=Math.floor;e.exports=function(e){if(/^\\x/.test(e)){return new Buffer(e.substr(2),'hex')}var n='',r=0;while(r<e.length){if('\\'!==e[r]){n+=e[r];++r}else{if(/[0-7]{3}/.test(e.substr(r+1,3))){n+=String.fromCharCode(parseInt(e.substr(r+1,3),8));r+=4}else{var i=1;while(r+i<e.length&&'\\'===e[r+i]){i++}for(var s=0;s<t(i/2);++s){n+='\\'}r+=2*t(i/2)}}}return new Buffer(n,'binary')}},function(e){var t=Math.pow,n=function(e,n,r,s,o){r=r||0;s=s||false;o=o||function(e,n,r){return e*t(2,r)+n};var a=r>>3,d=function(e){if(s){return 255&~e}return e},u=255,p=8-r%8;if(n<p){u=255&255<<8-n;p=n}if(r){u=u>>r%8}var l=0;if(8<=r%8+n){l=o(0,d(e[a])&u,p)}for(var c=n+r>>3,g=a+1;g<c;g++){l=o(l,d(e[g]),8)}var i=(n+r)%8;if(0<i){l=o(l,d(e[c])>>8-i,i)}return l},r=function(e,r,i){var s=t(2,i-1)-1,o=n(e,1),a=n(e,i,1);if(0===a){return 0}var d=1,u=n(e,r,i+1,false,function(e,t,n){if(0===e){e=1}for(var r=1;r<=n;r++){d/=2;if(0<(t&1<<n-r)){e+=d}}return e});if(a==t(2,i+1)-1){if(0===u){return 0===o?Infinity:-Infinity}return NaN}return(0===o?1:-1)*t(2,a-s)*u},i=function(e){if(1==n(e,1)){return-1*(n(e,15,1,true)+1)}return n(e,15,1)},s=function(e){if(1==n(e,1)){return-1*(n(e,31,1,true)+1)}return n(e,31,1)},o=function(e){return r(e,23,8)},a=function(e){return r(e,52,11)},d=function(e){var r=n(e,16,32);if(49152==r){return NaN}for(var s=t(1e4,n(e,16,16)),o=0,a=n(e,16),d=0;d<a;d++){o+=n(e,16,64+16*d)*s;s/=1e4}var i=t(10,n(e,16,48));return(0===r?1:-1)*Math.round(o*i)/i},u=function(e,t){var r=n(t,1),i=n(t,63,1),s=new Date((0===r?1:-1)*i/1e3+9.466848e11);if(!e){s.setTime(s.getTime()+6e4*s.getTimezoneOffset())}s.usec=i%1e3;s.getMicroSeconds=function(){return this.usec};s.setMicroSeconds=function(e){this.usec=e};s.getUTCMicroSeconds=function(){return this.usec};return s},p=function(e){for(var t=n(e,32),r=n(e,32,32),s=n(e,32,64),o=96,a=[],d=0;d<t;d++){a[d]=n(e,32,o);o+=32;o+=32}var u=function(t){var r=n(e,32,o);o+=32;if(4294967295==r){return null}var i;if(23==t||20==t){i=n(e,8*r,o);o+=8*r;return i}else if(25==t){i=e.toString(this.encoding,o>>3,(o+=r<<3)>>3);return i}else{console.log('ERROR: ElementType not implemented: '+t)}},p=function(e,t){var n=[],r;if(1<e.length){var i=e.shift();for(r=0;r<i;r++){n[r]=p(e,t)}e.unshift(i)}else{for(r=0;r<e[0];r++){n[r]=u(t)}}return n};return p(a,s)},l=function(e){return e.toString('utf8')},c=function(e){if(null===e)return null;return 0<n(e,8)};e.exports={init:function(e){e(21,i);e(23,s);e(26,s);e(1700,d);e(700,o);e(701,a);e(16,c);e(1114,u.bind(null,false));e(1184,u.bind(null,true));e(1e3,p);e(1007,p);e(1016,p);e(1008,p);e(1009,p);e(25,l)}}},function(e,t,n){'use strict';var r=n(11),i=n(29),s=n(30);e.exports=function(e,t){var n=s.getFileName();i.stat(n,function(r,o){if(r||!s.usePgPass(o,n)){return t(undefined)}var a=i.createReadStream(n);s.getPassword(e,a,t)})};e.exports.warnTo=s.warnTo},function(e){e.exports=require('fs')},function(e,t,n){'use strict';var s=n(11),o=n(12).Stream,a=n(31),d=n(0),u='win32'===process.platform,p=process.stderr;function r(e){return(e&61440)==32768}var l=['host','port','database','user','password'],c=l.length,g=l[c-1];function i(){var e=p instanceof o&&true===p.writable;if(e){var t=Array.prototype.slice.call(arguments).concat('\n');p.write(d.format.apply(d,t))}}Object.defineProperty(e.exports,'isWin',{get:function(){return u},set:function(e){u=e}});e.exports.warnTo=function(e){var t=p;p=e;return t};e.exports.getFileName=function(e){e=e||process.env;var t=e.PGPASSFILE||(u?s.join(e.APPDATA,'postgresql','pgpass.conf'):s.join(e.HOME,'.pgpass'));return t};e.exports.usePgPass=function(e,t){if(Object.prototype.hasOwnProperty.call(process.env,'PGPASSWORD')){return false}if(u){return true}t=t||'<unkn>';if(!r(e.mode)){i('WARNING: password file "%s" is not a plain file',t);return false}if(e.mode&(56|7)){i('WARNING: password file "%s" has group or world access; permissions should be u=rw (0600) or less',t);return false}return true};var f=e.exports.match=function(e,t){return l.slice(0,-1).reduce(function(n,r,i){if(1==i){if(Number(e[r]||5432)===Number(t[r])){return n&&true}}return n&&('*'===t[r]||t[r]===e[r])},true)};e.exports.getPassword=function(e,t,n){var r,s=t.pipe(new a);var o=function(e){t.destroy();i('WARNING: error on reading file: %s',e);n(undefined)};t.on('error',o);s.on('data',function(t){var n=m(t);if(n&&y(n)&&f(e,n)){r=n[g];s.end()}}).on('end',function(){t.destroy();n(r)}).on('error',o)};var m=e.exports.parseLine=function(e){if(11>e.length||e.match(/^\s+#/)){return null}for(var t='',n='',r=0,s=0,o={},a=false,d=function(t,n,r){var i=e.substring(n,r);if(!Object.hasOwnProperty.call(process.env,'PGPASS_NO_DEESCAPE')){i=i.replace(/\\([:\\])/g,'$1')}o[l[t]]=i},u=0;u<e.length-1;u+=1){t=e.charAt(u+1);n=e.charAt(u);a=r==c-1;if(a){d(r,s);break}if(0<=u&&':'==t&&'\\'!==n){d(r,s,u+1);s=u+2;r+=1}}o=Object.keys(o).length===c?o:null;return o},y=e.exports.isValidEntry=function(e){for(var t={0:function(e){return 0<e.length},1:function(e){if('*'===e){return true}e=Number(e);return isFinite(e)&&0<e&&9007199254740992>e&&Math.floor(e)===e},2:function(e){return 0<e.length},3:function(e){return 0<e.length},4:function(e){return 0<e.length}},n=0;n<l.length;n+=1){var r=t[n],i=e[l[n]]||'',s=r(i);if(!s){return false}}return true}},function(e,t,n){var r=n(32),i=n(7).StringDecoder;e.exports=function(e,t,n){var a=new i,d='',u=n&&n.maxLength,p=n&&false===n.trailing?false:true;if('function'===typeof e)t=e,e=null;if(!e)e=/\r?\n/;function s(e,n){if(t){try{n=t(n)}catch(t){return e.emit('error',t)}if('undefined'!==typeof n)e.queue(n)}else e.queue(n)}function o(t,n){var r=((null!=d?d:'')+n).split(e);d=r.pop();if(u&&d.length>u)return t.emit('error',new Error('maximum buffer reached'));for(var o=0,i;o<r.length;o++){i=r[o];s(t,i)}}return r(function(e){o(this,a.write(e))},function(){if(a.end)o(this,a.end());if(p&&null!=d)s(this,d);this.queue(null)})}},function(e,t,n){var i=n(12);t=e.exports=r;r.through=r;function r(e,t,n){e=e||function(e){this.queue(e)};t=t||function(){this.queue(null)};var o=false,a=false,d=[],u=false,p=new i;p.readable=p.writable=true;p.paused=false;p.autoDestroy=!(n&&false===n.autoDestroy);p.write=function(t){e.call(this,t);return!p.paused};function r(){while(d.length&&!p.paused){var e=d.shift();if(null===e)return p.emit('end');else p.emit('data',e)}}p.queue=p.push=function(e){if(u)return p;if(null===e)u=true;d.push(e);r();return p};p.on('end',function(){p.readable=false;if(!p.writable&&p.autoDestroy)process.nextTick(function(){p.destroy()})});function s(){p.writable=false;t.call(p);if(!p.readable&&p.autoDestroy)p.destroy()}p.end=function(e){if(o)return;o=true;if(arguments.length)p.write(e);s();return p};p.destroy=function(){if(a)return;a=true;o=true;d.length=0;p.writable=p.readable=false;p.emit('close');return p};p.pause=function(){if(p.paused)return;p.paused=true;return p};p.resume=function(){if(p.paused){p.paused=false;p.emit('resume')}r();if(!p.paused)p.emit('drain');return p};return p}},function(e){e.exports=require('dns')},function(e,t,n){'use strict';var r=n(35);e.exports={parse:function(e){var t;if('/'===e.charAt(0)){t=e.split(' ');return{host:t[0],database:t[1]}}if(/ |%[^a-f0-9]|%[a-f0-9][^a-f0-9]/i.test(e)){e=encodeURI(e).replace(/\%25(\d\d)/g,'%$1')}var n=r.parse(e,true);t={};if(n.query.application_name){t.application_name=n.query.application_name}if(n.query.fallback_application_name){t.fallback_application_name=n.query.fallback_application_name}t.port=n.port;if('socket:'==n.protocol){t.host=decodeURI(n.pathname);t.database=n.query.db;t.client_encoding=n.query.encoding;return t}t.host=n.hostname;var i=n.pathname;if(i&&'/'===i.charAt(0)){i=n.pathname.slice(1)||null}t.database=i&&decodeURI(i);var s=(n.auth||':').split(':');t.user=s[0];t.password=s.splice(1).join(':');var o=n.query.ssl;if('true'===o||'1'===o){t.ssl=true}return t}}},function(e){e.exports=require('url')},function(e,t,n){'use strict';var r=n(1).EventEmitter,i=n(0),s=n(37),o=n(6),a=function(e,t,n){if(!(this instanceof a)){return new a(e,t,n)}e=o.normalizeQueryConfig(e,t,n);this.text=e.text;this.values=e.values;this.rows=e.rows;this.types=e.types;this.name=e.name;this.binary=e.binary;this.stream=e.stream;this.portal=e.portal||'';this.callback=e.callback;this._rowMode=e.rowMode;if(process.domain&&e.callback){this.callback=process.domain.bind(e.callback)}this._result=new s(this._rowMode,this.types);this._results=this._result;this.isPreparedStatement=false;this._canceledDueToError=false;this._promise=null;r.call(this)};i.inherits(a,r);a.prototype.requiresPreparation=function(){if(this.name){return true}if(this.rows){return true}if(!this.text){return false}if(!this.values){return false}return 0<this.values.length};a.prototype._checkForMultirow=function(){if(this._result.command){if(!Array.isArray(this._results)){this._results=[this._result]}this._result=new s(this._rowMode,this.types);this._results.push(this._result)}};a.prototype.handleRowDescription=function(e){this._checkForMultirow();this._result.addFields(e.fields);this._accumulateRows=this.callback||!this.listeners('row').length};a.prototype.handleDataRow=function(e){var t;if(this._canceledDueToError){return}try{t=this._result.parseRow(e.fields)}catch(e){this._canceledDueToError=e;return}this.emit('row',t,this._result);if(this._accumulateRows){this._result.addRow(t)}};a.prototype.handleCommandComplete=function(e,t){this._checkForMultirow();this._result.addCommandComplete(e);if(this.isPreparedStatement){t.sync()}};a.prototype.handleEmptyQuery=function(e){if(this.isPreparedStatement){e.sync()}};a.prototype.handleReadyForQuery=function(e){if(this._canceledDueToError){return this.handleError(this._canceledDueToError,e)}if(this.callback){this.callback(null,this._results)}this.emit('end',this._results)};a.prototype.handleError=function(e,t){if(this.isPreparedStatement){t.sync()}if(this._canceledDueToError){e=this._canceledDueToError;this._canceledDueToError=false}if(this.callback){return this.callback(e)}this.emit('error',e)};a.prototype.submit=function(e){if('string'!==typeof this.text&&'string'!==typeof this.name){const t=new Error('A query must have either text or a name. Supplying neither is unsupported.');e.emit('error',t);e.emit('readyForQuery');return}if(this.values&&!Array.isArray(this.values)){const t=new Error('Query values must be an array');e.emit('error',t);e.emit('readyForQuery');return}if(this.requiresPreparation()){this.prepare(e)}else{e.query(this.text)}};a.prototype.hasBeenParsed=function(e){return this.name&&e.parsedStatements[this.name]};a.prototype.handlePortalSuspended=function(e){this._getRows(e,this.rows)};a.prototype._getRows=function(e,t){e.execute({portal:this.portalName,rows:t},true);e.flush()};a.prototype.prepare=function(e){var t=this;this.isPreparedStatement=true;if(!this.hasBeenParsed(e)){e.parse({text:t.text,name:t.name,types:t.types},true)}if(t.values){t.values=t.values.map(o.prepareValue)}e.bind({portal:t.portalName,statement:t.name,values:t.values,binary:t.binary},true);e.describe({type:'P',name:t.portalName||''},true);this._getRows(e,this.rows)};a.prototype.handleCopyInResponse=function(e){if(this.stream)this.stream.startStreamingToConnection(e);else e.sendCopyFail('No source stream defined')};a.prototype.handleCopyData=function(e){var t=e.chunk;if(this.stream){this.stream.handleChunk(t)}};e.exports=a},function(e,t,n){'use strict';var r=n(3),s=n(38),i=function(e){this.command=null;this.rowCount=null;this.oid=null;this.rows=[];this.fields=[];this._parsers=[];this.RowCtor=null;this.rowAsArray='array'===e;if(this.rowAsArray){this.parseRow=this._parseRowAsArray}},o=/^([A-Za-z]+)(?: (\d+))?(?: (\d+))?/;i.prototype.addCommandComplete=function(e){var t;if(e.text){t=o.exec(e.text)}else{t=o.exec(e.command)}if(t){this.command=t[1];if(t[3]){this.oid=parseInt(t[2],10);this.rowCount=parseInt(t[3],10)}else if(t[2]){this.rowCount=parseInt(t[2],10)}}};i.prototype._parseRowAsArray=function(e){for(var t=[],n=0,r=e.length,i;n<r;n++){i=e[n];if(null!==i){t.push(this._parsers[n](i))}else{t.push(null)}}return t};i.prototype.parseRow=function(e){return new this.RowCtor(this._parsers,e)};i.prototype.addRow=function(e){this.rows.push(e)};var a=function(e,t){return'\nthis[\''+s(e)+'\'] = rowData['+t+'] == null ? null : parsers['+t+'](rowData['+t+']);'};i.prototype.addFields=function(e){if(this.fields.length){this.fields=[];this._parsers=[]}for(var t='',n=0,r;n<e.length;n++){r=e[n];this.fields.push(r);var i=this._getTypeParser(r.dataTypeID,r.format||'text');this._parsers.push(i);t+=a(r.name,n)}if(!this.rowAsArray){this.RowCtor=Function('parsers','rowData',t)}};i.prototype._getTypeParser=r.getTypeParser;e.exports=i},function(e){e.exports=function(e){return(''+e).replace(/["'\\\n\r\u2028\u2029]/g,function(e){switch(e){case'"':case'\'':case'\\':return'\\'+e;case'\n':return'\\n';case'\r':return'\\r';case'\u2028':return'\\u2028';case'\u2029':return'\\u2029';}})}},function(e){e.exports=require('net')},function(e){var t=e.exports=function(e){this.size=e||1024;this.buffer=Buffer(this.size+5);this.offset=5;this.headerPosition=0};t.prototype._ensure=function(e){var t=this.buffer.length-this.offset;if(t<e){var n=this.buffer,r=n.length+(n.length>>1)+e;this.buffer=new Buffer(r);n.copy(this.buffer)}};t.prototype.addInt32=function(e){this._ensure(4);this.buffer[this.offset++]=255&e>>>24;this.buffer[this.offset++]=255&e>>>16;this.buffer[this.offset++]=255&e>>>8;this.buffer[this.offset++]=255&e>>>0;return this};t.prototype.addInt16=function(e){this._ensure(2);this.buffer[this.offset++]=255&e>>>8;this.buffer[this.offset++]=255&e>>>0;return this};var n=function(e,t,n,r){e.write(t,n,r)};if(3===Buffer.prototype.write.length){n=function(e,t,n){e.write(t,n)}}t.prototype.addCString=function(e){if(!e){this._ensure(1)}else{var t=Buffer.byteLength(e);this._ensure(t+1);n(this.buffer,e,this.offset,t);this.offset+=t}this.buffer[this.offset++]=0;return this};t.prototype.addChar=function(e){this._ensure(1);n(this.buffer,e,this.offset,1);this.offset++;return this};t.prototype.addString=function(e){e=e||'';var t=Buffer.byteLength(e);this._ensure(t);this.buffer.write(e,this.offset);this.offset+=t;return this};t.prototype.getByteLength=function(){return this.offset-5};t.prototype.add=function(e){this._ensure(e.length);e.copy(this.buffer,this.offset);this.offset+=e.length;return this};t.prototype.clear=function(){this.offset=5;this.headerPosition=0;this.lastEnd=0};t.prototype.addHeader=function(e,t){var n=this.offset;this.offset=this.headerPosition;this.buffer[this.offset++]=e;this.addInt32(n-(this.headerPosition+1));this.headerPosition=n;this.offset=n;if(!t){this._ensure(5);this.offset+=5}};t.prototype.join=function(e){if(e){this.addHeader(e,true)}return this.buffer.slice(e?0:5,this.offset)};t.prototype.flush=function(e){var t=this.join(e);this.clear();return t}},function(e,t,n){var r=n(16),i=e.exports=function(e){if('number'==typeof e){e={headerSize:e}}e=e||{};this.offset=0;this.lastChunk=false;this.chunk=null;this.chunkLength=0;this.headerSize=e.headerSize||0;this.lengthPadding=e.lengthPadding||0;this.header=null;r(2>this.headerSize,'pre-length header of more than 1 byte length not currently supported')};i.prototype.addChunk=function(e){if(!this.chunk||this.offset===this.chunkLength){this.chunk=e;this.chunkLength=e.length;this.offset=0;return}var t=e.length,n=this.chunkLength+t;if(n>this.chunk.length){var r=2*this.chunk.length;while(n>=r){r*=2}var i=new Buffer(r);this.chunk.copy(i);this.chunk=i}e.copy(this.chunk,this.chunkLength);this.chunkLength=n};i.prototype.read=function(){if(this.chunkLength<this.headerSize+4+this.offset){return false}if(this.headerSize){this.header=this.chunk[this.offset]}var e=this.chunk.readUInt32BE(this.offset+this.headerSize)+this.lengthPadding,t=this.chunkLength-(this.offset+4+this.headerSize);if(e>t){return false}this.offset+=this.headerSize+4;var n=this.chunk.slice(this.offset,this.offset+e);this.offset+=e;return n}},function(e){e.exports=require('tls')},function(e,t,n){'use strict';const o=n(1).EventEmitter,a=function(){},d=(e,t)=>{const n=e.findIndex(t);return-1===n?undefined:e.splice(n,1)[0]};class u{constructor(e,t){this.client=e;this.timeoutId=t}}function r(){throw new Error('Release called on client which has already been released to the pool.')}function i(e,t){e.release=r;if(t||this.ending){this._remove(e);this._pulseQueue();return}let n;if(this.options.idleTimeoutMillis){n=setTimeout(()=>{this.log('remove idle client');this._remove(e)},this.options.idleTimeoutMillis)}this._idle.push(new u(e,n));this._pulseQueue()}function s(e,t){if(t){return{callback:t,result:undefined}}let n,r;const i=new e(function(e,t){r=e;n=t});return{callback:function(e,t){e?n(e):r(t)},result:i}}class p extends o{constructor(e,t){super();this.options=Object.assign({},e);this.options.max=this.options.max||this.options.poolSize||10;this.log=this.options.log||function(){};this.Client=this.options.Client||t||n(8).Client;this.Promise=this.options.Promise||global.Promise;if('undefined'===typeof this.options.idleTimeoutMillis){this.options.idleTimeoutMillis=1e4}this._clients=[];this._idle=[];this._pendingQueue=[];this._endCallback=undefined;this.ending=false}_isFull(){return this._clients.length>=this.options.max}_pulseQueue(){this.log('pulse queue');if(this.ending){this.log('pulse queue on ending');if(this._idle.length){this._idle.slice().map((e)=>{this._remove(e.client)})}if(!this._clients.length){this._endCallback()}return}if(!this._pendingQueue.length){this.log('no queued requests');return}if(!this._idle.length&&this._isFull()){return}const e=this._pendingQueue.shift();if(this._idle.length){const t=this._idle.pop();clearTimeout(t.timeoutId);const n=t.client;n.release=i.bind(this,n);this.emit('acquire',n);return e(undefined,n,n.release)}if(!this._isFull()){return this.connect(e)}throw new Error('unexpected condition')}_remove(e){const t=d(this._idle,(t)=>t.client===e);if(t!==undefined){clearTimeout(t.timeoutId)}this._clients=this._clients.filter((t)=>t!==e);e.end();this.emit('remove',e)}connect(e){if(this.ending){const t=new Error('Cannot use a pool after calling end on the pool');return e?e(t):this.Promise.reject(t)}if(this._clients.length>=this.options.max||this._idle.length){const t=s(this.Promise,e),n=t.result;if(this._idle.length){process.nextTick(()=>this._pulseQueue())}if(!this.options.connectionTimeoutMillis){this._pendingQueue.push(t.callback);return n}const r=setTimeout(()=>{this._pendingQueue=this._pendingQueue.filter((e)=>e===t.callback);t.callback(new Error('timeout exceeded when trying to connect'))},this.options.connectionTimeoutMillis);this._pendingQueue.push(function(e,n,i){clearTimeout(r);t.callback(e,n,i)});return n}const t=new this.Client(this.options);this._clients.push(t);const n=(e)=>{e.client=t;t.removeListener('error',n);t.on('error',()=>{this.log('additional client error after disconnection due to error',e)});this._remove(t);this.emit('error',e,t)};this.log('connecting new client');let r,o=false;if(this.options.connectionTimeoutMillis){r=setTimeout(()=>{this.log('ending client due to timeout');o=true;t.connection?t.connection.stream.destroy():t.end()},this.options.connectionTimeoutMillis)}const d=s(this.Promise,e);e=d.callback;this.log('connecting new client');t.connect((s)=>{this.log('new client connected');if(r){clearTimeout(r)}t.on('error',n);if(s){this._clients=this._clients.filter((e)=>e!==t);if(o){s.message='Connection terminiated due to connection timeout'}e(s,undefined,a)}else{t.release=i.bind(this,t);this.emit('connect',t);this.emit('acquire',t);if(this.options.verify){this.options.verify(t,e)}else{e(undefined,t,t.release)}}});return d.result}query(e,t,n){if('function'===typeof e){const t=s(this.Promise,e);setImmediate(function(){return t.callback(new Error('Passing a function as the first parameter to pool.query is not supported'))});return t.result}if('function'===typeof t){n=t;t=undefined}const r=s(this.Promise,n);n=r.callback;this.connect((r,i)=>{if(r){return n(r)}this.log('dispatching query');i.query(e,t,(e,t)=>{this.log('query dispatched');i.release(e);if(e){return n(e)}else{return n(undefined,t)}})});return r.result}end(e){this.log('ending');if(this.ending){const t=new Error('Called end on pool more than once');return e?e(t):this.Promise.reject(t)}this.ending=true;const t=s(this.Promise,e);this._endCallback=t.callback;this._pulseQueue();return t.result}get waitingCount(){return this._pendingQueue.length}get idleCount(){return this._idle.length}get totalCount(){return this._clients.length}}e.exports=p},function(e,t,n){'use strict';var r=n(!function(){var t=new Error('Cannot find module "pg-native"');t.code='MODULE_NOT_FOUND';throw t}()),i=n(13),s=n(45),o=n(46),a=n(16),d=n(1).EventEmitter,u=n(0),p=n(14),l='Version >= '+o.minNativeVersion+' of pg-native required.';a(s.gte(r.version,o.minNativeVersion),l);var c=n(47),g=e.exports=function(e){d.call(this);e=e||{};this._types=new i(e.types);this.native=new r({types:this._types});this._queryQueue=[];this._connected=false;this._connecting=false;var t=this.connectionParameters=new p(e);this.user=t.user;this.password=t.password;this.database=t.database;this.host=t.host;this.port=t.port;this.namedQueries={}};g.Query=c;u.inherits(g,d);g.prototype.connect=function(e){var t=this,n=function(n){if(e)return e(n);return t.emit('error',n)},r;if(!e){var i,s;e=(e)=>e?s(e):i();r=new global.Promise(function(e,t){i=e;s=t})}if(this._connecting){process.nextTick(()=>e(new Error('Client has already been connected. You cannot reuse a client.')));return r}this._connecting=true;this.connectionParameters.getLibpqConnectionString(function(r,i){if(r)return n(r);t.native.connect(i,function(r){if(r)return n(r);t._connected=true;t.native.on('error',function(e){if(t._activeQuery&&'end'!==t._activeQuery.state){return}t.emit('error',e)});t.native.on('notification',function(e){t.emit('notification',{channel:e.relname,payload:e.extra})});t.emit('connect');t._pulseQueryQueue(true);if(e)e()})});return r};g.prototype.query=function(e,t,n){if('function'===typeof e.submit){if('function'===typeof t){e.callback=t}this._queryQueue.push(e);this._pulseQueryQueue();return e}var r=new c(e,t,n),i;if(!r.callback){let e,t;i=new Promise((n,r)=>{e=n;t=r});r.callback=(n,r)=>n?t(n):e(r)}this._queryQueue.push(r);this._pulseQueryQueue();return i};g.prototype.end=function(e){var t=this;if(!this._connected){this.once('connect',this.end.bind(this,e))}var n;if(!e){var r,i;e=(e)=>e?i(e):r();n=new global.Promise(function(e,t){r=e;i=t})}this.native.end(function(){if(t._hasActiveQuery()){t._queryQueue.length=0;t._activeQuery.handleError(new Error('Connection terminated'))}t.emit('end');if(e)e()});return n};g.prototype._hasActiveQuery=function(){return this._activeQuery&&'error'!==this._activeQuery.state&&'end'!==this._activeQuery.state};g.prototype._pulseQueryQueue=function(e){if(!this._connected){return}if(this._hasActiveQuery()){return}var t=this._queryQueue.shift();if(!t){if(!e){this.emit('drain')}return}this._activeQuery=t;t.submit(this);var n=this;t.once('_done',function(){n._pulseQueryQueue()})};g.prototype.cancel=function(e){if(this._activeQuery===e){this.native.cancel(function(){})}else if(-1!==this._queryQueue.indexOf(e)){this._queryQueue.splice(this._queryQueue.indexOf(e),1)}};g.prototype.setTypeParser=function(e,t,n){return this._types.setTypeParser(e,t,n)};g.prototype.getTypeParser=function(e,t){return this._types.getTypeParser(e,t)}},function(e,t,n){var D,N;if('object'===typeof e&&e.exports===t)t=e.exports=s;var q;if('object'===typeof process&&process.env&&process.env.NODE_DEBUG&&/\bsemver\b/i.test(process.env.NODE_DEBUG))q=function(){var e=Array.prototype.slice.call(arguments,0);e.unshift('SEMVER');console.log.apply(console,e)};else q=function(){};t.SEMVER_SPEC_VERSION='2.0.0';var L=256,k=Number.MAX_SAFE_INTEGER||9007199254740991,M=t.re=[],j=t.src=[],F=0,R=F++;j[R]='0|[1-9]\\d*';var Q=F++;j[Q]='[0-9]+';var U=F++;j[U]='\\d*[a-zA-Z-][a-zA-Z0-9-]*';var G=F++;j[G]='('+j[R]+')\\.('+j[R]+')\\.('+j[R]+')';var H=F++;j[H]='('+j[Q]+')\\.('+j[Q]+')\\.('+j[Q]+')';var $=F++;j[$]='(?:'+j[R]+'|'+j[U]+')';var V=F++;j[V]='(?:'+j[Q]+'|'+j[U]+')';var B=F++;j[B]='(?:-('+j[$]+'(?:\\.'+j[$]+')*))';var X=F++;j[X]='(?:-?('+j[V]+'(?:\\.'+j[V]+')*))';var z=F++;j[z]='[0-9A-Za-z-]+';var Y=F++;j[Y]='(?:\\+('+j[z]+'(?:\\.'+j[z]+')*))';var Z=F++,K='v?'+j[G]+j[B]+'?'+j[Y]+'?';j[Z]='^'+K+'$';var W='[v=\\s]*'+j[H]+j[X]+'?'+j[Y]+'?',J=F++;j[J]='^'+W+'$';var ee=F++;j[ee]='((?:<|>)?=?)';var te=F++;j[te]=j[Q]+'|x|X|\\*';var ne=F++;j[ne]=j[R]+'|x|X|\\*';var re=F++;j[re]='[v=\\s]*('+j[ne]+')(?:\\.('+j[ne]+')(?:\\.('+j[ne]+')(?:'+j[B]+')?'+j[Y]+'?)?)?';var ie=F++;j[ie]='[v=\\s]*('+j[te]+')(?:\\.('+j[te]+')(?:\\.('+j[te]+')(?:'+j[X]+')?'+j[Y]+'?)?)?';var se=F++;j[se]='^'+j[ee]+'\\s*'+j[re]+'$';var oe=F++;j[oe]='^'+j[ee]+'\\s*'+j[ie]+'$';var ae=F++;j[ae]='(?:~>?)';var de=F++;j[de]='(\\s*)'+j[ae]+'\\s+';M[de]=new RegExp(j[de],'g');var ue=F++;j[ue]='^'+j[ae]+j[re]+'$';var pe=F++;j[pe]='^'+j[ae]+j[ie]+'$';var le=F++;j[le]='(?:\\^)';var ce=F++;j[ce]='(\\s*)'+j[le]+'\\s+';M[ce]=new RegExp(j[ce],'g');var ge=F++;j[ge]='^'+j[le]+j[re]+'$';var fe=F++;j[fe]='^'+j[le]+j[ie]+'$';var me=F++;j[me]='^'+j[ee]+'\\s*('+W+')$|^$';var ye=F++;j[ye]='^'+j[ee]+'\\s*('+K+')$|^$';var he=F++;j[he]='(\\s*)'+j[ee]+'\\s*('+W+'|'+j[re]+')';M[he]=new RegExp(j[he],'g');var be=F++;j[be]='^\\s*('+j[re]+')\\s+-\\s+('+j[re]+')\\s*$';var we=F++;j[we]='^\\s*('+j[ie]+')\\s+-\\s+('+j[ie]+')\\s*$';var ve=F++;j[ve]='(<|>)?=?\\s*\\*';for(var _e=0;_e<F;_e++){q(_e,j[_e]);if(!M[_e])M[_e]=new RegExp(j[_e])}t.parse=r;function r(e,t){if(e.length>L)return null;var n=t?M[J]:M[Z];if(!n.test(e))return null;try{return new s(e,t)}catch(e){return null}}t.valid=function(e,t){var n=r(e,t);return n?n.version:null};t.clean=function(e,t){var n=r(e.trim().replace(/^[=v]+/,''),t);return n?n.version:null};t.SemVer=s;function s(e,t){if(e instanceof s){if(e.loose===t)return e;else e=e.version}else if('string'!==typeof e){throw new TypeError('Invalid Version: '+e)}if(e.length>L)throw new TypeError('version is longer than '+L+' characters');if(!(this instanceof s))return new s(e,t);q('SemVer',e,t);this.loose=t;var n=e.trim().match(t?M[J]:M[Z]);if(!n)throw new TypeError('Invalid Version: '+e);this.raw=e;this.major=+n[1];this.minor=+n[2];this.patch=+n[3];if(this.major>k||0>this.major)throw new TypeError('Invalid major version');if(this.minor>k||0>this.minor)throw new TypeError('Invalid minor version');if(this.patch>k||0>this.patch)throw new TypeError('Invalid patch version');if(!n[4])this.prerelease=[];else this.prerelease=n[4].split('.').map(function(e){return /^[0-9]+$/.test(e)?+e:e});this.build=n[5]?n[5].split('.'):[];this.format()}s.prototype.format=function(){this.version=this.major+'.'+this.minor+'.'+this.patch;if(this.prerelease.length)this.version+='-'+this.prerelease.join('.');return this.version};s.prototype.inspect=function(){return'<SemVer "'+this+'">'};s.prototype.toString=function(){return this.version};s.prototype.compare=function(e){q('SemVer.compare',this.version,this.loose,e);if(!(e instanceof s))e=new s(e,this.loose);return this.compareMain(e)||this.comparePre(e)};s.prototype.compareMain=function(e){if(!(e instanceof s))e=new s(e,this.loose);return o(this.major,e.major)||o(this.minor,e.minor)||o(this.patch,e.patch)};s.prototype.comparePre=function(e){if(!(e instanceof s))e=new s(e,this.loose);if(this.prerelease.length&&!e.prerelease.length)return-1;else if(!this.prerelease.length&&e.prerelease.length)return 1;else if(!this.prerelease.length&&!e.prerelease.length)return 0;var t=0;do{var n=this.prerelease[t],r=e.prerelease[t];q('prerelease compare',t,n,r);if(n===undefined&&r===undefined)return 0;else if(r===undefined)return 1;else if(n===undefined)return-1;else if(n===r)continue;else return o(n,r)}while(++t)};s.prototype.inc=function(e,t){switch(e){case'premajor':this.prerelease.length=0;this.patch=0;this.minor=0;this.major++;this.inc('pre',t);break;case'preminor':this.prerelease.length=0;this.patch=0;this.minor++;this.inc('pre',t);break;case'prepatch':this.prerelease.length=0;this.inc('patch',t);this.inc('pre',t);break;case'prerelease':if(0===this.prerelease.length)this.inc('patch',t);this.inc('pre',t);break;case'major':if(0!==this.minor||0!==this.patch||0===this.prerelease.length)this.major++;this.minor=0;this.patch=0;this.prerelease=[];break;case'minor':if(0!==this.patch||0===this.prerelease.length)this.minor++;this.patch=0;this.prerelease=[];break;case'patch':if(0===this.prerelease.length)this.patch++;this.prerelease=[];break;case'pre':if(0===this.prerelease.length)this.prerelease=[0];else{var n=this.prerelease.length;while(0<=--n){if('number'===typeof this.prerelease[n]){this.prerelease[n]++;n=-2}}if(-1===n)this.prerelease.push(0)}if(t){if(this.prerelease[0]===t){if(isNaN(this.prerelease[1]))this.prerelease=[t,0]}else this.prerelease=[t,0]}break;default:throw new Error('invalid increment argument: '+e);}this.format();return this};t.inc=function(e,t,n,r){if('string'===typeof n){r=n;n=undefined}try{return new s(e,n).inc(t,r).version}catch(e){return null}};t.diff=function(e,t){if(c(e,t)){return null}else{var n=r(e),i=r(t);if(n.prerelease.length||i.prerelease.length){for(var s in n){if('major'===s||'minor'===s||'patch'===s){if(n[s]!==i[s]){return'pre'+s}}}return'prerelease'}for(var s in n){if('major'===s||'minor'===s||'patch'===s){if(n[s]!==i[s]){return s}}}}};t.compareIdentifiers=o;var i=/^[0-9]+$/;function o(e,t){var n=i.test(e),r=i.test(t);if(n&&r){e=+e;t=+t}return n&&!r?-1:r&&!n?1:e<t?-1:e>t?1:0}t.rcompareIdentifiers=function(e,t){return o(t,e)};t.major=function(e,t){return new s(e,t).major};t.minor=function(e,t){return new s(e,t).minor};t.patch=function(e,t){return new s(e,t).patch};t.compare=d;function d(e,t,n){return new s(e,n).compare(t)}t.compareLoose=function(e,t){return d(e,t,true)};t.rcompare=u;function u(e,t,n){return d(t,e,n)}t.sort=function(e,n){return e.sort(function(e,r){return t.compare(e,r,n)})};t.rsort=function(e,n){return e.sort(function(e,r){return t.rcompare(e,r,n)})};t.gt=p;function p(e,t,n){return 0<d(e,t,n)}t.lt=l;function l(e,t,n){return 0>d(e,t,n)}t.eq=c;function c(e,t,n){return 0===d(e,t,n)}t.neq=g;function g(e,t,n){return 0!==d(e,t,n)}t.gte=f;function f(e,t,n){return 0<=d(e,t,n)}t.lte=m;function m(e,t,n){return 0>=d(e,t,n)}t.cmp=a;function a(e,t,n,r){var i;switch(t){case'===':if('object'===typeof e)e=e.version;if('object'===typeof n)n=n.version;i=e===n;break;case'!==':if('object'===typeof e)e=e.version;if('object'===typeof n)n=n.version;i=e!==n;break;case'':case'=':case'==':i=c(e,n,r);break;case'!=':i=g(e,n,r);break;case'>':i=p(e,n,r);break;case'>=':i=f(e,n,r);break;case'<':i=l(e,n,r);break;case'<=':i=m(e,n,r);break;default:throw new TypeError('Invalid operator: '+t);}return i}t.Comparator=y;function y(e,t){if(e instanceof y){if(e.loose===t)return e;else e=e.value}if(!(this instanceof y))return new y(e,t);q('comparator',e,t);this.loose=t;this.parse(e);if(this.semver===Ee)this.value='';else this.value=this.operator+this.semver.version;q('comp',this)}var Ee={};y.prototype.parse=function(e){var t=this.loose?M[me]:M[ye],n=e.match(t);if(!n)throw new TypeError('Invalid comparator: '+e);this.operator=n[1];if('='===this.operator)this.operator='';if(!n[2])this.semver=Ee;else this.semver=new s(n[2],this.loose)};y.prototype.inspect=function(){return'<SemVer Comparator "'+this+'">'};y.prototype.toString=function(){return this.value};y.prototype.test=function(e){q('Comparator.test',e,this.loose);if(this.semver===Ee)return true;if('string'===typeof e)e=new s(e,this.loose);return a(e,this.operator,this.semver,this.loose)};t.Range=h;function h(e,t){if(e instanceof h&&e.loose===t)return e;if(!(this instanceof h))return new h(e,t);this.loose=t;this.raw=e;this.set=e.split(/\s*\|\|\s*/).map(function(e){return this.parseRange(e.trim())},this).filter(function(e){return e.length});if(!this.set.length){throw new TypeError('Invalid SemVer Range: '+e)}this.format()}h.prototype.inspect=function(){return'<SemVer Range "'+this.range+'">'};h.prototype.format=function(){this.range=this.set.map(function(e){return e.join(' ').trim()}).join('||').trim();return this.range};h.prototype.toString=function(){return this.range};h.prototype.parseRange=function(e){var t=this.loose;e=e.trim();q('range',e,t);var n=t?M[we]:M[be];e=e.replace(n,C);q('hyphen replace',e);e=e.replace(M[he],'$1$2$3');q('comparator trim',e,M[he]);e=e.replace(M[de],'$1~');e=e.replace(M[ce],'$1^');e=e.split(/\s+/).join(' ');var r=t?M[me]:M[ye],i=e.split(' ').map(function(e){return b(e,t)}).join(' ').split(/\s+/);if(this.loose){i=i.filter(function(e){return!!e.match(r)})}i=i.map(function(e){return new y(e,t)});return i};t.toComparators=function(e,t){return new h(e,t).set.map(function(e){return e.map(function(e){return e.value}).join(' ').trim().split(' ')})};function b(e,t){q('comp',e);e=E(e,t);q('caret',e);e=v(e,t);q('tildes',e);e=S(e,t);q('xrange',e);e=T(e,t);q('stars',e);return e}function w(e){return!e||'x'===e.toLowerCase()||'*'===e}function v(e,t){return e.trim().split(/\s+/).map(function(e){return _(e,t)}).join(' ')}function _(e,t){var n=t?M[pe]:M[ue];return e.replace(n,function(t,n,r,i,s){q('tilde',e,t,n,r,i,s);var o;if(w(n))o='';else if(w(r))o='>='+n+'.0.0 <'+(+n+1)+'.0.0';else if(w(i))o='>='+n+'.'+r+'.0 <'+n+'.'+(+r+1)+'.0';else if(s){q('replaceTilde pr',s);if('-'!==s.charAt(0))s='-'+s;o='>='+n+'.'+r+'.'+i+s+' <'+n+'.'+(+r+1)+'.0'}else o='>='+n+'.'+r+'.'+i+' <'+n+'.'+(+r+1)+'.0';q('tilde return',o);return o})}function E(e,t){return e.trim().split(/\s+/).map(function(e){return I(e,t)}).join(' ')}function I(e,t){q('caret',e,t);var n=t?M[fe]:M[ge];return e.replace(n,function(t,n,r,i,s){q('caret',e,t,n,r,i,s);var o;if(w(n))o='';else if(w(r))o='>='+n+'.0.0 <'+(+n+1)+'.0.0';else if(w(i)){if('0'===n)o='>='+n+'.'+r+'.0 <'+n+'.'+(+r+1)+'.0';else o='>='+n+'.'+r+'.0 <'+(+n+1)+'.0.0'}else if(s){q('replaceCaret pr',s);if('-'!==s.charAt(0))s='-'+s;if('0'===n){if('0'===r)o='>='+n+'.'+r+'.'+i+s+' <'+n+'.'+r+'.'+(+i+1);else o='>='+n+'.'+r+'.'+i+s+' <'+n+'.'+(+r+1)+'.0'}else o='>='+n+'.'+r+'.'+i+s+' <'+(+n+1)+'.0.0'}else{q('no pr');if('0'===n){if('0'===r)o='>='+n+'.'+r+'.'+i+' <'+n+'.'+r+'.'+(+i+1);else o='>='+n+'.'+r+'.'+i+' <'+n+'.'+(+r+1)+'.0'}else o='>='+n+'.'+r+'.'+i+' <'+(+n+1)+'.0.0'}q('caret return',o);return o})}function S(e,t){q('replaceXRanges',e,t);return e.split(/\s+/).map(function(e){return O(e,t)}).join(' ')}function O(e,t){e=e.trim();var n=t?M[oe]:M[se];return e.replace(n,function(t,n,r,i,s,o){q('xRange',e,t,n,r,i,s,o);var a=w(r),d=a||w(i),u=d||w(s),p=u;if('='===n&&p)n='';if(a){if('>'===n||'<'===n){t='<0.0.0'}else{t='*'}}else if(n&&p){if(d)i=0;if(u)s=0;if('>'===n){n='>=';if(d){r=+r+1;i=0;s=0}else if(u){i=+i+1;s=0}}else if('<='===n){n='<';if(d)r=+r+1;else i=+i+1}t=n+r+'.'+i+'.'+s}else if(d){t='>='+r+'.0.0 <'+(+r+1)+'.0.0'}else if(u){t='>='+r+'.'+i+'.0 <'+r+'.'+(+i+1)+'.0'}q('xRange return',t);return t})}function T(e,t){q('replaceStars',e,t);return e.trim().replace(M[ve],'')}function C(e,t,n,r,i,s,o,a,d,u,p,l){if(w(n))t='';else if(w(r))t='>='+n+'.0.0';else if(w(i))t='>='+n+'.'+r+'.0';else t='>='+t;if(w(d))a='';else if(w(u))a='<'+(+d+1)+'.0.0';else if(w(p))a='<'+d+'.'+(+u+1)+'.0';else if(l)a='<='+d+'.'+u+'.'+p+'-'+l;else a='<='+a;return(t+' '+a).trim()}h.prototype.test=function(e){if(!e)return false;if('string'===typeof e)e=new s(e,this.loose);for(var t=0;t<this.set.length;t++){if(A(this.set[t],e))return true}return false};function A(e,t){for(var n=0;n<e.length;n++){if(!e[n].test(t))return false}if(t.prerelease.length){for(var n=0;n<e.length;n++){q(e[n].semver);if(e[n].semver===Ee)return true;if(0<e[n].semver.prerelease.length){var r=e[n].semver;if(r.major===t.major&&r.minor===t.minor&&r.patch===t.patch)return true}}return false}return true}t.satisfies=x;function x(e,t,n){try{t=new h(t,n)}catch(e){return false}return t.test(e)}t.maxSatisfying=function(e,t,n){return e.filter(function(e){return x(e,t,n)}).sort(function(e,t){return u(e,t,n)})[0]||null};t.validRange=function(e,t){try{return new h(e,t).range||'*'}catch(e){return null}};t.ltr=function(e,t,n){return P(e,t,'<',n)};t.gtr=function(e,t,n){return P(e,t,'>',n)};t.outside=P;function P(e,t,n,r){e=new s(e,r);t=new h(t,r);var o,a,d,u,c;switch(n){case'>':o=p;a=m;d=l;u='>';c='>=';break;case'<':o=l;a=f;d=p;u='<';c='<=';break;default:throw new TypeError('Must provide a hilo val of "<" or ">"');}if(x(e,t,r)){return false}for(var g=0;g<t.set.length;++g){var i=t.set[g],y=null,b=null;i.forEach(function(e){y=y||e;b=b||e;if(o(e.semver,y.semver,r)){y=e}else if(d(e.semver,b.semver,r)){b=e}});if(y.operator===u||y.operator===c){return false}if((!b.operator||b.operator===u)&&a(e,b.semver)){return false}else if(b.operator===c&&d(e,b.semver)){return false}}return true}!(D=t,N='function'===typeof D?D.call(t,n,t,e):D,N!==undefined&&(e.exports=N))},function(e){e.exports={_from:'pg@^7.4.0',_id:'pg@7.4.0',_inBundle:false,_integrity:'sha1-4lYGHSxScjw8hY3vuX8RWcpmD4M=',_location:'/pg',_phantomChildren:{},_requested:{type:'range',registry:true,raw:'pg@^7.4.0',name:'pg',escapedName:'pg',rawSpec:'^7.4.0',saveSpec:null,fetchSpec:'^7.4.0'},_requiredBy:['/'],_resolved:'https://registry.npmjs.org/pg/-/pg-7.4.0.tgz',_shasum:'e256061d2c52723c3c858defb97f1159ca660f83',_spec:'pg@^7.4.0',_where:'/Users/wisdman/Projects/bitjournal',author:{name:'Brian Carlson',email:'brian.m.carlson@gmail.com'},bugs:{url:'https://github.com/brianc/node-postgres/issues'},bundleDependencies:false,dependencies:{"buffer-writer":'1.0.1',"js-string-escape":'1.0.1',"packet-reader":'0.3.1',"pg-connection-string":'0.1.3',"pg-pool":'~2.0.3',"pg-types":'~1.12.1',pgpass:'1.x',semver:'4.3.2'},deprecated:false,description:'PostgreSQL client - pure javascript & libpq with the same API',devDependencies:{async:'0.9.0',co:'4.6.0',eslint:'4.2.0',"eslint-config-standard":'10.2.1',"eslint-plugin-import":'2.7.0',"eslint-plugin-node":'5.1.0',"eslint-plugin-promise":'3.5.0',"eslint-plugin-standard":'3.0.1',"pg-copy-streams":'0.3.0'},engines:{node:'>= 4.5.0'},homepage:'http://github.com/brianc/node-postgres',keywords:['database','libpq','pg','postgre','postgres','postgresql','rdbms'],license:'MIT',main:'./lib',minNativeVersion:'2.0.0',name:'pg',repository:{type:'git',url:'git://github.com/brianc/node-postgres.git'},scripts:{test:'make test-all'},version:'7.4.0'}},function(e,t,n){'use strict';var r=n(1).EventEmitter,i=n(0),s=n(6),o=e.exports=function(e,t,n){r.call(this);e=s.normalizeQueryConfig(e,t,n);this.text=e.text;this.values=e.values;this.name=e.name;this.callback=e.callback;this.state='new';this._arrayMode='array'===e.rowMode;this._emitRowEvents=false;this.on('newListener',function(e){if('row'===e)this._emitRowEvents=true}.bind(this))};i.inherits(o,r);var a={sqlState:'code',statementPosition:'position',messagePrimary:'message',context:'where',schemaName:'schema',tableName:'table',columnName:'column',dataTypeName:'dataType',constraintName:'constraint',sourceFile:'file',sourceLine:'line',sourceFunction:'routine'};o.prototype.handleError=function(e){var t=this.native.pq.resultErrorFields();if(t){for(var n in t){var r=a[n]||n;e[r]=t[n]}}if(this.callback){this.callback(e)}else{this.emit('error',e)}this.state='error'};o.prototype.then=function(e,t){return this._getPromise().then(e,t)};o.prototype.catch=function(e){return this._getPromise().catch(e)};o.prototype._getPromise=function(){if(this._promise)return this._promise;this._promise=new Promise(function(e,t){this._once('end',e);this._once('error',t)}.bind(this));return this._promise};o.prototype.submit=function(e){this.state='running';var t=this;this.native=e.native;e.native.arrayMode=this._arrayMode;var n=function(n,r,s){e.native.arrayMode=false;setImmediate(function(){t.emit('_done')});if(n){return t.handleError(n)}if(t._emitRowEvents){if(1<s.length){r.forEach((e,n)=>{e.forEach((e)=>{t.emit('row',e,s[n])})})}else{r.forEach(function(e){t.emit('row',e,s)})}}t.state='end';t.emit('end',s);if(t.callback){t.callback(null,s)}};if(process.domain){n=process.domain.bind(n)}if(this.name){if(63<this.name.length){console.error('Warning! Postgres only supports 63 characters for query names.');console.error('You supplied',this.name,'(',this.name.length,')');console.error('This can cause conflicts and silent errors executing queries')}var r=(this.values||[]).map(s.prepareValue);if(e.namedQueries[this.name]){return e.native.execute(this.name,r,n)}return e.native.prepare(this.name,this.text,r.length,function(i){if(i)return n(i);e.namedQueries[t.name]=true;return t.native.execute(t.name,r,n)})}else if(this.values){if(!Array.isArray(this.values)){const e=new Error('Query values must be an array');return n(e)}var i=this.values.map(s.prepareValue);e.native.query(this.text,i,n)}else{e.native.query(this.text,n)}}}]);
+               "sessions"."expires" > timezone('UTC', now())`,
+            values: [session.id]
+        };
+        ctx.debug(`=== SQL Query SESSION ===\n%s`, query);
+        const result = await db.query(query);
+        ctx.debug(`=== SQL Result SESSION ===\n%s`, result.rows);
+        if (result.rowCount === 1)
+            session.user = new models["h" /* User */](result.rows[0]);
+        ctx.session = session;
+        ctx.debug('=== Input session ===\n%s', ctx.session);
+        await next();
+        ctx.debug('=== Output session ===\n%s', ctx.session);
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/session/index.ts
+
+
+
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/index.ts
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "a", function() { return ACL; });
+/* unused concated harmony import null */
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, false, function() { return session_Session; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "b", function() { return session_middleware_SessionMiddleware; });
+
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("util");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("events");
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+module.exports = {
+  // database host. defaults to localhost
+  host: 'localhost',
+
+  // database user's name
+  user: process.platform === 'win32' ? process.env.USERNAME : process.env.USER,
+
+  // name of database to connect
+  database: process.platform === 'win32' ? process.env.USERNAME : process.env.USER,
+
+  // database user's password
+  password: null,
+
+  // a Postgres connection string to be used instead of setting individual connection items
+  // NOTE:  Setting this value will cause it to override any other value (such as database or user) defined
+  // in the defaults object.
+  connectionString: undefined,
+
+  // database port
+  port: 5432,
+
+  // number of rows to return at a time from a prepared statement's
+  // portal. 0 will return all rows at once
+  rows: 0,
+
+  // binary result mode
+  binary: false,
+
+  // Connection pool options - see https://github.com/brianc/node-pg-pool
+
+  // number of connections to use in connection pool
+  // 0 will disable connection pooling
+  max: 10,
+
+  // max milliseconds a client can go unused before it is removed
+  // from the pool and destroyed
+  idleTimeoutMillis: 30000,
+
+  client_encoding: '',
+
+  ssl: false,
+
+  application_name: undefined,
+  fallback_application_name: undefined,
+
+  parseInputDatesAsUTC: false,
+
+  // max milliseconds any query using this connection will execute for before timing out in error. false=unlimited
+  statement_timeout: false
+}
+
+var pgTypes = __webpack_require__(7)
+// save default parsers
+var parseBigInteger = pgTypes.getTypeParser(20, 'text')
+var parseBigIntegerArray = pgTypes.getTypeParser(1016, 'text')
+
+// parse int8 so you can get your count values as actual numbers
+module.exports.__defineSetter__('parseInt8', function (val) {
+  pgTypes.setTypeParser(20, 'text', val ? pgTypes.getTypeParser(23, 'text') : parseBigInteger)
+  pgTypes.setTypeParser(1016, 'text', val ? pgTypes.getTypeParser(1007, 'text') : parseBigIntegerArray)
+})
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var textParsers = __webpack_require__(29);
+var binaryParsers = __webpack_require__(34);
+var arrayParser = __webpack_require__(15);
+
+exports.getTypeParser = getTypeParser;
+exports.setTypeParser = setTypeParser;
+exports.arrayParser = arrayParser;
+
+var typeParsers = {
+  text: {},
+  binary: {}
+};
+
+//the empty parse function
+function noParse (val) {
+  return String(val);
+};
+
+//returns a function used to convert a specific type (specified by
+//oid) into a result javascript type
+//note: the oid can be obtained via the following sql query:
+//SELECT oid FROM pg_type WHERE typname = 'TYPE_NAME_HERE';
+function getTypeParser (oid, format) {
+  format = format || 'text';
+  if (!typeParsers[format]) {
+    return noParse;
+  }
+  return typeParsers[format][oid] || noParse;
+};
+
+function setTypeParser (oid, format, parseFn) {
+  if(typeof format == 'function') {
+    parseFn = format;
+    format = 'text';
+  }
+  typeParsers[format][oid] = parseFn;
+};
+
+textParsers.init(function(oid, converter) {
+  typeParsers.text[oid] = converter;
+});
+
+binaryParsers.init(function(oid, converter) {
+  typeParsers.binary[oid] = converter;
+});
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = require("stream");
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = require("http");
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("crypto");
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+const crypto = __webpack_require__(10)
+
+const defaults = __webpack_require__(6)
+
+function escapeElement (elementRepresentation) {
+  var escaped = elementRepresentation
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+
+  return '"' + escaped + '"'
+}
+
+// convert a JS array to a postgres array literal
+// uses comma separator so won't work for types like box that use
+// a different array separator.
+function arrayString (val) {
+  var result = '{'
+  for (var i = 0; i < val.length; i++) {
+    if (i > 0) {
+      result = result + ','
+    }
+    if (val[i] === null || typeof val[i] === 'undefined') {
+      result = result + 'NULL'
+    } else if (Array.isArray(val[i])) {
+      result = result + arrayString(val[i])
+    } else if (val[i] instanceof Buffer) {
+      result += '\\\\x' + val[i].toString('hex')
+    } else {
+      result += escapeElement(prepareValue(val[i]))
+    }
+  }
+  result = result + '}'
+  return result
+}
+
+// converts values from javascript types
+// to their 'raw' counterparts for use as a postgres parameter
+// note: you can override this function to provide your own conversion mechanism
+// for complex types, etc...
+var prepareValue = function (val, seen) {
+  if (val instanceof Buffer) {
+    return val
+  }
+  if (ArrayBuffer.isView(val)) {
+    var buf = Buffer.from(val.buffer, val.byteOffset, val.byteLength)
+    if (buf.length === val.byteLength) {
+      return buf
+    }
+    return buf.slice(val.byteOffset, val.byteOffset + val.byteLength) // Node.js v4 does not support those Buffer.from params
+  }
+  if (val instanceof Date) {
+    if (defaults.parseInputDatesAsUTC) {
+      return dateToStringUTC(val)
+    } else {
+      return dateToString(val)
+    }
+  }
+  if (Array.isArray(val)) {
+    return arrayString(val)
+  }
+  if (val === null || typeof val === 'undefined') {
+    return null
+  }
+  if (typeof val === 'object') {
+    return prepareObject(val, seen)
+  }
+  return val.toString()
+}
+
+function prepareObject (val, seen) {
+  if (val && typeof val.toPostgres === 'function') {
+    seen = seen || []
+    if (seen.indexOf(val) !== -1) {
+      throw new Error('circular reference detected while preparing "' + val + '" for query')
+    }
+    seen.push(val)
+
+    return prepareValue(val.toPostgres(prepareValue), seen)
+  }
+  return JSON.stringify(val)
+}
+
+function pad (number, digits) {
+  number = '' + number
+  while (number.length < digits) { number = '0' + number }
+  return number
+}
+
+function dateToString (date) {
+  var offset = -date.getTimezoneOffset()
+  var ret = pad(date.getFullYear(), 4) + '-' +
+    pad(date.getMonth() + 1, 2) + '-' +
+    pad(date.getDate(), 2) + 'T' +
+    pad(date.getHours(), 2) + ':' +
+    pad(date.getMinutes(), 2) + ':' +
+    pad(date.getSeconds(), 2) + '.' +
+    pad(date.getMilliseconds(), 3)
+
+  if (offset < 0) {
+    ret += '-'
+    offset *= -1
+  } else { ret += '+' }
+
+  return ret + pad(Math.floor(offset / 60), 2) + ':' + pad(offset % 60, 2)
+}
+
+function dateToStringUTC (date) {
+  var ret = pad(date.getUTCFullYear(), 4) + '-' +
+    pad(date.getUTCMonth() + 1, 2) + '-' +
+    pad(date.getUTCDate(), 2) + 'T' +
+    pad(date.getUTCHours(), 2) + ':' +
+    pad(date.getUTCMinutes(), 2) + ':' +
+    pad(date.getUTCSeconds(), 2) + '.' +
+    pad(date.getUTCMilliseconds(), 3)
+
+  return ret + '+00:00'
+}
+
+function normalizeQueryConfig (config, values, callback) {
+  // can take in strings or config objects
+  config = (typeof (config) === 'string') ? { text: config } : config
+  if (values) {
+    if (typeof values === 'function') {
+      config.callback = values
+    } else {
+      config.values = values
+    }
+  }
+  if (callback) {
+    config.callback = callback
+  }
+  return config
+}
+
+const md5 = function (string) {
+  return crypto.createHash('md5').update(string, 'utf-8').digest('hex')
+}
+
+// See AuthenticationMD5Password at https://www.postgresql.org/docs/current/static/protocol-flow.html
+const postgresMd5PasswordHash = function (user, password, salt) {
+  var inner = md5(password + user)
+  var outer = md5(Buffer.concat([Buffer.from(inner), salt]))
+  return 'md5' + outer
+}
+
+module.exports = {
+  prepareValue: function prepareValueWrapper (value) {
+    // this ensures that extra arguments do not get passed into prepareValue
+    // by accident, eg: from calling values.map(utils.prepareValue)
+    return prepareValue(value)
+  },
+  normalizeQueryConfig,
+  postgresMd5PasswordHash,
+  md5
+}
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+module.exports = require("string_decoder");
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var util = __webpack_require__(4)
+var Client = __webpack_require__(28)
+var defaults = __webpack_require__(6)
+var Connection = __webpack_require__(19)
+var Pool = __webpack_require__(50)
+
+const poolFactory = (Client) => {
+  var BoundPool = function (options) {
+    var config = Object.assign({ Client: Client }, options)
+    return new Pool(config)
+  }
+
+  util.inherits(BoundPool, Pool)
+
+  return BoundPool
+}
+
+var PG = function (clientConstructor) {
+  this.defaults = defaults
+  this.Client = clientConstructor
+  this.Query = this.Client.Query
+  this.Pool = poolFactory(this.Client)
+  this._pools = []
+  this.Connection = Connection
+  this.types = __webpack_require__(7)
+}
+
+if (typeof process.env.NODE_PG_FORCE_NATIVE !== 'undefined') {
+  module.exports = new PG(__webpack_require__(21))
+} else {
+  module.exports = new PG(Client)
+
+  // lazy require native module...the native module may not have installed
+  module.exports.__defineGetter__('native', function () {
+    delete module.exports.native
+    var native = null
+    try {
+      native = new PG(__webpack_require__(21))
+    } catch (err) {
+      if (err.code !== 'MODULE_NOT_FOUND') {
+        throw err
+      }
+      console.error(err.message)
+    }
+    module.exports.native = native
+    return native
+  })
+}
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.parse = function (source, transform) {
+  return new ArrayParser(source, transform).parse()
+}
+
+function ArrayParser (source, transform) {
+  this.source = source
+  this.transform = transform || identity
+  this.position = 0
+  this.entries = []
+  this.recorded = []
+  this.dimension = 0
+}
+
+ArrayParser.prototype.isEof = function () {
+  return this.position >= this.source.length
+}
+
+ArrayParser.prototype.nextCharacter = function () {
+  var character = this.source[this.position++]
+  if (character === '\\') {
+    return {
+      value: this.source[this.position++],
+      escaped: true
+    }
+  }
+  return {
+    value: character,
+    escaped: false
+  }
+}
+
+ArrayParser.prototype.record = function (character) {
+  this.recorded.push(character)
+}
+
+ArrayParser.prototype.newEntry = function (includeEmpty) {
+  var entry
+  if (this.recorded.length > 0 || includeEmpty) {
+    entry = this.recorded.join('')
+    if (entry === 'NULL' && !includeEmpty) {
+      entry = null
+    }
+    if (entry !== null) entry = this.transform(entry)
+    this.entries.push(entry)
+    this.recorded = []
+  }
+}
+
+ArrayParser.prototype.parse = function (nested) {
+  var character, parser, quote
+  while (!this.isEof()) {
+    character = this.nextCharacter()
+    if (character.value === '{' && !quote) {
+      this.dimension++
+      if (this.dimension > 1) {
+        parser = new ArrayParser(this.source.substr(this.position - 1), this.transform)
+        this.entries.push(parser.parse(true))
+        this.position += parser.position - 2
+      }
+    } else if (character.value === '}' && !quote) {
+      this.dimension--
+      if (!this.dimension) {
+        this.newEntry()
+        if (nested) return this.entries
+      }
+    } else if (character.value === '"' && !character.escaped) {
+      if (quote) this.newEntry(true)
+      quote = !quote
+    } else if (character.value === ',' && !quote) {
+      this.newEntry()
+    } else {
+      this.record(character.value)
+    }
+  }
+  if (this.dimension !== 0) {
+    throw new Error('array dimension not balanced')
+  }
+  return this.entries
+}
+
+function identity (value) {
+  return value
+}
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var array = __webpack_require__(14);
+
+module.exports = {
+  create: function (source, transform) {
+    return {
+      parse: function() {
+        return array.parse(source, transform);
+      }
+    };
+  }
+};
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var types = __webpack_require__(7)
+
+function TypeOverrides (userTypes) {
+  this._types = userTypes || types
+  this.text = {}
+  this.binary = {}
+}
+
+TypeOverrides.prototype.getOverrides = function (format) {
+  switch (format) {
+    case 'text': return this.text
+    case 'binary': return this.binary
+    default: return {}
+  }
+}
+
+TypeOverrides.prototype.setTypeParser = function (oid, format, parseFn) {
+  if (typeof format === 'function') {
+    parseFn = format
+    format = 'text'
+  }
+  this.getOverrides(format)[oid] = parseFn
+}
+
+TypeOverrides.prototype.getTypeParser = function (oid, format) {
+  format = format || 'text'
+  return this.getOverrides(format)[oid] || this._types.getTypeParser(oid, format)
+}
+
+module.exports = TypeOverrides
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var dns = __webpack_require__(40)
+
+var defaults = __webpack_require__(6)
+
+var parse = __webpack_require__(41).parse // parses a connection string
+
+var val = function (key, config, envVar) {
+  if (envVar === undefined) {
+    envVar = process.env[ 'PG' + key.toUpperCase() ]
+  } else if (envVar === false) {
+    // do nothing ... use false
+  } else {
+    envVar = process.env[ envVar ]
+  }
+
+  return config[key] ||
+    envVar ||
+    defaults[key]
+}
+
+var useSsl = function () {
+  switch (process.env.PGSSLMODE) {
+    case 'disable':
+      return false
+    case 'prefer':
+    case 'require':
+    case 'verify-ca':
+    case 'verify-full':
+      return true
+  }
+  return defaults.ssl
+}
+
+var ConnectionParameters = function (config) {
+  // if a string is passed, it is a raw connection string so we parse it into a config
+  config = typeof config === 'string' ? parse(config) : config || {}
+
+  // if the config has a connectionString defined, parse IT into the config we use
+  // this will override other default values with what is stored in connectionString
+  if (config.connectionString) {
+    config = Object.assign({}, config, parse(config.connectionString))
+  }
+
+  this.user = val('user', config)
+  this.database = val('database', config)
+  this.port = parseInt(val('port', config), 10)
+  this.host = val('host', config)
+  this.password = val('password', config)
+  this.binary = val('binary', config)
+  this.ssl = typeof config.ssl === 'undefined' ? useSsl() : config.ssl
+  this.client_encoding = val('client_encoding', config)
+  this.replication = val('replication', config)
+  // a domain socket begins with '/'
+  this.isDomainSocket = (!(this.host || '').indexOf('/'))
+
+  this.application_name = val('application_name', config, 'PGAPPNAME')
+  this.fallback_application_name = val('fallback_application_name', config, false)
+  this.statement_timeout = val('statement_timeout', config, false)
+}
+
+// Convert arg to a string, surround in single quotes, and escape single quotes and backslashes
+var quoteParamValue = function (value) {
+  return "'" + ('' + value).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'"
+}
+
+var add = function (params, config, paramName) {
+  var value = config[paramName]
+  if (value) {
+    params.push(paramName + '=' + quoteParamValue(value))
+  }
+}
+
+ConnectionParameters.prototype.getLibpqConnectionString = function (cb) {
+  var params = []
+  add(params, this, 'user')
+  add(params, this, 'password')
+  add(params, this, 'port')
+  add(params, this, 'application_name')
+  add(params, this, 'fallback_application_name')
+
+  var ssl = typeof this.ssl === 'object' ? this.ssl : {sslmode: this.ssl}
+  add(params, ssl, 'sslmode')
+  add(params, ssl, 'sslca')
+  add(params, ssl, 'sslkey')
+  add(params, ssl, 'sslcert')
+  add(params, ssl, 'sslrootcert')
+
+  if (this.database) {
+    params.push('dbname=' + quoteParamValue(this.database))
+  }
+  if (this.replication) {
+    params.push('replication=' + quoteParamValue(this.replication))
+  }
+  if (this.host) {
+    params.push('host=' + quoteParamValue(this.host))
+  }
+  if (this.isDomainSocket) {
+    return cb(null, params.join(' '))
+  }
+  if (this.client_encoding) {
+    params.push('client_encoding=' + quoteParamValue(this.client_encoding))
+  }
+  dns.lookup(this.host, function (err, address) {
+    if (err) return cb(err, null)
+    params.push('hostaddr=' + quoteParamValue(address))
+    return cb(null, params.join(' '))
+  })
+}
+
+module.exports = ConnectionParameters
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var net = __webpack_require__(46)
+var EventEmitter = __webpack_require__(5).EventEmitter
+var util = __webpack_require__(4)
+
+var Writer = __webpack_require__(47)
+var Reader = __webpack_require__(48)
+
+var TEXT_MODE = 0
+var BINARY_MODE = 1
+var Connection = function (config) {
+  EventEmitter.call(this)
+  config = config || {}
+  this.stream = config.stream || new net.Stream()
+  this._keepAlive = config.keepAlive
+  this.lastBuffer = false
+  this.lastOffset = 0
+  this.buffer = null
+  this.offset = null
+  this.encoding = config.encoding || 'utf8'
+  this.parsedStatements = {}
+  this.writer = new Writer()
+  this.ssl = config.ssl || false
+  this._ending = false
+  this._mode = TEXT_MODE
+  this._emitMessage = false
+  this._reader = new Reader({
+    headerSize: 1,
+    lengthPadding: -4
+  })
+  var self = this
+  this.on('newListener', function (eventName) {
+    if (eventName === 'message') {
+      self._emitMessage = true
+    }
+  })
+}
+
+util.inherits(Connection, EventEmitter)
+
+Connection.prototype.connect = function (port, host) {
+  if (this.stream.readyState === 'closed') {
+    this.stream.connect(port, host)
+  } else if (this.stream.readyState === 'open') {
+    this.emit('connect')
+  }
+
+  var self = this
+
+  this.stream.on('connect', function () {
+    if (self._keepAlive) {
+      self.stream.setKeepAlive(true)
+    }
+    self.emit('connect')
+  })
+
+  this.stream.on('error', function (error) {
+    // don't raise ECONNRESET errors - they can & should be ignored
+    // during disconnect
+    if (self._ending && error.code === 'ECONNRESET') {
+      return
+    }
+    self.emit('error', error)
+  })
+
+  this.stream.on('close', function () {
+    self.emit('end')
+  })
+
+  if (!this.ssl) {
+    return this.attachListeners(this.stream)
+  }
+
+  this.stream.once('data', function (buffer) {
+    var responseCode = buffer.toString('utf8')
+    if (responseCode !== 'S') {
+      return self.emit('error', new Error('The server does not support SSL connections'))
+    }
+    var tls = __webpack_require__(49)
+    self.stream = tls.connect({
+      socket: self.stream,
+      servername: host,
+      rejectUnauthorized: self.ssl.rejectUnauthorized,
+      ca: self.ssl.ca,
+      pfx: self.ssl.pfx,
+      key: self.ssl.key,
+      passphrase: self.ssl.passphrase,
+      cert: self.ssl.cert,
+      NPNProtocols: self.ssl.NPNProtocols
+    })
+    self.attachListeners(self.stream)
+    self.emit('sslconnect')
+
+    self.stream.on('error', function (error) {
+      self.emit('error', error)
+    })
+  })
+}
+
+Connection.prototype.attachListeners = function (stream) {
+  var self = this
+  stream.on('data', function (buff) {
+    self._reader.addChunk(buff)
+    var packet = self._reader.read()
+    while (packet) {
+      var msg = self.parseMessage(packet)
+      if (self._emitMessage) {
+        self.emit('message', msg)
+      }
+      self.emit(msg.name, msg)
+      packet = self._reader.read()
+    }
+  })
+  stream.on('end', function () {
+    self.emit('end')
+  })
+}
+
+Connection.prototype.requestSsl = function () {
+  var bodyBuffer = this.writer
+    .addInt16(0x04D2)
+    .addInt16(0x162F).flush()
+
+  var length = bodyBuffer.length + 4
+
+  var buffer = new Writer()
+    .addInt32(length)
+    .add(bodyBuffer)
+    .join()
+  this.stream.write(buffer)
+}
+
+Connection.prototype.startup = function (config) {
+  var writer = this.writer
+    .addInt16(3)
+    .addInt16(0)
+
+  Object.keys(config).forEach(function (key) {
+    var val = config[key]
+    writer.addCString(key).addCString(val)
+  })
+
+  writer.addCString('client_encoding').addCString("'utf-8'")
+
+  var bodyBuffer = writer.addCString('').flush()
+  // this message is sent without a code
+
+  var length = bodyBuffer.length + 4
+
+  var buffer = new Writer()
+    .addInt32(length)
+    .add(bodyBuffer)
+    .join()
+  this.stream.write(buffer)
+}
+
+Connection.prototype.cancel = function (processID, secretKey) {
+  var bodyBuffer = this.writer
+    .addInt16(1234)
+    .addInt16(5678)
+    .addInt32(processID)
+    .addInt32(secretKey)
+    .flush()
+
+  var length = bodyBuffer.length + 4
+
+  var buffer = new Writer()
+    .addInt32(length)
+    .add(bodyBuffer)
+    .join()
+  this.stream.write(buffer)
+}
+
+Connection.prototype.password = function (password) {
+  // 0x70 = 'p'
+  this._send(0x70, this.writer.addCString(password))
+}
+
+Connection.prototype._send = function (code, more) {
+  if (!this.stream.writable) {
+    return false
+  }
+  if (more === true) {
+    this.writer.addHeader(code)
+  } else {
+    return this.stream.write(this.writer.flush(code))
+  }
+}
+
+Connection.prototype.query = function (text) {
+  // 0x51 = Q
+  this.stream.write(this.writer.addCString(text).flush(0x51))
+}
+
+// send parse message
+// "more" === true to buffer the message until flush() is called
+Connection.prototype.parse = function (query, more) {
+  // expect something like this:
+  // { name: 'queryName',
+  //   text: 'select * from blah',
+  //   types: ['int8', 'bool'] }
+
+  // normalize missing query names to allow for null
+  query.name = query.name || ''
+  if (query.name.length > 63) {
+    console.error('Warning! Postgres only supports 63 characters for query names.')
+    console.error('You supplied', query.name, '(', query.name.length, ')')
+    console.error('This can cause conflicts and silent errors executing queries')
+  }
+  // normalize null type array
+  query.types = query.types || []
+  var len = query.types.length
+  var buffer = this.writer
+    .addCString(query.name) // name of query
+    .addCString(query.text) // actual query text
+    .addInt16(len)
+  for (var i = 0; i < len; i++) {
+    buffer.addInt32(query.types[i])
+  }
+
+  var code = 0x50
+  this._send(code, more)
+}
+
+// send bind message
+// "more" === true to buffer the message until flush() is called
+Connection.prototype.bind = function (config, more) {
+  // normalize config
+  config = config || {}
+  config.portal = config.portal || ''
+  config.statement = config.statement || ''
+  config.binary = config.binary || false
+  var values = config.values || []
+  var len = values.length
+  var useBinary = false
+  for (var j = 0; j < len; j++) { useBinary |= values[j] instanceof Buffer }
+  var buffer = this.writer
+    .addCString(config.portal)
+    .addCString(config.statement)
+  if (!useBinary) { buffer.addInt16(0) } else {
+    buffer.addInt16(len)
+    for (j = 0; j < len; j++) { buffer.addInt16(values[j] instanceof Buffer) }
+  }
+  buffer.addInt16(len)
+  for (var i = 0; i < len; i++) {
+    var val = values[i]
+    if (val === null || typeof val === 'undefined') {
+      buffer.addInt32(-1)
+    } else if (val instanceof Buffer) {
+      buffer.addInt32(val.length)
+      buffer.add(val)
+    } else {
+      buffer.addInt32(Buffer.byteLength(val))
+      buffer.addString(val)
+    }
+  }
+
+  if (config.binary) {
+    buffer.addInt16(1) // format codes to use binary
+    buffer.addInt16(1)
+  } else {
+    buffer.addInt16(0) // format codes to use text
+  }
+  // 0x42 = 'B'
+  this._send(0x42, more)
+}
+
+// send execute message
+// "more" === true to buffer the message until flush() is called
+Connection.prototype.execute = function (config, more) {
+  config = config || {}
+  config.portal = config.portal || ''
+  config.rows = config.rows || ''
+  this.writer
+    .addCString(config.portal)
+    .addInt32(config.rows)
+
+  // 0x45 = 'E'
+  this._send(0x45, more)
+}
+
+var emptyBuffer = Buffer.alloc(0)
+
+Connection.prototype.flush = function () {
+  // 0x48 = 'H'
+  this.writer.add(emptyBuffer)
+  this._send(0x48)
+}
+
+Connection.prototype.sync = function () {
+  // clear out any pending data in the writer
+  this.writer.flush(0)
+
+  this.writer.add(emptyBuffer)
+  this._ending = true
+  this._send(0x53)
+}
+
+const END_BUFFER = Buffer.from([0x58, 0x00, 0x00, 0x00, 0x04])
+
+Connection.prototype.end = function () {
+  // 0x58 = 'X'
+  this.writer.add(emptyBuffer)
+  this._ending = true
+  return this.stream.write(END_BUFFER)
+}
+
+Connection.prototype.close = function (msg, more) {
+  this.writer.addCString(msg.type + (msg.name || ''))
+  this._send(0x43, more)
+}
+
+Connection.prototype.describe = function (msg, more) {
+  this.writer.addCString(msg.type + (msg.name || ''))
+  this._send(0x44, more)
+}
+
+Connection.prototype.sendCopyFromChunk = function (chunk) {
+  this.stream.write(this.writer.add(chunk).flush(0x64))
+}
+
+Connection.prototype.endCopyFrom = function () {
+  this.stream.write(this.writer.add(emptyBuffer).flush(0x63))
+}
+
+Connection.prototype.sendCopyFail = function (msg) {
+  // this.stream.write(this.writer.add(emptyBuffer).flush(0x66));
+  this.writer.addCString(msg)
+  this._send(0x66)
+}
+
+var Message = function (name, length) {
+  this.name = name
+  this.length = length
+}
+
+Connection.prototype.parseMessage = function (buffer) {
+  this.offset = 0
+  var length = buffer.length + 4
+  switch (this._reader.header) {
+    case 0x52: // R
+      return this.parseR(buffer, length)
+
+    case 0x53: // S
+      return this.parseS(buffer, length)
+
+    case 0x4b: // K
+      return this.parseK(buffer, length)
+
+    case 0x43: // C
+      return this.parseC(buffer, length)
+
+    case 0x5a: // Z
+      return this.parseZ(buffer, length)
+
+    case 0x54: // T
+      return this.parseT(buffer, length)
+
+    case 0x44: // D
+      return this.parseD(buffer, length)
+
+    case 0x45: // E
+      return this.parseE(buffer, length)
+
+    case 0x4e: // N
+      return this.parseN(buffer, length)
+
+    case 0x31: // 1
+      return new Message('parseComplete', length)
+
+    case 0x32: // 2
+      return new Message('bindComplete', length)
+
+    case 0x33: // 3
+      return new Message('closeComplete', length)
+
+    case 0x41: // A
+      return this.parseA(buffer, length)
+
+    case 0x6e: // n
+      return new Message('noData', length)
+
+    case 0x49: // I
+      return new Message('emptyQuery', length)
+
+    case 0x73: // s
+      return new Message('portalSuspended', length)
+
+    case 0x47: // G
+      return this.parseG(buffer, length)
+
+    case 0x48: // H
+      return this.parseH(buffer, length)
+
+    case 0x57: // W
+      return new Message('replicationStart', length)
+
+    case 0x63: // c
+      return new Message('copyDone', length)
+
+    case 0x64: // d
+      return this.parsed(buffer, length)
+  }
+}
+
+Connection.prototype.parseR = function (buffer, length) {
+  var code = 0
+  var msg = new Message('authenticationOk', length)
+  if (msg.length === 8) {
+    code = this.parseInt32(buffer)
+    if (code === 3) {
+      msg.name = 'authenticationCleartextPassword'
+    }
+    return msg
+  }
+  if (msg.length === 12) {
+    code = this.parseInt32(buffer)
+    if (code === 5) { // md5 required
+      msg.name = 'authenticationMD5Password'
+      msg.salt = Buffer.alloc(4)
+      buffer.copy(msg.salt, 0, this.offset, this.offset + 4)
+      this.offset += 4
+      return msg
+    }
+  }
+  throw new Error('Unknown authenticationOk message type' + util.inspect(msg))
+}
+
+Connection.prototype.parseS = function (buffer, length) {
+  var msg = new Message('parameterStatus', length)
+  msg.parameterName = this.parseCString(buffer)
+  msg.parameterValue = this.parseCString(buffer)
+  return msg
+}
+
+Connection.prototype.parseK = function (buffer, length) {
+  var msg = new Message('backendKeyData', length)
+  msg.processID = this.parseInt32(buffer)
+  msg.secretKey = this.parseInt32(buffer)
+  return msg
+}
+
+Connection.prototype.parseC = function (buffer, length) {
+  var msg = new Message('commandComplete', length)
+  msg.text = this.parseCString(buffer)
+  return msg
+}
+
+Connection.prototype.parseZ = function (buffer, length) {
+  var msg = new Message('readyForQuery', length)
+  msg.name = 'readyForQuery'
+  msg.status = this.readString(buffer, 1)
+  return msg
+}
+
+var ROW_DESCRIPTION = 'rowDescription'
+Connection.prototype.parseT = function (buffer, length) {
+  var msg = new Message(ROW_DESCRIPTION, length)
+  msg.fieldCount = this.parseInt16(buffer)
+  var fields = []
+  for (var i = 0; i < msg.fieldCount; i++) {
+    fields.push(this.parseField(buffer))
+  }
+  msg.fields = fields
+  return msg
+}
+
+var Field = function () {
+  this.name = null
+  this.tableID = null
+  this.columnID = null
+  this.dataTypeID = null
+  this.dataTypeSize = null
+  this.dataTypeModifier = null
+  this.format = null
+}
+
+var FORMAT_TEXT = 'text'
+var FORMAT_BINARY = 'binary'
+Connection.prototype.parseField = function (buffer) {
+  var field = new Field()
+  field.name = this.parseCString(buffer)
+  field.tableID = this.parseInt32(buffer)
+  field.columnID = this.parseInt16(buffer)
+  field.dataTypeID = this.parseInt32(buffer)
+  field.dataTypeSize = this.parseInt16(buffer)
+  field.dataTypeModifier = this.parseInt32(buffer)
+  if (this.parseInt16(buffer) === TEXT_MODE) {
+    this._mode = TEXT_MODE
+    field.format = FORMAT_TEXT
+  } else {
+    this._mode = BINARY_MODE
+    field.format = FORMAT_BINARY
+  }
+  return field
+}
+
+var DATA_ROW = 'dataRow'
+var DataRowMessage = function (length, fieldCount) {
+  this.name = DATA_ROW
+  this.length = length
+  this.fieldCount = fieldCount
+  this.fields = []
+}
+
+// extremely hot-path code
+Connection.prototype.parseD = function (buffer, length) {
+  var fieldCount = this.parseInt16(buffer)
+  var msg = new DataRowMessage(length, fieldCount)
+  for (var i = 0; i < fieldCount; i++) {
+    msg.fields.push(this._readValue(buffer))
+  }
+  return msg
+}
+
+// extremely hot-path code
+Connection.prototype._readValue = function (buffer) {
+  var length = this.parseInt32(buffer)
+  if (length === -1) return null
+  if (this._mode === TEXT_MODE) {
+    return this.readString(buffer, length)
+  }
+  return this.readBytes(buffer, length)
+}
+
+// parses error
+Connection.prototype.parseE = function (buffer, length) {
+  var fields = {}
+  var msg, item
+  var input = new Message('error', length)
+  var fieldType = this.readString(buffer, 1)
+  while (fieldType !== '\0') {
+    fields[fieldType] = this.parseCString(buffer)
+    fieldType = this.readString(buffer, 1)
+  }
+  if (input.name === 'error') {
+    // the msg is an Error instance
+    msg = new Error(fields.M)
+    for (item in input) {
+      // copy input properties to the error
+      if (input.hasOwnProperty(item)) {
+        msg[item] = input[item]
+      }
+    }
+  } else {
+    // the msg is an object literal
+    msg = input
+    msg.message = fields.M
+  }
+  msg.severity = fields.S
+  msg.code = fields.C
+  msg.detail = fields.D
+  msg.hint = fields.H
+  msg.position = fields.P
+  msg.internalPosition = fields.p
+  msg.internalQuery = fields.q
+  msg.where = fields.W
+  msg.schema = fields.s
+  msg.table = fields.t
+  msg.column = fields.c
+  msg.dataType = fields.d
+  msg.constraint = fields.n
+  msg.file = fields.F
+  msg.line = fields.L
+  msg.routine = fields.R
+  return msg
+}
+
+// same thing, different name
+Connection.prototype.parseN = function (buffer, length) {
+  var msg = this.parseE(buffer, length)
+  msg.name = 'notice'
+  return msg
+}
+
+Connection.prototype.parseA = function (buffer, length) {
+  var msg = new Message('notification', length)
+  msg.processId = this.parseInt32(buffer)
+  msg.channel = this.parseCString(buffer)
+  msg.payload = this.parseCString(buffer)
+  return msg
+}
+
+Connection.prototype.parseG = function (buffer, length) {
+  var msg = new Message('copyInResponse', length)
+  return this.parseGH(buffer, msg)
+}
+
+Connection.prototype.parseH = function (buffer, length) {
+  var msg = new Message('copyOutResponse', length)
+  return this.parseGH(buffer, msg)
+}
+
+Connection.prototype.parseGH = function (buffer, msg) {
+  var isBinary = buffer[this.offset] !== 0
+  this.offset++
+  msg.binary = isBinary
+  var columnCount = this.parseInt16(buffer)
+  msg.columnTypes = []
+  for (var i = 0; i < columnCount; i++) {
+    msg.columnTypes.push(this.parseInt16(buffer))
+  }
+  return msg
+}
+
+Connection.prototype.parsed = function (buffer, length) {
+  var msg = new Message('copyData', length)
+  msg.chunk = this.readBytes(buffer, msg.length - 4)
+  return msg
+}
+
+Connection.prototype.parseInt32 = function (buffer) {
+  var value = buffer.readInt32BE(this.offset, true)
+  this.offset += 4
+  return value
+}
+
+Connection.prototype.parseInt16 = function (buffer) {
+  var value = buffer.readInt16BE(this.offset, true)
+  this.offset += 2
+  return value
+}
+
+Connection.prototype.readString = function (buffer, length) {
+  return buffer.toString(this.encoding, this.offset, (this.offset += length))
+}
+
+Connection.prototype.readBytes = function (buffer, length) {
+  return buffer.slice(this.offset, (this.offset += length))
+}
+
+Connection.prototype.parseCString = function (buffer) {
+  var start = this.offset
+  var end = buffer.indexOf(0, start)
+  this.offset = end + 1
+  return buffer.toString(this.encoding, start, end)
+}
+// end parsing methods
+module.exports = Connection
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+module.exports = require("assert");
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = __webpack_require__(51)
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * @exports pg-large-object/lib/promiseFromCallback
+ * @param {function} fn
+ * @param {object} self
+ * @param {object} [options]
+ * @returns {Promise}
+ */
+function promiseFromCallback(fn, self, options) {
+        // there are no callbacks with more than two arguments in this project
+        const twoArgs = options && options.twoArgs;
+
+        return new Promise(function(resolve, reject) {
+                function callback(error, arg1, arg2) {
+                        if (error) {
+                                reject(error);
+                                return;
+                        }
+
+                        if (twoArgs) {
+                                resolve([arg1, arg2]);
+                        }
+                        else {
+                                resolve(arg1);
+                        }
+                }
+
+                fn.call(self, callback);
+        });
+}
+
+module.exports = promiseFromCallback;
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var promiseFromCallback = __webpack_require__(22);
+var ReadStream = __webpack_require__(24);
+var WriteStream = __webpack_require__(25);
+
+
+/** Represents an opened large object.
+  * 
+  * @constructor
+  * @exports pg-large-object/lib/LargeObject
+  */
+function LargeObject(query, oid, fd)
+{
+        this._query = query;
+        this.oid = oid;
+        this._fd = fd;
+}
+
+/**
+  * A seek from the beginning of a object
+  * @constant {Number}
+  */
+LargeObject.SEEK_SET = 0;
+
+/**
+  * A seek from the current position
+  * @constant {Number}
+  */
+LargeObject.SEEK_CUR = 1;
+
+/**
+  * A seek from the end of a object
+  * @constant {Number}
+  */
+LargeObject.SEEK_END = 2;
+
+/** @callback module:pg-large-object/lib/LargeObject~closeCallback
+  * @param {?Error} error If set, an error occurred.
+  */
+/** Closes this large object. 
+  *  You should no longer call any methods on this object.
+  * @param {module:pg-large-object/lib/LargeObject~closeCallback} [callback]
+  */
+LargeObject.prototype.close = function(callback)
+{
+        this._query(
+                {name: "npg_lo_close", text:"SELECT lo_close($1) as ok", values: [this._fd]},
+                callback ? function(err, result)
+                {
+                        callback(err);       
+                } : undefined
+        );
+};
+
+/** Closes this large object.
+ *  You should no longer call any methods on this object.
+ * @returns {Promise}
+ */
+LargeObject.prototype.closeAsync = function()
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.close(callback);
+        }, this);
+};
+
+/** @callback module:pg-large-object/lib/LargeObject~readCallback
+  * @param {?Error} error If set, an error occurred.
+  * @param {Buffer} data The binary data that was read.
+  *        If the length of this buffer is less than the supplied
+  *        length param, there is no more data to be read.    
+  */
+/** Reads some data from the large object.
+  * @param {Number} length How many bytes to read
+  * @param {module:pg-large-object/lib/LargeObject~readCallback} callback
+  */
+LargeObject.prototype.read = function(length, callback)
+{
+        this._query(
+                {name: "npg_loread", text:"SELECT loread($1, $2) as data", values: [this._fd, length]},
+                function(err, result)
+                {
+                        if (err) return callback(err);
+                        
+                        var data = result.rows[0].data;
+                        callback(null, data);
+                }
+        );
+};
+
+/** Reads some data from the large object.
+ * @param {Number} length How many bytes to read
+ * @returns {Promise.<Buffer>} The binary data that was read.
+ *          If the length of this buffer is less than the supplied
+ *          length param, there is no more data to be read.
+ */
+LargeObject.prototype.readAsync = function(length)
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.read(length, callback);
+        }, this);
+};
+
+/** @callback module:pg-large-object/lib/LargeObject~writeCallback
+  * @param {?Error} error If set, an error occurred.
+  */
+/** Writes some data to the large object.
+  * @param {Buffer} buffer data to write
+  * @param {module:pg-large-object/lib/LargeObject~writeCallback} [callback]
+  */
+LargeObject.prototype.write = function(buffer, callback)
+{
+        this._query(
+                {name: "npg_lowrite", text:"SELECT lowrite($1, $2)", values: [this._fd, buffer]},
+                callback ? function(err, result)
+                {
+                        callback(err);
+                } : undefined
+        );
+};
+
+/** Writes some data to the large object.
+ * @param {Buffer} buffer data to write
+ * @returns {Promise}
+ */
+LargeObject.prototype.writeAsync = function(buffer)
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.write(buffer, callback);
+        }, this);
+};
+
+/** @callback module:pg-large-object/lib/LargeObject~seekCallback
+  * @param {?Error} error If set, an error occurred.
+  * @param {Number} position The new position  
+  */
+/** Sets the position within the large object.
+  * Beware floating point rounding with values greater than 2^53 (8192 TiB)
+  * @param {Number} position
+  * @param {Number} ref One of SEEK_SET, SEEK_CUR, SEEK_END
+  * @param {module:pg-large-object/lib/LargeObject~seekCallback} [callback]
+  */
+LargeObject.prototype.seek = function(position, ref, callback)
+{
+        this._query(
+                {name: "npg_lo_lseek64", text:"SELECT lo_lseek64($1, $2, $3) as location", values: [this._fd, position, ref]},
+                callback ? function(err, result)
+                {
+                        if (err) return callback(err);
+                        
+                        var location = result.rows[0].location;
+                        callback(null, location);
+                } : undefined
+        );
+};
+
+/** Sets the position within the large object.
+ * Beware floating point rounding with values greater than 2^53 (8192 TiB)
+ * @param {Number} position
+ * @param {Number} ref One of SEEK_SET, SEEK_CUR, SEEK_END
+ * @returns {Promise.<number>} The new position
+ */
+LargeObject.prototype.seekAsync = function(position, ref)
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.seek(position, ref, callback);
+        }, this);
+};
+
+/** @callback module:pg-large-object/lib/LargeObject~tellCallback
+  * @param {?Error} error If set, an error occurred.
+  * @param {Number} position The position  
+  */
+/** Retrieves the current position within the large object.
+  * Beware floating point rounding with values greater than 2^53 (8192 TiB)
+  * @param {module:pg-large-object/lib/LargeObject~tellCallback} callback
+  */
+LargeObject.prototype.tell = function(callback)
+{
+        this._query(
+                {name: "npg_lo_tell64", text:"SELECT lo_tell64($1) as location", values: [this._fd]},
+                function(err, result)
+                {
+                        if (err) return callback(err);
+                        
+                        var location = result.rows[0].location;
+                        callback(null, location);
+                }
+        );
+};
+
+/** Retrieves the current position within the large object.
+ * Beware floating point rounding with values greater than 2^53 (8192 TiB)
+ * @returns {Promise.<number>}
+ */
+LargeObject.prototype.tellAsync = function()
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.tell(callback);
+        }, this);
+};
+
+/** @callback module:pg-large-object/lib/LargeObject~sizeCallback
+  * @param {?Error} error If set, an error occurred.
+  * @param {Number} size Object size in bytes  
+  */
+/** Find the total size of the large object.
+  * @param {module:pg-large-object/lib/LargeObject~sizeCallback} callback
+  */
+LargeObject.prototype.size = function(callback)
+{
+        var text = "SELECT lo_lseek64($1, location, 0), seek.size FROM " +
+                "(SELECT lo_lseek64($1, 0, 2) AS SIZE, tell.location FROM " + 
+                        "(SELECT lo_tell64($1) AS location) tell) "+ 
+                "seek;";
+        this._query(
+                {name: "npg_size", text: text, values: [this._fd]},
+                function(err, result)
+                {
+                        if (err) return callback(err);
+                        
+                        var size = result.rows[0].size;
+                        callback(null, size);
+                }
+        );
+};
+
+/** Find the total size of the large object.
+ * @returns {Promise.<number>}
+ */
+LargeObject.prototype.sizeAsync = function()
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.size(callback);
+        }, this);
+};
+
+/** @callback module:pg-large-object/lib/LargeObject~truncateCallback
+  * @param {?Error} error If set, an error occurred.  
+  */
+/** Truncates the large object to the given length in bytes.
+  * If the number of bytes is larger than the current large
+  * object length, the large object will be filled with zero
+  * bytes.  This method does not modify the current file offset.
+  * @param {Number} length  
+  * @param {module:pg-large-object/lib/LargeObject~truncateCallback} [callback]
+  */
+LargeObject.prototype.truncate = function(length, callback)
+{
+        this._query(
+                {name: "npg_lo_truncate64", text:"SELECT lo_truncate64($1, $2)", values: [this._fd, length]},
+                callback ? function(err, result)
+                {
+                        callback(err);
+                } : undefined
+        );
+};
+
+/** Truncates the large object to the given length in bytes.
+ * If the number of bytes is larger than the current large
+ * object length, the large object will be filled with zero
+ * bytes.  This method does not modify the current file offset.
+ * @param {Number} length
+ * @returns {Promise}
+ */
+LargeObject.prototype.truncateAsync = function(length)
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.truncate(length, callback);
+        }, this);
+};
+
+/** Return a stream to read this large object.
+  * Call this within a transaction block.
+  * @param {Number} [bufferSize=16384] A larger buffer size will 
+  * require more memory on both the server and client, however it will make 
+  * transfers faster because there is less overhead (less read calls to the server). 
+  * his overhead is most noticeable on high latency connections because each 
+  * ransfered chunk will incur at least RTT of additional transfer time.
+  * @returns {module:pg-large-object/lib/ReadStream}
+  */
+LargeObject.prototype.getReadableStream = function(bufferSize)
+{
+        return new ReadStream(this, bufferSize);
+};
+
+/** Return a stream to write to this large object.
+  * Call this within a transaction block.
+  * @param {Number} [bufferSize=16384] A larger buffer size will 
+  * require more memory on both the server and client, however it will make 
+  * transfers faster because there is less overhead (less read calls to the server). 
+  * his overhead is most noticeable on high latency connections because each 
+  * ransfered chunk will incur at least RTT of additional transfer time.  
+  * @returns {module:pg-large-object/lib/WriteStream}
+  */
+LargeObject.prototype.getWritableStream = function(bufferSize)
+{
+        return new WriteStream(this, bufferSize);
+};
+
+module.exports = LargeObject;
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var stream = __webpack_require__(8);
+
+
+
+/** 
+  * @constructor
+  * @augments stream.Readable
+  * @exports pg-large-object/lib/ReadStream
+  */
+function ReadStream(largeObject, bufferSize)
+{
+        stream.Readable.call(this, {
+                'highWaterMark': bufferSize || 16384,
+                'encoding': null,
+                'objectMode': false
+        });
+        this._largeObject = largeObject;
+}
+
+ReadStream.prototype = Object.create(stream.Readable.prototype);
+
+ReadStream.prototype._read = function(length)
+{
+        if (length <= 0)
+        {
+                throw "Illegal Argument";
+        }
+        
+        this._largeObject.read(length, function(error, data)
+        {
+                if (error)
+                {
+                        this.emit('error', error);
+                        return;
+                }
+                
+                this.push(data);
+                if (data.length < length)
+                {
+                        this.push(null); // the large object has no more data left
+                }
+        }.bind(this));
+};
+
+module.exports = ReadStream;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var stream = __webpack_require__(8);
+
+
+
+/** 
+  * @constructor
+  * @augments stream.Writable
+  * @exports pg-large-object/lib/WriteStream
+  */
+function WriteStream(largeObject, bufferSize)
+{
+        stream.Writable.call(this, {
+                'highWaterMark': bufferSize || 16384,
+                'decodeStrings': true,
+                'objectMode': false
+        });
+        this._largeObject = largeObject;
+}
+
+WriteStream.prototype = Object.create(stream.Writable.prototype);
+
+WriteStream.prototype._write = function(chunk, encoding, callback)
+{
+        if (!Buffer.isBuffer(chunk))
+        {
+                throw "Illegal Argument";
+        }
+        
+        // callback(error)
+        this._largeObject.write(chunk, callback);
+};
+
+module.exports = WriteStream;
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports) {
+
+module.exports = require("querystring");
+
+/***/ }),
+/* 27 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/core/service/index.ts + 28 modules
+var service = __webpack_require__(0);
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/node_modules/pg/lib/index.js
+var lib = __webpack_require__(13);
+var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
+
+// CONCATENATED MODULE: ./pgdb/environments.ts
+const POSTGRES_HOST = process.env.POSTGRES_HOST || 'localhost';
+const POSTGRES_PORT = Math.max(~~(process.env.POSTGRES_PORT || ''), 0) || 5432;
+const POSTGRES_DB = process.env.POSTGRES_DB || 'postgres';
+const POSTGRES_USER = process.env.POSTGRES_USER || 'postgres';
+const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD || '';
+const POSTGRES_IDLE_TIMEOUT = Math.max(~~(process.env.POSTGRES_IDLE_TIMEOUT || '') || 0, 0) || 10;
+const POSTGRES_POOL_SIZE = Math.max(~~(process.env.POSTGRES_POOL_SIZE || '') || 0, 0) || 10;
+const POSTGRES_POOL_CONFIG = {
+    host: POSTGRES_HOST,
+    port: POSTGRES_PORT,
+    user: POSTGRES_USER,
+    password: POSTGRES_PASSWORD,
+    database: POSTGRES_DB,
+    idleTimeoutMillis: POSTGRES_IDLE_TIMEOUT * 1000,
+    max: POSTGRES_POOL_SIZE
+};
+
+// CONCATENATED MODULE: ./pgdb/pgdb.middleware.ts
+
+
+
+const pool = new lib["Pool"](POSTGRES_POOL_CONFIG);
+class pgdb_middleware_PgDBMiddleware extends service["d" /* Middleware */] {
+    constructor(config = POSTGRES_POOL_CONFIG) {
+        super();
+        this.pool = new lib["Pool"](config);
+    }
+    async main(ctx, next) {
+        ctx.db = await pool.connect();
+        await next();
+        ctx.db.release();
+    }
+}
+
+// CONCATENATED MODULE: ./pgdb/index.ts
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "a", function() { return pgdb_middleware_PgDBMiddleware; });
+
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var EventEmitter = __webpack_require__(5).EventEmitter
+var util = __webpack_require__(4)
+var utils = __webpack_require__(11)
+var pgPass = __webpack_require__(35)
+var TypeOverrides = __webpack_require__(17)
+
+var ConnectionParameters = __webpack_require__(18)
+var Query = __webpack_require__(43)
+var defaults = __webpack_require__(6)
+var Connection = __webpack_require__(19)
+
+var Client = function (config) {
+  EventEmitter.call(this)
+
+  this.connectionParameters = new ConnectionParameters(config)
+  this.user = this.connectionParameters.user
+  this.database = this.connectionParameters.database
+  this.port = this.connectionParameters.port
+  this.host = this.connectionParameters.host
+  this.password = this.connectionParameters.password
+  this.replication = this.connectionParameters.replication
+
+  var c = config || {}
+
+  this._types = new TypeOverrides(c.types)
+  this._ending = false
+  this._connecting = false
+  this._connected = false
+  this._connectionError = false
+
+  this.connection = c.connection || new Connection({
+    stream: c.stream,
+    ssl: this.connectionParameters.ssl,
+    keepAlive: c.keepAlive || false,
+    encoding: this.connectionParameters.client_encoding || 'utf8'
+  })
+  this.queryQueue = []
+  this.binary = c.binary || defaults.binary
+  this.processID = null
+  this.secretKey = null
+  this.ssl = this.connectionParameters.ssl || false
+}
+
+util.inherits(Client, EventEmitter)
+
+Client.prototype.connect = function (callback) {
+  var self = this
+  var con = this.connection
+  if (this._connecting || this._connected) {
+    const err = new Error('Client has already been connected. You cannot reuse a client.')
+    if (callback) {
+      callback(err)
+      return undefined
+    }
+    return Promise.reject(err)
+  }
+  this._connecting = true
+
+  if (this.host && this.host.indexOf('/') === 0) {
+    con.connect(this.host + '/.s.PGSQL.' + this.port)
+  } else {
+    con.connect(this.port, this.host)
+  }
+
+  // once connection is established send startup message
+  con.on('connect', function () {
+    if (self.ssl) {
+      con.requestSsl()
+    } else {
+      con.startup(self.getStartupConf())
+    }
+  })
+
+  con.on('sslconnect', function () {
+    con.startup(self.getStartupConf())
+  })
+
+  function checkPgPass (cb) {
+    return function (msg) {
+      if (self.password !== null) {
+        cb(msg)
+      } else {
+        pgPass(self.connectionParameters, function (pass) {
+          if (undefined !== pass) {
+            self.connectionParameters.password = self.password = pass
+          }
+          cb(msg)
+        })
+      }
+    }
+  }
+
+  // password request handling
+  con.on('authenticationCleartextPassword', checkPgPass(function () {
+    con.password(self.password)
+  }))
+
+  // password request handling
+  con.on('authenticationMD5Password', checkPgPass(function (msg) {
+    con.password(utils.postgresMd5PasswordHash(self.user, self.password, msg.salt))
+  }))
+
+  con.once('backendKeyData', function (msg) {
+    self.processID = msg.processID
+    self.secretKey = msg.secretKey
+  })
+
+  const connectingErrorHandler = (err) => {
+    if (this._connectionError) {
+      return
+    }
+    this._connectionError = true
+    if (callback) {
+      return callback(err)
+    }
+    this.emit('error', err)
+  }
+
+  const connectedErrorHandler = (err) => {
+    if (this.activeQuery) {
+      var activeQuery = self.activeQuery
+      this.activeQuery = null
+      return activeQuery.handleError(err, con)
+    }
+    this.emit('error', err)
+  }
+
+  con.on('error', connectingErrorHandler)
+
+  // hook up query handling events to connection
+  // after the connection initially becomes ready for queries
+  con.once('readyForQuery', function () {
+    self._connecting = false
+    self._connected = true
+    self._attachListeners(con)
+    con.removeListener('error', connectingErrorHandler)
+    con.on('error', connectedErrorHandler)
+
+    // process possible callback argument to Client#connect
+    if (callback) {
+      callback(null, self)
+      // remove callback for proper error handling
+      // after the connect event
+      callback = null
+    }
+    self.emit('connect')
+  })
+
+  con.on('readyForQuery', function () {
+    var activeQuery = self.activeQuery
+    self.activeQuery = null
+    self.readyForQuery = true
+    if (activeQuery) {
+      activeQuery.handleReadyForQuery(con)
+    }
+    self._pulseQueryQueue()
+  })
+
+  con.once('end', () => {
+    if (this.activeQuery) {
+      var disconnectError = new Error('Connection terminated')
+      this.activeQuery.handleError(disconnectError, con)
+      this.activeQuery = null
+    }
+    if (!this._ending) {
+      // if the connection is ended without us calling .end()
+      // on this client then we have an unexpected disconnection
+      // treat this as an error unless we've already emitted an error
+      // during connection.
+      const error = new Error('Connection terminated unexpectedly')
+      if (this._connecting && !this._connectionError) {
+        if (callback) {
+          callback(error)
+        } else {
+          this.emit('error', error)
+        }
+      } else if (!this._connectionError) {
+        this.emit('error', error)
+      }
+    }
+    this.emit('end')
+  })
+
+  con.on('notice', function (msg) {
+    self.emit('notice', msg)
+  })
+
+  if (!callback) {
+    return new global.Promise((resolve, reject) => {
+      this.once('error', reject)
+      this.once('connect', () => {
+        this.removeListener('error', reject)
+        resolve()
+      })
+    })
+  }
+}
+
+Client.prototype._attachListeners = function (con) {
+  const self = this
+  // delegate rowDescription to active query
+  con.on('rowDescription', function (msg) {
+    self.activeQuery.handleRowDescription(msg)
+  })
+
+  // delegate dataRow to active query
+  con.on('dataRow', function (msg) {
+    self.activeQuery.handleDataRow(msg)
+  })
+
+  // delegate portalSuspended to active query
+  con.on('portalSuspended', function (msg) {
+    self.activeQuery.handlePortalSuspended(con)
+  })
+
+  // deletagate emptyQuery to active query
+  con.on('emptyQuery', function (msg) {
+    self.activeQuery.handleEmptyQuery(con)
+  })
+
+  // delegate commandComplete to active query
+  con.on('commandComplete', function (msg) {
+    self.activeQuery.handleCommandComplete(msg, con)
+  })
+
+  // if a prepared statement has a name and properly parses
+  // we track that its already been executed so we don't parse
+  // it again on the same client
+  con.on('parseComplete', function (msg) {
+    if (self.activeQuery.name) {
+      con.parsedStatements[self.activeQuery.name] = true
+    }
+  })
+
+  con.on('copyInResponse', function (msg) {
+    self.activeQuery.handleCopyInResponse(self.connection)
+  })
+
+  con.on('copyData', function (msg) {
+    self.activeQuery.handleCopyData(msg, self.connection)
+  })
+
+  con.on('notification', function (msg) {
+    self.emit('notification', msg)
+  })
+}
+
+Client.prototype.getStartupConf = function () {
+  var params = this.connectionParameters
+
+  var data = {
+    user: params.user,
+    database: params.database
+  }
+
+  var appName = params.application_name || params.fallback_application_name
+  if (appName) {
+    data.application_name = appName
+  }
+  if (params.replication) {
+    data.replication = '' + params.replication
+  }
+  if (params.statement_timeout) {
+    data.statement_timeout = String(parseInt(params.statement_timeout, 10))
+  }
+
+  return data
+}
+
+Client.prototype.cancel = function (client, query) {
+  if (client.activeQuery === query) {
+    var con = this.connection
+
+    if (this.host && this.host.indexOf('/') === 0) {
+      con.connect(this.host + '/.s.PGSQL.' + this.port)
+    } else {
+      con.connect(this.port, this.host)
+    }
+
+    // once connection is established send cancel message
+    con.on('connect', function () {
+      con.cancel(client.processID, client.secretKey)
+    })
+  } else if (client.queryQueue.indexOf(query) !== -1) {
+    client.queryQueue.splice(client.queryQueue.indexOf(query), 1)
+  }
+}
+
+Client.prototype.setTypeParser = function (oid, format, parseFn) {
+  return this._types.setTypeParser(oid, format, parseFn)
+}
+
+Client.prototype.getTypeParser = function (oid, format) {
+  return this._types.getTypeParser(oid, format)
+}
+
+// Ported from PostgreSQL 9.2.4 source code in src/interfaces/libpq/fe-exec.c
+Client.prototype.escapeIdentifier = function (str) {
+  var escaped = '"'
+
+  for (var i = 0; i < str.length; i++) {
+    var c = str[i]
+    if (c === '"') {
+      escaped += c + c
+    } else {
+      escaped += c
+    }
+  }
+
+  escaped += '"'
+
+  return escaped
+}
+
+// Ported from PostgreSQL 9.2.4 source code in src/interfaces/libpq/fe-exec.c
+Client.prototype.escapeLiteral = function (str) {
+  var hasBackslash = false
+  var escaped = '\''
+
+  for (var i = 0; i < str.length; i++) {
+    var c = str[i]
+    if (c === '\'') {
+      escaped += c + c
+    } else if (c === '\\') {
+      escaped += c + c
+      hasBackslash = true
+    } else {
+      escaped += c
+    }
+  }
+
+  escaped += '\''
+
+  if (hasBackslash === true) {
+    escaped = ' E' + escaped
+  }
+
+  return escaped
+}
+
+Client.prototype._pulseQueryQueue = function () {
+  if (this.readyForQuery === true) {
+    this.activeQuery = this.queryQueue.shift()
+    if (this.activeQuery) {
+      this.readyForQuery = false
+      this.hasExecuted = true
+      this.activeQuery.submit(this.connection)
+    } else if (this.hasExecuted) {
+      this.activeQuery = null
+      this.emit('drain')
+    }
+  }
+}
+
+Client.prototype.query = function (config, values, callback) {
+  // can take in strings, config object or query object
+  var query
+  var result
+  if (typeof config.submit === 'function') {
+    result = query = config
+    if (typeof values === 'function') {
+      query.callback = query.callback || values
+    }
+  } else {
+    query = new Query(config, values, callback)
+    if (!query.callback) {
+      let resolveOut, rejectOut
+      result = new Promise((resolve, reject) => {
+        resolveOut = resolve
+        rejectOut = reject
+      })
+      query.callback = (err, res) => err ? rejectOut(err) : resolveOut(res)
+    }
+  }
+
+  if (this.binary && !query.binary) {
+    query.binary = true
+  }
+  if (query._result) {
+    query._result._getTypeParser = this._types.getTypeParser.bind(this._types)
+  }
+
+  this.queryQueue.push(query)
+  this._pulseQueryQueue()
+  return result
+}
+
+Client.prototype.end = function (cb) {
+  this._ending = true
+  if (this.activeQuery) {
+    // if we have an active query we need to force a disconnect
+    // on the socket - otherwise a hung query could block end forever
+    this.connection.stream.destroy(new Error('Connection terminated by user'))
+    return cb ? cb() : Promise.resolve()
+  }
+  if (cb) {
+    this.connection.end()
+    this.connection.once('end', cb)
+  } else {
+    return new global.Promise((resolve, reject) => {
+      this.connection.end()
+      this.connection.once('end', resolve)
+    })
+  }
+}
+
+// expose a Query constructor
+Client.Query = Query
+
+module.exports = Client
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var array = __webpack_require__(14)
+var arrayParser = __webpack_require__(15);
+var parseDate = __webpack_require__(30);
+var parseInterval = __webpack_require__(31);
+var parseByteA = __webpack_require__(33);
+
+function allowNull (fn) {
+  return function nullAllowed (value) {
+    if (value === null) return value
+    return fn(value)
+  }
+}
+
+function parseBool (value) {
+  if (value === null) return value
+  return value === 'TRUE' ||
+    value === 't' ||
+    value === 'true' ||
+    value === 'y' ||
+    value === 'yes' ||
+    value === 'on' ||
+    value === '1';
+}
+
+function parseBoolArray (value) {
+  if (!value) return null
+  return array.parse(value, parseBool)
+}
+
+function parseBaseTenInt (string) {
+  return parseInt(string, 10)
+}
+
+function parseIntegerArray (value) {
+  if (!value) return null
+  return array.parse(value, allowNull(parseBaseTenInt))
+}
+
+function parseBigIntegerArray (value) {
+  if (!value) return null
+  return array.parse(value, allowNull(function (entry) {
+    return parseBigInteger(entry).trim()
+  }))
+}
+
+var parsePointArray = function(value) {
+  if(!value) { return null; }
+  var p = arrayParser.create(value, function(entry) {
+    if(entry !== null) {
+      entry = parsePoint(entry);
+    }
+    return entry;
+  });
+
+  return p.parse();
+};
+
+var parseFloatArray = function(value) {
+  if(!value) { return null; }
+  var p = arrayParser.create(value, function(entry) {
+    if(entry !== null) {
+      entry = parseFloat(entry);
+    }
+    return entry;
+  });
+
+  return p.parse();
+};
+
+var parseStringArray = function(value) {
+  if(!value) { return null; }
+
+  var p = arrayParser.create(value);
+  return p.parse();
+};
+
+var parseDateArray = function(value) {
+  if (!value) { return null; }
+
+  var p = arrayParser.create(value, function(entry) {
+    if (entry !== null) {
+      entry = parseDate(entry);
+    }
+    return entry;
+  });
+
+  return p.parse();
+};
+
+var parseByteAArray = function(value) {
+  if (!value) { return null; }
+
+  return array.parse(value, allowNull(parseByteA));
+};
+
+var parseInteger = function(value) {
+  return parseInt(value, 10);
+};
+
+var parseBigInteger = function(value) {
+  var valStr = String(value);
+  if (/^\d+$/.test(valStr)) { return valStr; }
+  return value;
+};
+
+var parseJsonArray = function(value) {
+  var arr = parseStringArray(value);
+
+  if (!arr) {
+    return arr;
+  }
+
+  return arr.map(function(el) { return JSON.parse(el); });
+};
+
+var parsePoint = function(value) {
+  if (value[0] !== '(') { return null; }
+
+  value = value.substring( 1, value.length - 1 ).split(',');
+
+  return {
+    x: parseFloat(value[0])
+  , y: parseFloat(value[1])
+  };
+};
+
+var parseCircle = function(value) {
+  if (value[0] !== '<' && value[1] !== '(') { return null; }
+
+  var point = '(';
+  var radius = '';
+  var pointParsed = false;
+  for (var i = 2; i < value.length - 1; i++){
+    if (!pointParsed) {
+      point += value[i];
+    }
+
+    if (value[i] === ')') {
+      pointParsed = true;
+      continue;
+    } else if (!pointParsed) {
+      continue;
+    }
+
+    if (value[i] === ','){
+      continue;
+    }
+
+    radius += value[i];
+  }
+  var result = parsePoint(point);
+  result.radius = parseFloat(radius);
+
+  return result;
+};
+
+var init = function(register) {
+  register(20, parseBigInteger); // int8
+  register(21, parseInteger); // int2
+  register(23, parseInteger); // int4
+  register(26, parseInteger); // oid
+  register(700, parseFloat); // float4/real
+  register(701, parseFloat); // float8/double
+  register(16, parseBool);
+  register(1082, parseDate); // date
+  register(1114, parseDate); // timestamp without timezone
+  register(1184, parseDate); // timestamp
+  register(600, parsePoint); // point
+  register(651, parseStringArray); // cidr[]
+  register(718, parseCircle); // circle
+  register(1000, parseBoolArray);
+  register(1001, parseByteAArray);
+  register(1005, parseIntegerArray); // _int2
+  register(1007, parseIntegerArray); // _int4
+  register(1028, parseIntegerArray); // oid[]
+  register(1016, parseBigIntegerArray); // _int8
+  register(1017, parsePointArray); // point[]
+  register(1021, parseFloatArray); // _float4
+  register(1022, parseFloatArray); // _float8
+  register(1231, parseFloatArray); // _numeric
+  register(1014, parseStringArray); //char
+  register(1015, parseStringArray); //varchar
+  register(1008, parseStringArray);
+  register(1009, parseStringArray);
+  register(1040, parseStringArray); // macaddr[]
+  register(1041, parseStringArray); // inet[]
+  register(1115, parseDateArray); // timestamp without time zone[]
+  register(1182, parseDateArray); // _date
+  register(1185, parseDateArray); // timestamp with time zone[]
+  register(1186, parseInterval);
+  register(17, parseByteA);
+  register(114, JSON.parse.bind(JSON)); // json
+  register(3802, JSON.parse.bind(JSON)); // jsonb
+  register(199, parseJsonArray); // json[]
+  register(3807, parseJsonArray); // jsonb[]
+  register(3907, parseStringArray); // numrange[]
+  register(2951, parseStringArray); // uuid[]
+  register(791, parseStringArray); // money[]
+  register(1183, parseStringArray); // time[]
+  register(1270, parseStringArray); // timetz[]
+};
+
+module.exports = {
+  init: init
+};
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var DATE_TIME = /(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/
+var DATE = /^(\d{1,})-(\d{2})-(\d{2})$/
+var TIME_ZONE = /([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?/
+var BC = /BC$/
+var INFINITY = /^-?infinity$/
+
+module.exports = function parseDate (isoDate) {
+  if (INFINITY.test(isoDate)) {
+    // Capitalize to Infinity before passing to Number
+    return Number(isoDate.replace('i', 'I'))
+  }
+  var matches = DATE_TIME.exec(isoDate)
+
+  if (!matches) {
+    // Force YYYY-MM-DD dates to be parsed as local time
+    return DATE.test(isoDate) ?
+      getDate(isoDate) :
+      null
+  }
+
+  var isBC = BC.test(isoDate)
+  var year = parseInt(matches[1], 10)
+  var isFirstCentury = year > 0 && year < 100
+  year = (isBC ? '-' : '') + year
+
+  var month = parseInt(matches[2], 10) - 1
+  var day = matches[3]
+  var hour = parseInt(matches[4], 10)
+  var minute = parseInt(matches[5], 10)
+  var second = parseInt(matches[6], 10)
+
+  var ms = matches[7]
+  ms = ms ? 1000 * parseFloat(ms) : 0
+
+  var date
+  var offset = timeZoneOffset(isoDate)
+  if (offset != null) {
+    var utc = Date.UTC(year, month, day, hour, minute, second, ms)
+    date = new Date(utc - offset)
+  } else {
+    date = new Date(year, month, day, hour, minute, second, ms)
+  }
+
+  if (isFirstCentury) {
+    date.setUTCFullYear(year)
+  }
+
+  return date
+}
+
+function getDate (isoDate) {
+  var matches = DATE.exec(isoDate)
+  var year = parseInt(matches[1], 10)
+  var month = parseInt(matches[2], 10) - 1
+  var day = matches[3]
+  // YYYY-MM-DD will be parsed as local time
+  var date = new Date(year, month, day)
+  date.setFullYear(year)
+  return date
+}
+
+// match timezones:
+// Z (UTC)
+// -05
+// +06:30
+function timeZoneOffset (isoDate) {
+  var zone = TIME_ZONE.exec(isoDate.split(' ')[1])
+  if (!zone) return
+  var type = zone[1]
+
+  if (type === 'Z') {
+    return 0
+  }
+  var sign = type === '-' ? -1 : 1
+  var offset = parseInt(zone[2], 10) * 3600 +
+    parseInt(zone[3] || 0, 10) * 60 +
+    parseInt(zone[4] || 0, 10)
+
+  return offset * sign * 1000
+}
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var extend = __webpack_require__(32)
+
+module.exports = PostgresInterval
+
+function PostgresInterval (raw) {
+  if (!(this instanceof PostgresInterval)) {
+    return new PostgresInterval(raw)
+  }
+  extend(this, parse(raw))
+}
+var properties = ['seconds', 'minutes', 'hours', 'days', 'months', 'years']
+PostgresInterval.prototype.toPostgres = function () {
+  var filtered = properties.filter(this.hasOwnProperty, this)
+
+  // In addition to `properties`, we need to account for fractions of seconds.
+  if (this.milliseconds && filtered.indexOf('seconds') < 0) {
+    filtered.push('seconds')
+  }
+
+  if (filtered.length === 0) return '0'
+  return filtered
+    .map(function (property) {
+      var value = this[property] || 0
+
+      // Account for fractional part of seconds,
+      // remove trailing zeroes.
+      if (property === 'seconds' && this.milliseconds) {
+        value = (value + this.milliseconds / 1000).toFixed(6).replace(/0+$/, '')
+      }
+
+      return value + ' ' + property
+    }, this)
+    .join(' ')
+}
+
+var propertiesISOEquivalent = {
+  years: 'Y',
+  months: 'M',
+  days: 'D',
+  hours: 'H',
+  minutes: 'M',
+  seconds: 'S'
+}
+var dateProperties = ['years', 'months', 'days']
+var timeProperties = ['hours', 'minutes', 'seconds']
+// according to ISO 8601
+PostgresInterval.prototype.toISO = function () {
+  var datePart = dateProperties
+    .map(buildProperty, this)
+    .join('')
+
+  var timePart = timeProperties
+    .map(buildProperty, this)
+    .join('')
+
+  return 'P' + datePart + 'T' + timePart
+
+  function buildProperty (property) {
+    var value = this[property] || 0
+
+    // Account for fractional part of seconds,
+    // remove trailing zeroes.
+    if (property === 'seconds' && this.milliseconds) {
+      value = (value + this.milliseconds / 1000).toFixed(6).replace(/0+$/, '')
+    }
+
+    return value + propertiesISOEquivalent[property]
+  }
+
+}
+
+var NUMBER = '([+-]?\\d+)'
+var YEAR = NUMBER + '\\s+years?'
+var MONTH = NUMBER + '\\s+mons?'
+var DAY = NUMBER + '\\s+days?'
+var TIME = '([+-])?([\\d]*):(\\d\\d):(\\d\\d)\.?(\\d{1,6})?'
+var INTERVAL = new RegExp([YEAR, MONTH, DAY, TIME].map(function (regexString) {
+  return '(' + regexString + ')?'
+})
+.join('\\s*'))
+
+// Positions of values in regex match
+var positions = {
+  years: 2,
+  months: 4,
+  days: 6,
+  hours: 9,
+  minutes: 10,
+  seconds: 11,
+  milliseconds: 12
+}
+// We can use negative time
+var negatives = ['hours', 'minutes', 'seconds', 'milliseconds']
+
+function parseMilliseconds (fraction) {
+  // add omitted zeroes
+  var microseconds = fraction + '000000'.slice(fraction.length)
+  return parseInt(microseconds, 10) / 1000
+}
+
+function parse (interval) {
+  if (!interval) return {}
+  var matches = INTERVAL.exec(interval)
+  var isNegative = matches[8] === '-'
+  return Object.keys(positions)
+    .reduce(function (parsed, property) {
+      var position = positions[property]
+      var value = matches[position]
+      // no empty string
+      if (!value) return parsed
+      // milliseconds are actually microseconds (up to 6 digits)
+      // with omitted trailing zeroes.
+      value = property === 'milliseconds'
+        ? parseMilliseconds(value)
+        : parseInt(value, 10)
+      // no zeros
+      if (!value) return parsed
+      if (isNegative && ~negatives.indexOf(property)) {
+        value *= -1
+      }
+      parsed[property] = value
+      return parsed
+    }, {})
+}
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports) {
+
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function parseBytea (input) {
+  if (/^\\x/.test(input)) {
+    // new 'hex' style response (pg >9.0)
+    return new Buffer(input.substr(2), 'hex')
+  }
+  var output = ''
+  var i = 0
+  while (i < input.length) {
+    if (input[i] !== '\\') {
+      output += input[i]
+      ++i
+    } else {
+      if (/[0-7]{3}/.test(input.substr(i + 1, 3))) {
+        output += String.fromCharCode(parseInt(input.substr(i + 1, 3), 8))
+        i += 4
+      } else {
+        var backslashes = 1
+        while (i + backslashes < input.length && input[i + backslashes] === '\\') {
+          backslashes++
+        }
+        for (var k = 0; k < Math.floor(backslashes / 2); ++k) {
+          output += '\\'
+        }
+        i += Math.floor(backslashes / 2) * 2
+      }
+    }
+  }
+  return new Buffer(output, 'binary')
+}
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+var parseBits = function(data, bits, offset, invert, callback) {
+  offset = offset || 0;
+  invert = invert || false;
+  callback = callback || function(lastValue, newValue, bits) { return (lastValue * Math.pow(2, bits)) + newValue; };
+  var offsetBytes = offset >> 3;
+
+  var inv = function(value) {
+    if (invert) {
+      return ~value & 0xff;
+    }
+
+    return value;
+  };
+
+  // read first (maybe partial) byte
+  var mask = 0xff;
+  var firstBits = 8 - (offset % 8);
+  if (bits < firstBits) {
+    mask = (0xff << (8 - bits)) & 0xff;
+    firstBits = bits;
+  }
+
+  if (offset) {
+    mask = mask >> (offset % 8);
+  }
+
+  var result = 0;
+  if ((offset % 8) + bits >= 8) {
+    result = callback(0, inv(data[offsetBytes]) & mask, firstBits);
+  }
+
+  // read bytes
+  var bytes = (bits + offset) >> 3;
+  for (var i = offsetBytes + 1; i < bytes; i++) {
+    result = callback(result, inv(data[i]), 8);
+  }
+
+  // bits to read, that are not a complete byte
+  var lastBits = (bits + offset) % 8;
+  if (lastBits > 0) {
+    result = callback(result, inv(data[bytes]) >> (8 - lastBits), lastBits);
+  }
+
+  return result;
+};
+
+var parseFloatFromBits = function(data, precisionBits, exponentBits) {
+  var bias = Math.pow(2, exponentBits - 1) - 1;
+  var sign = parseBits(data, 1);
+  var exponent = parseBits(data, exponentBits, 1);
+
+  if (exponent === 0) {
+    return 0;
+  }
+
+  // parse mantissa
+  var precisionBitsCounter = 1;
+  var parsePrecisionBits = function(lastValue, newValue, bits) {
+    if (lastValue === 0) {
+      lastValue = 1;
+    }
+
+    for (var i = 1; i <= bits; i++) {
+      precisionBitsCounter /= 2;
+      if ((newValue & (0x1 << (bits - i))) > 0) {
+        lastValue += precisionBitsCounter;
+      }
+    }
+
+    return lastValue;
+  };
+
+  var mantissa = parseBits(data, precisionBits, exponentBits + 1, false, parsePrecisionBits);
+
+  // special cases
+  if (exponent == (Math.pow(2, exponentBits + 1) - 1)) {
+    if (mantissa === 0) {
+      return (sign === 0) ? Infinity : -Infinity;
+    }
+
+    return NaN;
+  }
+
+  // normale number
+  return ((sign === 0) ? 1 : -1) * Math.pow(2, exponent - bias) * mantissa;
+};
+
+var parseInt16 = function(value) {
+  if (parseBits(value, 1) == 1) {
+    return -1 * (parseBits(value, 15, 1, true) + 1);
+  }
+
+  return parseBits(value, 15, 1);
+};
+
+var parseInt32 = function(value) {
+  if (parseBits(value, 1) == 1) {
+    return -1 * (parseBits(value, 31, 1, true) + 1);
+  }
+
+  return parseBits(value, 31, 1);
+};
+
+var parseFloat32 = function(value) {
+  return parseFloatFromBits(value, 23, 8);
+};
+
+var parseFloat64 = function(value) {
+  return parseFloatFromBits(value, 52, 11);
+};
+
+var parseNumeric = function(value) {
+  var sign = parseBits(value, 16, 32);
+  if (sign == 0xc000) {
+    return NaN;
+  }
+
+  var weight = Math.pow(10000, parseBits(value, 16, 16));
+  var result = 0;
+
+  var digits = [];
+  var ndigits = parseBits(value, 16);
+  for (var i = 0; i < ndigits; i++) {
+    result += parseBits(value, 16, 64 + (16 * i)) * weight;
+    weight /= 10000;
+  }
+
+  var scale = Math.pow(10, parseBits(value, 16, 48));
+  return ((sign === 0) ? 1 : -1) * Math.round(result * scale) / scale;
+};
+
+var parseDate = function(isUTC, value) {
+  var sign = parseBits(value, 1);
+  var rawValue = parseBits(value, 63, 1);
+
+  // discard usecs and shift from 2000 to 1970
+  var result = new Date((((sign === 0) ? 1 : -1) * rawValue / 1000) + 946684800000);
+
+  if (!isUTC) {
+    result.setTime(result.getTime() + result.getTimezoneOffset() * 60000);
+  }
+
+  // add microseconds to the date
+  result.usec = rawValue % 1000;
+  result.getMicroSeconds = function() {
+    return this.usec;
+  };
+  result.setMicroSeconds = function(value) {
+    this.usec = value;
+  };
+  result.getUTCMicroSeconds = function() {
+    return this.usec;
+  };
+
+  return result;
+};
+
+var parseArray = function(value) {
+  var dim = parseBits(value, 32);
+
+  var flags = parseBits(value, 32, 32);
+  var elementType = parseBits(value, 32, 64);
+
+  var offset = 96;
+  var dims = [];
+  for (var i = 0; i < dim; i++) {
+    // parse dimension
+    dims[i] = parseBits(value, 32, offset);
+    offset += 32;
+
+    // ignore lower bounds
+    offset += 32;
+  }
+
+  var parseElement = function(elementType) {
+    // parse content length
+    var length = parseBits(value, 32, offset);
+    offset += 32;
+
+    // parse null values
+    if (length == 0xffffffff) {
+      return null;
+    }
+
+    var result;
+    if ((elementType == 0x17) || (elementType == 0x14)) {
+      // int/bigint
+      result = parseBits(value, length * 8, offset);
+      offset += length * 8;
+      return result;
+    }
+    else if (elementType == 0x19) {
+      // string
+      result = value.toString(this.encoding, offset >> 3, (offset += (length << 3)) >> 3);
+      return result;
+    }
+    else {
+      console.log("ERROR: ElementType not implemented: " + elementType);
+    }
+  };
+
+  var parse = function(dimension, elementType) {
+    var array = [];
+    var i;
+
+    if (dimension.length > 1) {
+      var count = dimension.shift();
+      for (i = 0; i < count; i++) {
+        array[i] = parse(dimension, elementType);
+      }
+      dimension.unshift(count);
+    }
+    else {
+      for (i = 0; i < dimension[0]; i++) {
+        array[i] = parseElement(elementType);
+      }
+    }
+
+    return array;
+  };
+
+  return parse(dims, elementType);
+};
+
+var parseText = function(value) {
+  return value.toString('utf8');
+};
+
+var parseBool = function(value) {
+  if(value === null) return null;
+  return (parseBits(value, 8) > 0);
+};
+
+var init = function(register) {
+  register(21, parseInt16);
+  register(23, parseInt32);
+  register(26, parseInt32);
+  register(1700, parseNumeric);
+  register(700, parseFloat32);
+  register(701, parseFloat64);
+  register(16, parseBool);
+  register(1114, parseDate.bind(null, false));
+  register(1184, parseDate.bind(null, true));
+  register(1000, parseArray);
+  register(1007, parseArray);
+  register(1016, parseArray);
+  register(1008, parseArray);
+  register(1009, parseArray);
+  register(25, parseText);
+};
+
+module.exports = {
+  init: init
+};
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var path = __webpack_require__(16)
+  , fs = __webpack_require__(36)
+  , helper = __webpack_require__(37)
+;
+
+
+module.exports = function(connInfo, cb) {
+    var file = helper.getFileName();
+    
+    fs.stat(file, function(err, stat){
+        if (err || !helper.usePgPass(stat, file)) {
+            return cb(undefined);
+        }
+
+        var st = fs.createReadStream(file);
+
+        helper.getPassword(connInfo, st, cb);
+    });
+};
+
+module.exports.warnTo = helper.warnTo;
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var path = __webpack_require__(16)
+  , Stream = __webpack_require__(8).Stream
+  , Split = __webpack_require__(38)
+  , util = __webpack_require__(4)
+  , defaultPort = 5432
+  , isWin = (process.platform === 'win32')
+  , warnStream = process.stderr
+;
+
+
+var S_IRWXG = 56     //    00070(8)
+  , S_IRWXO = 7      //    00007(8)
+  , S_IFMT  = 61440  // 00170000(8)
+  , S_IFREG = 32768  //  0100000(8)
+;
+function isRegFile(mode) {
+    return ((mode & S_IFMT) == S_IFREG);
+}
+
+var fieldNames = [ 'host', 'port', 'database', 'user', 'password' ];
+var nrOfFields = fieldNames.length;
+var passKey = fieldNames[ nrOfFields -1 ];
+
+
+function warn() {
+    var isWritable = (
+        warnStream instanceof Stream &&
+          true === warnStream.writable
+    );
+
+    if (isWritable) {
+        var args = Array.prototype.slice.call(arguments).concat("\n");
+        warnStream.write( util.format.apply(util, args) );
+    }
+}
+
+
+Object.defineProperty(module.exports, 'isWin', {
+    get : function() {
+        return isWin;
+    } ,
+    set : function(val) {
+        isWin = val;
+    }
+});
+
+
+module.exports.warnTo = function(stream) {
+    var old = warnStream;
+    warnStream = stream;
+    return old;
+};
+
+module.exports.getFileName = function(env){
+    env = env || process.env;
+    var file = env.PGPASSFILE || (
+        isWin ?
+          path.join( env.APPDATA , 'postgresql', 'pgpass.conf' ) :
+          path.join( env.HOME, '.pgpass' )
+    );
+    return file;
+};
+
+module.exports.usePgPass = function(stats, fname) {
+    if (Object.prototype.hasOwnProperty.call(process.env, 'PGPASSWORD')) {
+        return false;
+    }
+
+    if (isWin) {
+        return true;
+    }
+
+    fname = fname || '<unkn>';
+
+    if (! isRegFile(stats.mode)) {
+        warn('WARNING: password file "%s" is not a plain file', fname);
+        return false;
+    }
+
+    if (stats.mode & (S_IRWXG | S_IRWXO)) {
+        /* If password file is insecure, alert the user and ignore it. */
+        warn('WARNING: password file "%s" has group or world access; permissions should be u=rw (0600) or less', fname);
+        return false;
+    }
+
+    return true;
+};
+
+
+var matcher = module.exports.match = function(connInfo, entry) {
+    return fieldNames.slice(0, -1).reduce(function(prev, field, idx){
+        if (idx == 1) {
+            // the port
+            if ( Number( connInfo[field] || defaultPort ) === Number( entry[field] ) ) {
+                return prev && true;
+            }
+        }
+        return prev && (
+            entry[field] === '*' ||
+              entry[field] === connInfo[field]
+        );
+    }, true);
+};
+
+
+module.exports.getPassword = function(connInfo, stream, cb) {
+    var pass;
+    var lineStream = stream.pipe(new Split());
+
+    function onLine(line) {
+        var entry = parseLine(line);
+        if (entry && isValidEntry(entry) && matcher(connInfo, entry)) {
+            pass = entry[passKey];
+            lineStream.end(); // -> calls onEnd(), but pass is set now
+        }
+    }
+
+    var onEnd = function() {
+        stream.destroy();
+        cb(pass);
+    };
+
+    var onErr = function(err) {
+        stream.destroy();
+        warn('WARNING: error on reading file: %s', err);
+        cb(undefined);
+    };
+
+    stream.on('error', onErr);
+    lineStream
+        .on('data', onLine)
+        .on('end', onEnd)
+        .on('error', onErr)
+    ;
+
+};
+
+
+var parseLine = module.exports.parseLine = function(line) {
+    if (line.length < 11 || line.match(/^\s+#/)) {
+        return null;
+    }
+
+    var curChar = '';
+    var prevChar = '';
+    var fieldIdx = 0;
+    var startIdx = 0;
+    var endIdx = 0;
+    var obj = {};
+    var isLastField = false;
+    var addToObj = function(idx, i0, i1) {
+        var field = line.substring(i0, i1);
+
+        if (! Object.hasOwnProperty.call(process.env, 'PGPASS_NO_DEESCAPE')) {
+            field = field.replace(/\\([:\\])/g, '$1');
+        }
+
+        obj[ fieldNames[idx] ] = field;
+    };
+
+    for (var i = 0 ; i < line.length-1 ; i += 1) {
+        curChar = line.charAt(i+1);
+        prevChar = line.charAt(i);
+
+        isLastField = (fieldIdx == nrOfFields-1);
+
+        if (isLastField) {
+            addToObj(fieldIdx, startIdx);
+            break;
+        }
+
+        if (i >= 0 && curChar == ':' && prevChar !== '\\') {
+            addToObj(fieldIdx, startIdx, i+1);
+
+            startIdx = i+2;
+            fieldIdx += 1;
+        }
+    }
+
+    obj = ( Object.keys(obj).length === nrOfFields ) ? obj : null;
+
+    return obj;
+};
+
+
+var isValidEntry = module.exports.isValidEntry = function(entry){
+    var rules = {
+        // host
+        0 : function(x){
+            return x.length > 0;
+        } ,
+        // port
+        1 : function(x){
+            if (x === '*') {
+                return true;
+            }
+            x = Number(x);
+            return (
+                isFinite(x) &&
+                  x > 0 &&
+                  x < 9007199254740992 &&
+                  Math.floor(x) === x
+            );
+        } ,
+        // database
+        2 : function(x){
+            return x.length > 0;
+        } ,
+        // username
+        3 : function(x){
+            return x.length > 0;
+        } ,
+        // password
+        4 : function(x){
+            return x.length > 0;
+        }
+    };
+
+    for (var idx = 0 ; idx < fieldNames.length ; idx += 1) {
+        var rule = rules[idx];
+        var value = entry[ fieldNames[idx] ] || '';
+
+        var res = rule(value);
+        if (!res) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+//filter will reemit the data if cb(err,pass) pass is truthy
+
+// reduce is more tricky
+// maybe we want to group the reductions or emit progress updates occasionally
+// the most basic reduce just emits one 'data' event after it has recieved 'end'
+
+
+var through = __webpack_require__(39)
+var Decoder = __webpack_require__(12).StringDecoder
+
+module.exports = split
+
+//TODO pass in a function to map across the lines.
+
+function split (matcher, mapper, options) {
+  var decoder = new Decoder()
+  var soFar = ''
+  var maxLength = options && options.maxLength;
+  var trailing = options && options.trailing === false ? false : true
+  if('function' === typeof matcher)
+    mapper = matcher, matcher = null
+  if (!matcher)
+    matcher = /\r?\n/
+
+  function emit(stream, piece) {
+    if(mapper) {
+      try {
+        piece = mapper(piece)
+      }
+      catch (err) {
+        return stream.emit('error', err)
+      }
+      if('undefined' !== typeof piece)
+        stream.queue(piece)
+    }
+    else
+      stream.queue(piece)
+  }
+
+  function next (stream, buffer) {
+    var pieces = ((soFar != null ? soFar : '') + buffer).split(matcher)
+    soFar = pieces.pop()
+
+    if (maxLength && soFar.length > maxLength)
+      return stream.emit('error', new Error('maximum buffer reached'))
+
+    for (var i = 0; i < pieces.length; i++) {
+      var piece = pieces[i]
+      emit(stream, piece)
+    }
+  }
+
+  return through(function (b) {
+    next(this, decoder.write(b))
+  },
+  function () {
+    if(decoder.end)
+      next(this, decoder.end())
+    if(trailing && soFar != null)
+      emit(this, soFar)
+    this.queue(null)
+  })
+}
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Stream = __webpack_require__(8)
+
+// through
+//
+// a stream that does nothing but re-emit the input.
+// useful for aggregating a series of changing but not ending streams into one stream)
+
+exports = module.exports = through
+through.through = through
+
+//create a readable writable stream.
+
+function through (write, end, opts) {
+  write = write || function (data) { this.queue(data) }
+  end = end || function () { this.queue(null) }
+
+  var ended = false, destroyed = false, buffer = [], _ended = false
+  var stream = new Stream()
+  stream.readable = stream.writable = true
+  stream.paused = false
+
+//  stream.autoPause   = !(opts && opts.autoPause   === false)
+  stream.autoDestroy = !(opts && opts.autoDestroy === false)
+
+  stream.write = function (data) {
+    write.call(this, data)
+    return !stream.paused
+  }
+
+  function drain() {
+    while(buffer.length && !stream.paused) {
+      var data = buffer.shift()
+      if(null === data)
+        return stream.emit('end')
+      else
+        stream.emit('data', data)
+    }
+  }
+
+  stream.queue = stream.push = function (data) {
+//    console.error(ended)
+    if(_ended) return stream
+    if(data === null) _ended = true
+    buffer.push(data)
+    drain()
+    return stream
+  }
+
+  //this will be registered as the first 'end' listener
+  //must call destroy next tick, to make sure we're after any
+  //stream piped from here.
+  //this is only a problem if end is not emitted synchronously.
+  //a nicer way to do this is to make sure this is the last listener for 'end'
+
+  stream.on('end', function () {
+    stream.readable = false
+    if(!stream.writable && stream.autoDestroy)
+      process.nextTick(function () {
+        stream.destroy()
+      })
+  })
+
+  function _end () {
+    stream.writable = false
+    end.call(stream)
+    if(!stream.readable && stream.autoDestroy)
+      stream.destroy()
+  }
+
+  stream.end = function (data) {
+    if(ended) return
+    ended = true
+    if(arguments.length) stream.write(data)
+    _end() // will emit or queue
+    return stream
+  }
+
+  stream.destroy = function () {
+    if(destroyed) return
+    destroyed = true
+    ended = true
+    buffer.length = 0
+    stream.writable = stream.readable = false
+    stream.emit('close')
+    return stream
+  }
+
+  stream.pause = function () {
+    if(stream.paused) return
+    stream.paused = true
+    return stream
+  }
+
+  stream.resume = function () {
+    if(stream.paused) {
+      stream.paused = false
+      stream.emit('resume')
+    }
+    drain()
+    //may have become paused again,
+    //as drain emits 'data'.
+    if(!stream.paused)
+      stream.emit('drain')
+    return stream
+  }
+  return stream
+}
+
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports) {
+
+module.exports = require("dns");
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var url = __webpack_require__(42);
+
+//Parse method copied from https://github.com/brianc/node-postgres
+//Copyright (c) 2010-2014 Brian Carlson (brian.m.carlson@gmail.com)
+//MIT License
+
+//parses a connection string
+function parse(str) {
+  var config;
+  //unix socket
+  if(str.charAt(0) === '/') {
+    config = str.split(' ');
+    return { host: config[0], database: config[1] };
+  }
+  // url parse expects spaces encoded as %20
+  if(/ |%[^a-f0-9]|%[a-f0-9][^a-f0-9]/i.test(str)) {
+    str = encodeURI(str).replace(/\%25(\d\d)/g, "%$1");
+  }
+  var result = url.parse(str, true);
+  config = {};
+
+  if (result.query.application_name) {
+    config.application_name = result.query.application_name;
+  }
+  if (result.query.fallback_application_name) {
+    config.fallback_application_name = result.query.fallback_application_name;
+  }
+
+  config.port = result.port;
+  if(result.protocol == 'socket:') {
+    config.host = decodeURI(result.pathname);
+    config.database = result.query.db;
+    config.client_encoding = result.query.encoding;
+    return config;
+  }
+  config.host = result.hostname;
+
+  // result.pathname is not always guaranteed to have a '/' prefix (e.g. relative urls)
+  // only strip the slash if it is present.
+  var pathname = result.pathname;
+  if (pathname && pathname.charAt(0) === '/') {
+    pathname = result.pathname.slice(1) || null;
+  }
+  config.database = pathname && decodeURI(pathname);
+
+  var auth = (result.auth || ':').split(':');
+  config.user = auth[0];
+  config.password = auth.splice(1).join(':');
+
+  var ssl = result.query.ssl;
+  if (ssl === 'true' || ssl === '1') {
+    config.ssl = true;
+  }
+
+  return config;
+}
+
+module.exports = {
+  parse: parse
+};
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports) {
+
+module.exports = require("url");
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var EventEmitter = __webpack_require__(5).EventEmitter
+var util = __webpack_require__(4)
+
+var Result = __webpack_require__(44)
+var utils = __webpack_require__(11)
+
+var Query = function (config, values, callback) {
+  // use of "new" optional
+  if (!(this instanceof Query)) { return new Query(config, values, callback) }
+
+  config = utils.normalizeQueryConfig(config, values, callback)
+
+  this.text = config.text
+  this.values = config.values
+  this.rows = config.rows
+  this.types = config.types
+  this.name = config.name
+  this.binary = config.binary
+  this.stream = config.stream
+  // use unique portal name each time
+  this.portal = config.portal || ''
+  this.callback = config.callback
+  this._rowMode = config.rowMode
+  if (process.domain && config.callback) {
+    this.callback = process.domain.bind(config.callback)
+  }
+  this._result = new Result(this._rowMode, this.types)
+
+  // potential for multiple results
+  this._results = this._result
+  this.isPreparedStatement = false
+  this._canceledDueToError = false
+  this._promise = null
+  EventEmitter.call(this)
+}
+
+util.inherits(Query, EventEmitter)
+
+Query.prototype.requiresPreparation = function () {
+  // named queries must always be prepared
+  if (this.name) { return true }
+  // always prepare if there are max number of rows expected per
+  // portal execution
+  if (this.rows) { return true }
+  // don't prepare empty text queries
+  if (!this.text) { return false }
+  // prepare if there are values
+  if (!this.values) { return false }
+  return this.values.length > 0
+}
+
+Query.prototype._checkForMultirow = function () {
+  // if we already have a result with a command property
+  // then we've already executed one query in a multi-statement simple query
+  // turn our results into an array of results
+  if (this._result.command) {
+    if (!Array.isArray(this._results)) {
+      this._results = [this._result]
+    }
+    this._result = new Result(this._rowMode, this.types)
+    this._results.push(this._result)
+  }
+}
+
+// associates row metadata from the supplied
+// message with this query object
+// metadata used when parsing row results
+Query.prototype.handleRowDescription = function (msg) {
+  this._checkForMultirow()
+  this._result.addFields(msg.fields)
+  this._accumulateRows = this.callback || !this.listeners('row').length
+}
+
+Query.prototype.handleDataRow = function (msg) {
+  var row
+
+  if (this._canceledDueToError) {
+    return
+  }
+
+  try {
+    row = this._result.parseRow(msg.fields)
+  } catch (err) {
+    this._canceledDueToError = err
+    return
+  }
+
+  this.emit('row', row, this._result)
+  if (this._accumulateRows) {
+    this._result.addRow(row)
+  }
+}
+
+Query.prototype.handleCommandComplete = function (msg, con) {
+  this._checkForMultirow()
+  this._result.addCommandComplete(msg)
+  // need to sync after each command complete of a prepared statement
+  if (this.isPreparedStatement) {
+    con.sync()
+  }
+}
+
+// if a named prepared statement is created with empty query text
+// the backend will send an emptyQuery message but *not* a command complete message
+// execution on the connection will hang until the backend receives a sync message
+Query.prototype.handleEmptyQuery = function (con) {
+  if (this.isPreparedStatement) {
+    con.sync()
+  }
+}
+
+Query.prototype.handleReadyForQuery = function (con) {
+  if (this._canceledDueToError) {
+    return this.handleError(this._canceledDueToError, con)
+  }
+  if (this.callback) {
+    this.callback(null, this._results)
+  }
+  this.emit('end', this._results)
+}
+
+Query.prototype.handleError = function (err, connection) {
+  // need to sync after error during a prepared statement
+  if (this.isPreparedStatement) {
+    connection.sync()
+  }
+  if (this._canceledDueToError) {
+    err = this._canceledDueToError
+    this._canceledDueToError = false
+  }
+  // if callback supplied do not emit error event as uncaught error
+  // events will bubble up to node process
+  if (this.callback) {
+    return this.callback(err)
+  }
+  this.emit('error', err)
+}
+
+Query.prototype.submit = function (connection) {
+  if (typeof this.text !== 'string' && typeof this.name !== 'string') {
+    const err = new Error('A query must have either text or a name. Supplying neither is unsupported.')
+    connection.emit('error', err)
+    connection.emit('readyForQuery')
+    return
+  }
+  if (this.values && !Array.isArray(this.values)) {
+    const err = new Error('Query values must be an array')
+    connection.emit('error', err)
+    connection.emit('readyForQuery')
+    return
+  }
+  if (this.requiresPreparation()) {
+    this.prepare(connection)
+  } else {
+    connection.query(this.text)
+  }
+}
+
+Query.prototype.hasBeenParsed = function (connection) {
+  return this.name && connection.parsedStatements[this.name]
+}
+
+Query.prototype.handlePortalSuspended = function (connection) {
+  this._getRows(connection, this.rows)
+}
+
+Query.prototype._getRows = function (connection, rows) {
+  connection.execute({
+    portal: this.portalName,
+    rows: rows
+  }, true)
+  connection.flush()
+}
+
+Query.prototype.prepare = function (connection) {
+  var self = this
+  // prepared statements need sync to be called after each command
+  // complete or when an error is encountered
+  this.isPreparedStatement = true
+  // TODO refactor this poor encapsulation
+  if (!this.hasBeenParsed(connection)) {
+    connection.parse({
+      text: self.text,
+      name: self.name,
+      types: self.types
+    }, true)
+  }
+
+  if (self.values) {
+    self.values = self.values.map(utils.prepareValue)
+  }
+
+  // http://developer.postgresql.org/pgdocs/postgres/protocol-flow.html#PROTOCOL-FLOW-EXT-QUERY
+  connection.bind({
+    portal: self.portalName,
+    statement: self.name,
+    values: self.values,
+    binary: self.binary
+  }, true)
+
+  connection.describe({
+    type: 'P',
+    name: self.portalName || ''
+  }, true)
+
+  this._getRows(connection, this.rows)
+}
+
+Query.prototype.handleCopyInResponse = function (connection) {
+  if (this.stream) this.stream.startStreamingToConnection(connection)
+  else connection.sendCopyFail('No source stream defined')
+}
+
+Query.prototype.handleCopyData = function (msg, connection) {
+  var chunk = msg.chunk
+  if (this.stream) {
+    this.stream.handleChunk(chunk)
+  }
+  // if there are no stream (for example when copy to query was sent by
+  // query method instead of copyTo) error will be handled
+  // on copyOutResponse event, so silently ignore this error here
+}
+module.exports = Query
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var types = __webpack_require__(7)
+var escape = __webpack_require__(45)
+
+// result object returned from query
+// in the 'end' event and also
+// passed as second argument to provided callback
+var Result = function (rowMode) {
+  this.command = null
+  this.rowCount = null
+  this.oid = null
+  this.rows = []
+  this.fields = []
+  this._parsers = []
+  this.RowCtor = null
+  this.rowAsArray = rowMode === 'array'
+  if (this.rowAsArray) {
+    this.parseRow = this._parseRowAsArray
+  }
+}
+
+var matchRegexp = /^([A-Za-z]+)(?: (\d+))?(?: (\d+))?/
+
+// adds a command complete message
+Result.prototype.addCommandComplete = function (msg) {
+  var match
+  if (msg.text) {
+    // pure javascript
+    match = matchRegexp.exec(msg.text)
+  } else {
+    // native bindings
+    match = matchRegexp.exec(msg.command)
+  }
+  if (match) {
+    this.command = match[1]
+    if (match[3]) {
+      // COMMMAND OID ROWS
+      this.oid = parseInt(match[2], 10)
+      this.rowCount = parseInt(match[3], 10)
+    } else if (match[2]) {
+      // COMMAND ROWS
+      this.rowCount = parseInt(match[2], 10)
+    }
+  }
+}
+
+Result.prototype._parseRowAsArray = function (rowData) {
+  var row = []
+  for (var i = 0, len = rowData.length; i < len; i++) {
+    var rawValue = rowData[i]
+    if (rawValue !== null) {
+      row.push(this._parsers[i](rawValue))
+    } else {
+      row.push(null)
+    }
+  }
+  return row
+}
+
+// rowData is an array of text or binary values
+// this turns the row into a JavaScript object
+Result.prototype.parseRow = function (rowData) {
+  return new this.RowCtor(this._parsers, rowData)
+}
+
+Result.prototype.addRow = function (row) {
+  this.rows.push(row)
+}
+
+var inlineParser = function (fieldName, i) {
+  return "\nthis['" +
+    // fields containing single quotes will break
+    // the evaluated javascript unless they are escaped
+    // see https://github.com/brianc/node-postgres/issues/507
+    // Addendum: However, we need to make sure to replace all
+    // occurences of apostrophes, not just the first one.
+    // See https://github.com/brianc/node-postgres/issues/934
+    escape(fieldName) +
+    "'] = " +
+    'rowData[' + i + '] == null ? null : parsers[' + i + '](rowData[' + i + ']);'
+}
+
+Result.prototype.addFields = function (fieldDescriptions) {
+  // clears field definitions
+  // multiple query statements in 1 action can result in multiple sets
+  // of rowDescriptions...eg: 'select NOW(); select 1::int;'
+  // you need to reset the fields
+  if (this.fields.length) {
+    this.fields = []
+    this._parsers = []
+  }
+  var ctorBody = ''
+  for (var i = 0; i < fieldDescriptions.length; i++) {
+    var desc = fieldDescriptions[i]
+    this.fields.push(desc)
+    var parser = this._getTypeParser(desc.dataTypeID, desc.format || 'text')
+    this._parsers.push(parser)
+    // this is some craziness to compile the row result parsing
+    // results in ~60% speedup on large query result sets
+    ctorBody += inlineParser(desc.name, i)
+  }
+  if (!this.rowAsArray) {
+    this.RowCtor = Function('parsers', 'rowData', ctorBody)
+  }
+}
+
+Result.prototype._getTypeParser = types.getTypeParser
+
+module.exports = Result
+
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports) {
+
+module.exports = function (string) {
+  return ('' + string).replace(/["'\\\n\r\u2028\u2029]/g, function (character) {
+    // Escape all characters not included in SingleStringCharacters and
+    // DoubleStringCharacters on
+    // http://www.ecma-international.org/ecma-262/5.1/#sec-7.8.4
+    switch (character) {
+      case '"':
+      case "'":
+      case '\\':
+        return '\\' + character
+      // Four possible LineTerminator characters need to be escaped:
+      case '\n':
+        return '\\n'
+      case '\r':
+        return '\\r'
+      case '\u2028':
+        return '\\u2028'
+      case '\u2029':
+        return '\\u2029'
+    }
+  })
+}
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports) {
+
+module.exports = require("net");
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+//binary data writer tuned for creating
+//postgres message packets as effeciently as possible by reusing the
+//same buffer to avoid memcpy and limit memory allocations
+var Writer = module.exports = function(size) {
+  this.size = size || 1024;
+  this.buffer = Buffer(this.size + 5);
+  this.offset = 5;
+  this.headerPosition = 0;
+};
+
+//resizes internal buffer if not enough size left
+Writer.prototype._ensure = function(size) {
+  var remaining = this.buffer.length - this.offset;
+  if(remaining < size) {
+    var oldBuffer = this.buffer;
+    // exponential growth factor of around ~ 1.5
+    // https://stackoverflow.com/questions/2269063/buffer-growth-strategy
+    var newSize = oldBuffer.length + (oldBuffer.length >> 1) + size;
+    this.buffer = new Buffer(newSize);
+    oldBuffer.copy(this.buffer);
+  }
+};
+
+Writer.prototype.addInt32 = function(num) {
+  this._ensure(4);
+  this.buffer[this.offset++] = (num >>> 24 & 0xFF);
+  this.buffer[this.offset++] = (num >>> 16 & 0xFF);
+  this.buffer[this.offset++] = (num >>>  8 & 0xFF);
+  this.buffer[this.offset++] = (num >>>  0 & 0xFF);
+  return this;
+};
+
+Writer.prototype.addInt16 = function(num) {
+  this._ensure(2);
+  this.buffer[this.offset++] = (num >>>  8 & 0xFF);
+  this.buffer[this.offset++] = (num >>>  0 & 0xFF);
+  return this;
+};
+
+//for versions of node requiring 'length' as 3rd argument to buffer.write
+var writeString = function(buffer, string, offset, len) {
+  buffer.write(string, offset, len);
+};
+
+//overwrite function for older versions of node
+if(Buffer.prototype.write.length === 3) {
+  writeString = function(buffer, string, offset, len) {
+    buffer.write(string, offset);
+  };
+}
+
+Writer.prototype.addCString = function(string) {
+  //just write a 0 for empty or null strings
+  if(!string) {
+    this._ensure(1);
+  } else {
+    var len = Buffer.byteLength(string);
+    this._ensure(len + 1); //+1 for null terminator
+    writeString(this.buffer, string, this.offset, len);
+    this.offset += len;
+  }
+
+  this.buffer[this.offset++] = 0; // null terminator
+  return this;
+};
+
+Writer.prototype.addChar = function(c) {
+  this._ensure(1);
+  writeString(this.buffer, c, this.offset, 1);
+  this.offset++;
+  return this;
+};
+
+Writer.prototype.addString = function(string) {
+  string = string || "";
+  var len = Buffer.byteLength(string);
+  this._ensure(len);
+  this.buffer.write(string, this.offset);
+  this.offset += len;
+  return this;
+};
+
+Writer.prototype.getByteLength = function() {
+  return this.offset - 5;
+};
+
+Writer.prototype.add = function(otherBuffer) {
+  this._ensure(otherBuffer.length);
+  otherBuffer.copy(this.buffer, this.offset);
+  this.offset += otherBuffer.length;
+  return this;
+};
+
+Writer.prototype.clear = function() {
+  this.offset = 5;
+  this.headerPosition = 0;
+  this.lastEnd = 0;
+};
+
+//appends a header block to all the written data since the last
+//subsequent header or to the beginning if there is only one data block
+Writer.prototype.addHeader = function(code, last) {
+  var origOffset = this.offset;
+  this.offset = this.headerPosition;
+  this.buffer[this.offset++] = code;
+  //length is everything in this packet minus the code
+  this.addInt32(origOffset - (this.headerPosition+1));
+  //set next header position
+  this.headerPosition = origOffset;
+  //make space for next header
+  this.offset = origOffset;
+  if(!last) {
+    this._ensure(5);
+    this.offset += 5;
+  }
+};
+
+Writer.prototype.join = function(code) {
+  if(code) {
+    this.addHeader(code, true);
+  }
+  return this.buffer.slice(code ? 0 : 5, this.offset);
+};
+
+Writer.prototype.flush = function(code) {
+  var result = this.join(code);
+  this.clear();
+  return result;
+};
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var assert = __webpack_require__(20)
+
+var Reader = module.exports = function(options) {
+  //TODO - remove for version 1.0
+  if(typeof options == 'number') {
+    options = { headerSize: options }
+  }
+  options = options || {}
+  this.offset = 0
+  this.lastChunk = false
+  this.chunk = null
+  this.chunkLength = 0
+  this.headerSize = options.headerSize || 0
+  this.lengthPadding = options.lengthPadding || 0
+  this.header = null
+  assert(this.headerSize < 2, 'pre-length header of more than 1 byte length not currently supported')
+}
+
+Reader.prototype.addChunk = function(chunk) {
+  if (!this.chunk || this.offset === this.chunkLength) {
+    this.chunk = chunk
+    this.chunkLength = chunk.length
+    this.offset = 0
+    return
+  }
+
+  var newChunkLength = chunk.length
+  var newLength = this.chunkLength + newChunkLength
+
+  if (newLength > this.chunk.length) {
+    var newBufferLength = this.chunk.length * 2
+    while (newLength >= newBufferLength) {
+      newBufferLength *= 2
+    }
+    var newBuffer = new Buffer(newBufferLength)
+    this.chunk.copy(newBuffer)
+    this.chunk = newBuffer
+  }
+  chunk.copy(this.chunk, this.chunkLength)
+  this.chunkLength = newLength
+}
+
+Reader.prototype.read = function() {
+  if(this.chunkLength < (this.headerSize + 4 + this.offset)) {
+    return false
+  }
+
+  if(this.headerSize) {
+    this.header = this.chunk[this.offset]
+  }
+
+  //read length of next item
+  var length = this.chunk.readUInt32BE(this.offset + this.headerSize) + this.lengthPadding
+
+  //next item spans more chunks than we have
+  var remaining = this.chunkLength - (this.offset + 4 + this.headerSize)
+  if(length > remaining) {
+    return false
+  }
+
+  this.offset += (this.headerSize + 4)
+  var result = this.chunk.slice(this.offset, this.offset + length)
+  this.offset += length
+  return result
+}
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports) {
+
+module.exports = require("tls");
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const EventEmitter = __webpack_require__(5).EventEmitter
+
+const NOOP = function () { }
+
+const removeWhere = (list, predicate) => {
+  const i = list.findIndex(predicate)
+
+  return i === -1
+    ? undefined
+    : list.splice(i, 1)[0]
+}
+
+class IdleItem {
+  constructor (client, timeoutId) {
+    this.client = client
+    this.timeoutId = timeoutId
+  }
+}
+
+function throwOnRelease () {
+  throw new Error('Release called on client which has already been released to the pool.')
+}
+
+function release (client, err) {
+  client.release = throwOnRelease
+  if (err || this.ending) {
+    this._remove(client)
+    this._pulseQueue()
+    return
+  }
+
+  // idle timeout
+  let tid
+  if (this.options.idleTimeoutMillis) {
+    tid = setTimeout(() => {
+      this.log('remove idle client')
+      this._remove(client)
+    }, this.options.idleTimeoutMillis)
+  }
+
+  this._idle.push(new IdleItem(client, tid))
+  this._pulseQueue()
+}
+
+function promisify (Promise, callback) {
+  if (callback) {
+    return { callback: callback, result: undefined }
+  }
+  let rej
+  let res
+  const cb = function (err, client) {
+    err ? rej(err) : res(client)
+  }
+  const result = new Promise(function (resolve, reject) {
+    res = resolve
+    rej = reject
+  })
+  return { callback: cb, result: result }
+}
+
+class Pool extends EventEmitter {
+  constructor (options, Client) {
+    super()
+    this.options = Object.assign({}, options)
+    this.options.max = this.options.max || this.options.poolSize || 10
+    this.log = this.options.log || function () { }
+    this.Client = this.options.Client || Client || __webpack_require__(13).Client
+    this.Promise = this.options.Promise || global.Promise
+
+    if (typeof this.options.idleTimeoutMillis === 'undefined') {
+      this.options.idleTimeoutMillis = 10000
+    }
+
+    this._clients = []
+    this._idle = []
+    this._pendingQueue = []
+    this._endCallback = undefined
+    this.ending = false
+  }
+
+  _isFull () {
+    return this._clients.length >= this.options.max
+  }
+
+  _pulseQueue () {
+    this.log('pulse queue')
+    if (this.ending) {
+      this.log('pulse queue on ending')
+      if (this._idle.length) {
+        this._idle.slice().map(item => {
+          this._remove(item.client)
+        })
+      }
+      if (!this._clients.length) {
+        this._endCallback()
+      }
+      return
+    }
+    // if we don't have any waiting, do nothing
+    if (!this._pendingQueue.length) {
+      this.log('no queued requests')
+      return
+    }
+    // if we don't have any idle clients and we have no more room do nothing
+    if (!this._idle.length && this._isFull()) {
+      return
+    }
+    const waiter = this._pendingQueue.shift()
+    if (this._idle.length) {
+      const idleItem = this._idle.pop()
+      clearTimeout(idleItem.timeoutId)
+      const client = idleItem.client
+      client.release = release.bind(this, client)
+      this.emit('acquire', client)
+      return waiter(undefined, client, client.release)
+    }
+    if (!this._isFull()) {
+      return this.connect(waiter)
+    }
+    throw new Error('unexpected condition')
+  }
+
+  _remove (client) {
+    const removed = removeWhere(
+      this._idle,
+      item => item.client === client
+    )
+
+    if (removed !== undefined) {
+      clearTimeout(removed.timeoutId)
+    }
+
+    this._clients = this._clients.filter(c => c !== client)
+    client.end()
+    this.emit('remove', client)
+  }
+
+  connect (cb) {
+    if (this.ending) {
+      const err = new Error('Cannot use a pool after calling end on the pool')
+      return cb ? cb(err) : this.Promise.reject(err)
+    }
+
+    // if we don't have to connect a new client, don't do so
+    if (this._clients.length >= this.options.max || this._idle.length) {
+      const response = promisify(this.Promise, cb)
+      const result = response.result
+
+      // if we have idle clients schedule a pulse immediately
+      if (this._idle.length) {
+        process.nextTick(() => this._pulseQueue())
+      }
+
+      if (!this.options.connectionTimeoutMillis) {
+        this._pendingQueue.push(response.callback)
+        return result
+      }
+
+      // set connection timeout on checking out an existing client
+      const tid = setTimeout(() => {
+        // remove the callback from pending waiters because
+        // we're going to call it with a timeout error
+        this._pendingQueue = this._pendingQueue.filter(cb => cb === response.callback)
+        response.callback(new Error('timeout exceeded when trying to connect'))
+      }, this.options.connectionTimeoutMillis)
+
+      this._pendingQueue.push(function (err, res, done) {
+        clearTimeout(tid)
+        response.callback(err, res, done)
+      })
+      return result
+    }
+
+    const client = new this.Client(this.options)
+    this._clients.push(client)
+    const idleListener = (err) => {
+      err.client = client
+      client.removeListener('error', idleListener)
+      client.on('error', () => {
+        this.log('additional client error after disconnection due to error', err)
+      })
+      this._remove(client)
+      // TODO - document that once the pool emits an error
+      // the client has already been closed & purged and is unusable
+      this.emit('error', err, client)
+    }
+
+    this.log('connecting new client')
+
+    // connection timeout logic
+    let tid
+    let timeoutHit = false
+    if (this.options.connectionTimeoutMillis) {
+      tid = setTimeout(() => {
+        this.log('ending client due to timeout')
+        timeoutHit = true
+        // force kill the node driver, and let libpq do its teardown
+        client.connection ? client.connection.stream.destroy() : client.end()
+      }, this.options.connectionTimeoutMillis)
+    }
+
+    const response = promisify(this.Promise, cb)
+    cb = response.callback
+
+    this.log('connecting new client')
+    client.connect((err) => {
+      this.log('new client connected')
+      if (tid) {
+        clearTimeout(tid)
+      }
+      client.on('error', idleListener)
+      if (err) {
+        // remove the dead client from our list of clients
+        this._clients = this._clients.filter(c => c !== client)
+        if (timeoutHit) {
+          err.message = 'Connection terminiated due to connection timeout'
+        }
+        cb(err, undefined, NOOP)
+      } else {
+        client.release = release.bind(this, client)
+        this.emit('connect', client)
+        this.emit('acquire', client)
+        if (this.options.verify) {
+          this.options.verify(client, cb)
+        } else {
+          cb(undefined, client, client.release)
+        }
+      }
+    })
+    return response.result
+  }
+
+  query (text, values, cb) {
+    // guard clause against passing a function as the first parameter
+    if (typeof text === 'function') {
+      const response = promisify(this.Promise, text)
+      setImmediate(function () {
+        return response.callback(new Error('Passing a function as the first parameter to pool.query is not supported'))
+      })
+      return response.result
+    }
+
+    // allow plain text query without values
+    if (typeof values === 'function') {
+      cb = values
+      values = undefined
+    }
+    const response = promisify(this.Promise, cb)
+    cb = response.callback
+    this.connect((err, client) => {
+      if (err) {
+        return cb(err)
+      }
+      this.log('dispatching query')
+      client.query(text, values, (err, res) => {
+        this.log('query dispatched')
+        client.release(err)
+        if (err) {
+          return cb(err)
+        } else {
+          return cb(undefined, res)
+        }
+      })
+    })
+    return response.result
+  }
+
+  end (cb) {
+    this.log('ending')
+    if (this.ending) {
+      const err = new Error('Called end on pool more than once')
+      return cb ? cb(err) : this.Promise.reject(err)
+    }
+    this.ending = true
+    const promised = promisify(this.Promise, cb)
+    this._endCallback = promised.callback
+    this._pulseQueue()
+    return promised.result
+  }
+
+  get waitingCount () {
+    return this._pendingQueue.length
+  }
+
+  get idleCount () {
+    return this._idle.length
+  }
+
+  get totalCount () {
+    return this._clients.length
+  }
+}
+module.exports = Pool
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var Native = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"pg-native\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()))
+var TypeOverrides = __webpack_require__(17)
+var semver = __webpack_require__(52)
+var pkg = __webpack_require__(53)
+var assert = __webpack_require__(20)
+var EventEmitter = __webpack_require__(5).EventEmitter
+var util = __webpack_require__(4)
+var ConnectionParameters = __webpack_require__(18)
+
+var msg = 'Version >= ' + pkg.minNativeVersion + ' of pg-native required.'
+assert(semver.gte(Native.version, pkg.minNativeVersion), msg)
+
+var NativeQuery = __webpack_require__(54)
+
+var Client = module.exports = function (config) {
+  EventEmitter.call(this)
+  config = config || {}
+
+  this._types = new TypeOverrides(config.types)
+
+  this.native = new Native({
+    types: this._types
+  })
+
+  this._queryQueue = []
+  this._connected = false
+  this._connecting = false
+
+  // keep these on the object for legacy reasons
+  // for the time being. TODO: deprecate all this jazz
+  var cp = this.connectionParameters = new ConnectionParameters(config)
+  this.user = cp.user
+  this.password = cp.password
+  this.database = cp.database
+  this.host = cp.host
+  this.port = cp.port
+
+  // a hash to hold named queries
+  this.namedQueries = {}
+}
+
+Client.Query = NativeQuery
+
+util.inherits(Client, EventEmitter)
+
+// connect to the backend
+// pass an optional callback to be called once connected
+// or with an error if there was a connection error
+// if no callback is passed and there is a connection error
+// the client will emit an error event.
+Client.prototype.connect = function (cb) {
+  var self = this
+
+  var onError = function (err) {
+    if (cb) return cb(err)
+    return self.emit('error', err)
+  }
+
+  var result
+  if (!cb) {
+    var resolveOut, rejectOut
+    cb = (err) => err ? rejectOut(err) : resolveOut()
+    result = new global.Promise(function (resolve, reject) {
+      resolveOut = resolve
+      rejectOut = reject
+    })
+  }
+
+  if (this._connecting) {
+    process.nextTick(() => cb(new Error('Client has already been connected. You cannot reuse a client.')))
+    return result
+  }
+
+  this._connecting = true
+
+  this.connectionParameters.getLibpqConnectionString(function (err, conString) {
+    if (err) return onError(err)
+    self.native.connect(conString, function (err) {
+      if (err) return onError(err)
+
+      // set internal states to connected
+      self._connected = true
+
+      // handle connection errors from the native layer
+      self.native.on('error', function (err) {
+        // error will be handled by active query
+        if (self._activeQuery && self._activeQuery.state !== 'end') {
+          return
+        }
+        self.emit('error', err)
+      })
+
+      self.native.on('notification', function (msg) {
+        self.emit('notification', {
+          channel: msg.relname,
+          payload: msg.extra
+        })
+      })
+
+      // signal we are connected now
+      self.emit('connect')
+      self._pulseQueryQueue(true)
+
+      // possibly call the optional callback
+      if (cb) cb()
+    })
+  })
+
+  return result
+}
+
+// send a query to the server
+// this method is highly overloaded to take
+// 1) string query, optional array of parameters, optional function callback
+// 2) object query with {
+//    string query
+//    optional array values,
+//    optional function callback instead of as a separate parameter
+//    optional string name to name & cache the query plan
+//    optional string rowMode = 'array' for an array of results
+//  }
+Client.prototype.query = function (config, values, callback) {
+  if (typeof config.submit === 'function') {
+    // accept query(new Query(...), (err, res) => { }) style
+    if (typeof values === 'function') {
+      config.callback = values
+    }
+    this._queryQueue.push(config)
+    this._pulseQueryQueue()
+    return config
+  }
+
+  var query = new NativeQuery(config, values, callback)
+  var result
+  if (!query.callback) {
+    let resolveOut, rejectOut
+    result = new Promise((resolve, reject) => {
+      resolveOut = resolve
+      rejectOut = reject
+    })
+    query.callback = (err, res) => err ? rejectOut(err) : resolveOut(res)
+  }
+  this._queryQueue.push(query)
+  this._pulseQueryQueue()
+  return result
+}
+
+// disconnect from the backend server
+Client.prototype.end = function (cb) {
+  var self = this
+  if (!this._connected) {
+    this.once('connect', this.end.bind(this, cb))
+  }
+  var result
+  if (!cb) {
+    var resolve, reject
+    cb = (err) => err ? reject(err) : resolve()
+    result = new global.Promise(function (res, rej) {
+      resolve = res
+      reject = rej
+    })
+  }
+  this.native.end(function () {
+    // send an error to the active query
+    if (self._hasActiveQuery()) {
+      var msg = 'Connection terminated'
+      self._queryQueue.length = 0
+      self._activeQuery.handleError(new Error(msg))
+    }
+    self.emit('end')
+    if (cb) cb()
+  })
+  return result
+}
+
+Client.prototype._hasActiveQuery = function () {
+  return this._activeQuery && this._activeQuery.state !== 'error' && this._activeQuery.state !== 'end'
+}
+
+Client.prototype._pulseQueryQueue = function (initialConnection) {
+  if (!this._connected) {
+    return
+  }
+  if (this._hasActiveQuery()) {
+    return
+  }
+  var query = this._queryQueue.shift()
+  if (!query) {
+    if (!initialConnection) {
+      this.emit('drain')
+    }
+    return
+  }
+  this._activeQuery = query
+  query.submit(this)
+  var self = this
+  query.once('_done', function () {
+    self._pulseQueryQueue()
+  })
+}
+
+// attempt to cancel an in-progress query
+Client.prototype.cancel = function (query) {
+  if (this._activeQuery === query) {
+    this.native.cancel(function () {})
+  } else if (this._queryQueue.indexOf(query) !== -1) {
+    this._queryQueue.splice(this._queryQueue.indexOf(query), 1)
+  }
+}
+
+Client.prototype.setTypeParser = function (oid, format, parseFn) {
+  return this._types.setTypeParser(oid, format, parseFn)
+}
+
+Client.prototype.getTypeParser = function (oid, format) {
+  return this._types.getTypeParser(oid, format)
+}
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;// export the class if we are in a Node-like system.
+if (typeof module === 'object' && module.exports === exports)
+  exports = module.exports = SemVer;
+
+// The debug function is excluded entirely from the minified version.
+/* nomin */ var debug;
+/* nomin */ if (typeof process === 'object' &&
+    /* nomin */ process.env &&
+    /* nomin */ process.env.NODE_DEBUG &&
+    /* nomin */ /\bsemver\b/i.test(process.env.NODE_DEBUG))
+  /* nomin */ debug = function() {
+    /* nomin */ var args = Array.prototype.slice.call(arguments, 0);
+    /* nomin */ args.unshift('SEMVER');
+    /* nomin */ console.log.apply(console, args);
+    /* nomin */ };
+/* nomin */ else
+  /* nomin */ debug = function() {};
+
+// Note: this is the semver.org version of the spec that it implements
+// Not necessarily the package version of this code.
+exports.SEMVER_SPEC_VERSION = '2.0.0';
+
+var MAX_LENGTH = 256;
+var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+
+// The actual regexps go on exports.re
+var re = exports.re = [];
+var src = exports.src = [];
+var R = 0;
+
+// The following Regular Expressions can be used for tokenizing,
+// validating, and parsing SemVer version strings.
+
+// ## Numeric Identifier
+// A single `0`, or a non-zero digit followed by zero or more digits.
+
+var NUMERICIDENTIFIER = R++;
+src[NUMERICIDENTIFIER] = '0|[1-9]\\d*';
+var NUMERICIDENTIFIERLOOSE = R++;
+src[NUMERICIDENTIFIERLOOSE] = '[0-9]+';
+
+
+// ## Non-numeric Identifier
+// Zero or more digits, followed by a letter or hyphen, and then zero or
+// more letters, digits, or hyphens.
+
+var NONNUMERICIDENTIFIER = R++;
+src[NONNUMERICIDENTIFIER] = '\\d*[a-zA-Z-][a-zA-Z0-9-]*';
+
+
+// ## Main Version
+// Three dot-separated numeric identifiers.
+
+var MAINVERSION = R++;
+src[MAINVERSION] = '(' + src[NUMERICIDENTIFIER] + ')\\.' +
+                   '(' + src[NUMERICIDENTIFIER] + ')\\.' +
+                   '(' + src[NUMERICIDENTIFIER] + ')';
+
+var MAINVERSIONLOOSE = R++;
+src[MAINVERSIONLOOSE] = '(' + src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
+                        '(' + src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
+                        '(' + src[NUMERICIDENTIFIERLOOSE] + ')';
+
+// ## Pre-release Version Identifier
+// A numeric identifier, or a non-numeric identifier.
+
+var PRERELEASEIDENTIFIER = R++;
+src[PRERELEASEIDENTIFIER] = '(?:' + src[NUMERICIDENTIFIER] +
+                            '|' + src[NONNUMERICIDENTIFIER] + ')';
+
+var PRERELEASEIDENTIFIERLOOSE = R++;
+src[PRERELEASEIDENTIFIERLOOSE] = '(?:' + src[NUMERICIDENTIFIERLOOSE] +
+                                 '|' + src[NONNUMERICIDENTIFIER] + ')';
+
+
+// ## Pre-release Version
+// Hyphen, followed by one or more dot-separated pre-release version
+// identifiers.
+
+var PRERELEASE = R++;
+src[PRERELEASE] = '(?:-(' + src[PRERELEASEIDENTIFIER] +
+                  '(?:\\.' + src[PRERELEASEIDENTIFIER] + ')*))';
+
+var PRERELEASELOOSE = R++;
+src[PRERELEASELOOSE] = '(?:-?(' + src[PRERELEASEIDENTIFIERLOOSE] +
+                       '(?:\\.' + src[PRERELEASEIDENTIFIERLOOSE] + ')*))';
+
+// ## Build Metadata Identifier
+// Any combination of digits, letters, or hyphens.
+
+var BUILDIDENTIFIER = R++;
+src[BUILDIDENTIFIER] = '[0-9A-Za-z-]+';
+
+// ## Build Metadata
+// Plus sign, followed by one or more period-separated build metadata
+// identifiers.
+
+var BUILD = R++;
+src[BUILD] = '(?:\\+(' + src[BUILDIDENTIFIER] +
+             '(?:\\.' + src[BUILDIDENTIFIER] + ')*))';
+
+
+// ## Full Version String
+// A main version, followed optionally by a pre-release version and
+// build metadata.
+
+// Note that the only major, minor, patch, and pre-release sections of
+// the version string are capturing groups.  The build metadata is not a
+// capturing group, because it should not ever be used in version
+// comparison.
+
+var FULL = R++;
+var FULLPLAIN = 'v?' + src[MAINVERSION] +
+                src[PRERELEASE] + '?' +
+                src[BUILD] + '?';
+
+src[FULL] = '^' + FULLPLAIN + '$';
+
+// like full, but allows v1.2.3 and =1.2.3, which people do sometimes.
+// also, 1.0.0alpha1 (prerelease without the hyphen) which is pretty
+// common in the npm registry.
+var LOOSEPLAIN = '[v=\\s]*' + src[MAINVERSIONLOOSE] +
+                 src[PRERELEASELOOSE] + '?' +
+                 src[BUILD] + '?';
+
+var LOOSE = R++;
+src[LOOSE] = '^' + LOOSEPLAIN + '$';
+
+var GTLT = R++;
+src[GTLT] = '((?:<|>)?=?)';
+
+// Something like "2.*" or "1.2.x".
+// Note that "x.x" is a valid xRange identifer, meaning "any version"
+// Only the first item is strictly required.
+var XRANGEIDENTIFIERLOOSE = R++;
+src[XRANGEIDENTIFIERLOOSE] = src[NUMERICIDENTIFIERLOOSE] + '|x|X|\\*';
+var XRANGEIDENTIFIER = R++;
+src[XRANGEIDENTIFIER] = src[NUMERICIDENTIFIER] + '|x|X|\\*';
+
+var XRANGEPLAIN = R++;
+src[XRANGEPLAIN] = '[v=\\s]*(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:\\.(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:\\.(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:' + src[PRERELEASE] + ')?' +
+                   src[BUILD] + '?' +
+                   ')?)?';
+
+var XRANGEPLAINLOOSE = R++;
+src[XRANGEPLAINLOOSE] = '[v=\\s]*(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:\\.(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:\\.(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:' + src[PRERELEASELOOSE] + ')?' +
+                        src[BUILD] + '?' +
+                        ')?)?';
+
+var XRANGE = R++;
+src[XRANGE] = '^' + src[GTLT] + '\\s*' + src[XRANGEPLAIN] + '$';
+var XRANGELOOSE = R++;
+src[XRANGELOOSE] = '^' + src[GTLT] + '\\s*' + src[XRANGEPLAINLOOSE] + '$';
+
+// Tilde ranges.
+// Meaning is "reasonably at or greater than"
+var LONETILDE = R++;
+src[LONETILDE] = '(?:~>?)';
+
+var TILDETRIM = R++;
+src[TILDETRIM] = '(\\s*)' + src[LONETILDE] + '\\s+';
+re[TILDETRIM] = new RegExp(src[TILDETRIM], 'g');
+var tildeTrimReplace = '$1~';
+
+var TILDE = R++;
+src[TILDE] = '^' + src[LONETILDE] + src[XRANGEPLAIN] + '$';
+var TILDELOOSE = R++;
+src[TILDELOOSE] = '^' + src[LONETILDE] + src[XRANGEPLAINLOOSE] + '$';
+
+// Caret ranges.
+// Meaning is "at least and backwards compatible with"
+var LONECARET = R++;
+src[LONECARET] = '(?:\\^)';
+
+var CARETTRIM = R++;
+src[CARETTRIM] = '(\\s*)' + src[LONECARET] + '\\s+';
+re[CARETTRIM] = new RegExp(src[CARETTRIM], 'g');
+var caretTrimReplace = '$1^';
+
+var CARET = R++;
+src[CARET] = '^' + src[LONECARET] + src[XRANGEPLAIN] + '$';
+var CARETLOOSE = R++;
+src[CARETLOOSE] = '^' + src[LONECARET] + src[XRANGEPLAINLOOSE] + '$';
+
+// A simple gt/lt/eq thing, or just "" to indicate "any version"
+var COMPARATORLOOSE = R++;
+src[COMPARATORLOOSE] = '^' + src[GTLT] + '\\s*(' + LOOSEPLAIN + ')$|^$';
+var COMPARATOR = R++;
+src[COMPARATOR] = '^' + src[GTLT] + '\\s*(' + FULLPLAIN + ')$|^$';
+
+
+// An expression to strip any whitespace between the gtlt and the thing
+// it modifies, so that `> 1.2.3` ==> `>1.2.3`
+var COMPARATORTRIM = R++;
+src[COMPARATORTRIM] = '(\\s*)' + src[GTLT] +
+                      '\\s*(' + LOOSEPLAIN + '|' + src[XRANGEPLAIN] + ')';
+
+// this one has to use the /g flag
+re[COMPARATORTRIM] = new RegExp(src[COMPARATORTRIM], 'g');
+var comparatorTrimReplace = '$1$2$3';
+
+
+// Something like `1.2.3 - 1.2.4`
+// Note that these all use the loose form, because they'll be
+// checked against either the strict or loose comparator form
+// later.
+var HYPHENRANGE = R++;
+src[HYPHENRANGE] = '^\\s*(' + src[XRANGEPLAIN] + ')' +
+                   '\\s+-\\s+' +
+                   '(' + src[XRANGEPLAIN] + ')' +
+                   '\\s*$';
+
+var HYPHENRANGELOOSE = R++;
+src[HYPHENRANGELOOSE] = '^\\s*(' + src[XRANGEPLAINLOOSE] + ')' +
+                        '\\s+-\\s+' +
+                        '(' + src[XRANGEPLAINLOOSE] + ')' +
+                        '\\s*$';
+
+// Star ranges basically just allow anything at all.
+var STAR = R++;
+src[STAR] = '(<|>)?=?\\s*\\*';
+
+// Compile to actual regexp objects.
+// All are flag-free, unless they were created above with a flag.
+for (var i = 0; i < R; i++) {
+  debug(i, src[i]);
+  if (!re[i])
+    re[i] = new RegExp(src[i]);
+}
+
+exports.parse = parse;
+function parse(version, loose) {
+  if (version.length > MAX_LENGTH)
+    return null;
+
+  var r = loose ? re[LOOSE] : re[FULL];
+  if (!r.test(version))
+    return null;
+
+  try {
+    return new SemVer(version, loose);
+  } catch (er) {
+    return null;
+  }
+}
+
+exports.valid = valid;
+function valid(version, loose) {
+  var v = parse(version, loose);
+  return v ? v.version : null;
+}
+
+
+exports.clean = clean;
+function clean(version, loose) {
+  var s = parse(version.trim().replace(/^[=v]+/, ''), loose);
+  return s ? s.version : null;
+}
+
+exports.SemVer = SemVer;
+
+function SemVer(version, loose) {
+  if (version instanceof SemVer) {
+    if (version.loose === loose)
+      return version;
+    else
+      version = version.version;
+  } else if (typeof version !== 'string') {
+    throw new TypeError('Invalid Version: ' + version);
+  }
+
+  if (version.length > MAX_LENGTH)
+    throw new TypeError('version is longer than ' + MAX_LENGTH + ' characters')
+
+  if (!(this instanceof SemVer))
+    return new SemVer(version, loose);
+
+  debug('SemVer', version, loose);
+  this.loose = loose;
+  var m = version.trim().match(loose ? re[LOOSE] : re[FULL]);
+
+  if (!m)
+    throw new TypeError('Invalid Version: ' + version);
+
+  this.raw = version;
+
+  // these are actually numbers
+  this.major = +m[1];
+  this.minor = +m[2];
+  this.patch = +m[3];
+
+  if (this.major > MAX_SAFE_INTEGER || this.major < 0)
+    throw new TypeError('Invalid major version')
+
+  if (this.minor > MAX_SAFE_INTEGER || this.minor < 0)
+    throw new TypeError('Invalid minor version')
+
+  if (this.patch > MAX_SAFE_INTEGER || this.patch < 0)
+    throw new TypeError('Invalid patch version')
+
+  // numberify any prerelease numeric ids
+  if (!m[4])
+    this.prerelease = [];
+  else
+    this.prerelease = m[4].split('.').map(function(id) {
+      return (/^[0-9]+$/.test(id)) ? +id : id;
+    });
+
+  this.build = m[5] ? m[5].split('.') : [];
+  this.format();
+}
+
+SemVer.prototype.format = function() {
+  this.version = this.major + '.' + this.minor + '.' + this.patch;
+  if (this.prerelease.length)
+    this.version += '-' + this.prerelease.join('.');
+  return this.version;
+};
+
+SemVer.prototype.inspect = function() {
+  return '<SemVer "' + this + '">';
+};
+
+SemVer.prototype.toString = function() {
+  return this.version;
+};
+
+SemVer.prototype.compare = function(other) {
+  debug('SemVer.compare', this.version, this.loose, other);
+  if (!(other instanceof SemVer))
+    other = new SemVer(other, this.loose);
+
+  return this.compareMain(other) || this.comparePre(other);
+};
+
+SemVer.prototype.compareMain = function(other) {
+  if (!(other instanceof SemVer))
+    other = new SemVer(other, this.loose);
+
+  return compareIdentifiers(this.major, other.major) ||
+         compareIdentifiers(this.minor, other.minor) ||
+         compareIdentifiers(this.patch, other.patch);
+};
+
+SemVer.prototype.comparePre = function(other) {
+  if (!(other instanceof SemVer))
+    other = new SemVer(other, this.loose);
+
+  // NOT having a prerelease is > having one
+  if (this.prerelease.length && !other.prerelease.length)
+    return -1;
+  else if (!this.prerelease.length && other.prerelease.length)
+    return 1;
+  else if (!this.prerelease.length && !other.prerelease.length)
+    return 0;
+
+  var i = 0;
+  do {
+    var a = this.prerelease[i];
+    var b = other.prerelease[i];
+    debug('prerelease compare', i, a, b);
+    if (a === undefined && b === undefined)
+      return 0;
+    else if (b === undefined)
+      return 1;
+    else if (a === undefined)
+      return -1;
+    else if (a === b)
+      continue;
+    else
+      return compareIdentifiers(a, b);
+  } while (++i);
+};
+
+// preminor will bump the version up to the next minor release, and immediately
+// down to pre-release. premajor and prepatch work the same way.
+SemVer.prototype.inc = function(release, identifier) {
+  switch (release) {
+    case 'premajor':
+      this.prerelease.length = 0;
+      this.patch = 0;
+      this.minor = 0;
+      this.major++;
+      this.inc('pre', identifier);
+      break;
+    case 'preminor':
+      this.prerelease.length = 0;
+      this.patch = 0;
+      this.minor++;
+      this.inc('pre', identifier);
+      break;
+    case 'prepatch':
+      // If this is already a prerelease, it will bump to the next version
+      // drop any prereleases that might already exist, since they are not
+      // relevant at this point.
+      this.prerelease.length = 0;
+      this.inc('patch', identifier);
+      this.inc('pre', identifier);
+      break;
+    // If the input is a non-prerelease version, this acts the same as
+    // prepatch.
+    case 'prerelease':
+      if (this.prerelease.length === 0)
+        this.inc('patch', identifier);
+      this.inc('pre', identifier);
+      break;
+
+    case 'major':
+      // If this is a pre-major version, bump up to the same major version.
+      // Otherwise increment major.
+      // 1.0.0-5 bumps to 1.0.0
+      // 1.1.0 bumps to 2.0.0
+      if (this.minor !== 0 || this.patch !== 0 || this.prerelease.length === 0)
+        this.major++;
+      this.minor = 0;
+      this.patch = 0;
+      this.prerelease = [];
+      break;
+    case 'minor':
+      // If this is a pre-minor version, bump up to the same minor version.
+      // Otherwise increment minor.
+      // 1.2.0-5 bumps to 1.2.0
+      // 1.2.1 bumps to 1.3.0
+      if (this.patch !== 0 || this.prerelease.length === 0)
+        this.minor++;
+      this.patch = 0;
+      this.prerelease = [];
+      break;
+    case 'patch':
+      // If this is not a pre-release version, it will increment the patch.
+      // If it is a pre-release it will bump up to the same patch version.
+      // 1.2.0-5 patches to 1.2.0
+      // 1.2.0 patches to 1.2.1
+      if (this.prerelease.length === 0)
+        this.patch++;
+      this.prerelease = [];
+      break;
+    // This probably shouldn't be used publicly.
+    // 1.0.0 "pre" would become 1.0.0-0 which is the wrong direction.
+    case 'pre':
+      if (this.prerelease.length === 0)
+        this.prerelease = [0];
+      else {
+        var i = this.prerelease.length;
+        while (--i >= 0) {
+          if (typeof this.prerelease[i] === 'number') {
+            this.prerelease[i]++;
+            i = -2;
+          }
+        }
+        if (i === -1) // didn't increment anything
+          this.prerelease.push(0);
+      }
+      if (identifier) {
+        // 1.2.0-beta.1 bumps to 1.2.0-beta.2,
+        // 1.2.0-beta.fooblz or 1.2.0-beta bumps to 1.2.0-beta.0
+        if (this.prerelease[0] === identifier) {
+          if (isNaN(this.prerelease[1]))
+            this.prerelease = [identifier, 0];
+        } else
+          this.prerelease = [identifier, 0];
+      }
+      break;
+
+    default:
+      throw new Error('invalid increment argument: ' + release);
+  }
+  this.format();
+  return this;
+};
+
+exports.inc = inc;
+function inc(version, release, loose, identifier) {
+  if (typeof(loose) === 'string') {
+    identifier = loose;
+    loose = undefined;
+  }
+
+  try {
+    return new SemVer(version, loose).inc(release, identifier).version;
+  } catch (er) {
+    return null;
+  }
+}
+
+exports.diff = diff;
+function diff(version1, version2) {
+  if (eq(version1, version2)) {
+    return null;
+  } else {
+    var v1 = parse(version1);
+    var v2 = parse(version2);
+    if (v1.prerelease.length || v2.prerelease.length) {
+      for (var key in v1) {
+        if (key === 'major' || key === 'minor' || key === 'patch') {
+          if (v1[key] !== v2[key]) {
+            return 'pre'+key;
+          }
+        }
+      }
+      return 'prerelease';
+    }
+    for (var key in v1) {
+      if (key === 'major' || key === 'minor' || key === 'patch') {
+        if (v1[key] !== v2[key]) {
+          return key;
+        }
+      }
+    }
+  }
+}
+
+exports.compareIdentifiers = compareIdentifiers;
+
+var numeric = /^[0-9]+$/;
+function compareIdentifiers(a, b) {
+  var anum = numeric.test(a);
+  var bnum = numeric.test(b);
+
+  if (anum && bnum) {
+    a = +a;
+    b = +b;
+  }
+
+  return (anum && !bnum) ? -1 :
+         (bnum && !anum) ? 1 :
+         a < b ? -1 :
+         a > b ? 1 :
+         0;
+}
+
+exports.rcompareIdentifiers = rcompareIdentifiers;
+function rcompareIdentifiers(a, b) {
+  return compareIdentifiers(b, a);
+}
+
+exports.major = major;
+function major(a, loose) {
+  return new SemVer(a, loose).major;
+}
+
+exports.minor = minor;
+function minor(a, loose) {
+  return new SemVer(a, loose).minor;
+}
+
+exports.patch = patch;
+function patch(a, loose) {
+  return new SemVer(a, loose).patch;
+}
+
+exports.compare = compare;
+function compare(a, b, loose) {
+  return new SemVer(a, loose).compare(b);
+}
+
+exports.compareLoose = compareLoose;
+function compareLoose(a, b) {
+  return compare(a, b, true);
+}
+
+exports.rcompare = rcompare;
+function rcompare(a, b, loose) {
+  return compare(b, a, loose);
+}
+
+exports.sort = sort;
+function sort(list, loose) {
+  return list.sort(function(a, b) {
+    return exports.compare(a, b, loose);
+  });
+}
+
+exports.rsort = rsort;
+function rsort(list, loose) {
+  return list.sort(function(a, b) {
+    return exports.rcompare(a, b, loose);
+  });
+}
+
+exports.gt = gt;
+function gt(a, b, loose) {
+  return compare(a, b, loose) > 0;
+}
+
+exports.lt = lt;
+function lt(a, b, loose) {
+  return compare(a, b, loose) < 0;
+}
+
+exports.eq = eq;
+function eq(a, b, loose) {
+  return compare(a, b, loose) === 0;
+}
+
+exports.neq = neq;
+function neq(a, b, loose) {
+  return compare(a, b, loose) !== 0;
+}
+
+exports.gte = gte;
+function gte(a, b, loose) {
+  return compare(a, b, loose) >= 0;
+}
+
+exports.lte = lte;
+function lte(a, b, loose) {
+  return compare(a, b, loose) <= 0;
+}
+
+exports.cmp = cmp;
+function cmp(a, op, b, loose) {
+  var ret;
+  switch (op) {
+    case '===':
+      if (typeof a === 'object') a = a.version;
+      if (typeof b === 'object') b = b.version;
+      ret = a === b;
+      break;
+    case '!==':
+      if (typeof a === 'object') a = a.version;
+      if (typeof b === 'object') b = b.version;
+      ret = a !== b;
+      break;
+    case '': case '=': case '==': ret = eq(a, b, loose); break;
+    case '!=': ret = neq(a, b, loose); break;
+    case '>': ret = gt(a, b, loose); break;
+    case '>=': ret = gte(a, b, loose); break;
+    case '<': ret = lt(a, b, loose); break;
+    case '<=': ret = lte(a, b, loose); break;
+    default: throw new TypeError('Invalid operator: ' + op);
+  }
+  return ret;
+}
+
+exports.Comparator = Comparator;
+function Comparator(comp, loose) {
+  if (comp instanceof Comparator) {
+    if (comp.loose === loose)
+      return comp;
+    else
+      comp = comp.value;
+  }
+
+  if (!(this instanceof Comparator))
+    return new Comparator(comp, loose);
+
+  debug('comparator', comp, loose);
+  this.loose = loose;
+  this.parse(comp);
+
+  if (this.semver === ANY)
+    this.value = '';
+  else
+    this.value = this.operator + this.semver.version;
+
+  debug('comp', this);
+}
+
+var ANY = {};
+Comparator.prototype.parse = function(comp) {
+  var r = this.loose ? re[COMPARATORLOOSE] : re[COMPARATOR];
+  var m = comp.match(r);
+
+  if (!m)
+    throw new TypeError('Invalid comparator: ' + comp);
+
+  this.operator = m[1];
+  if (this.operator === '=')
+    this.operator = '';
+
+  // if it literally is just '>' or '' then allow anything.
+  if (!m[2])
+    this.semver = ANY;
+  else
+    this.semver = new SemVer(m[2], this.loose);
+};
+
+Comparator.prototype.inspect = function() {
+  return '<SemVer Comparator "' + this + '">';
+};
+
+Comparator.prototype.toString = function() {
+  return this.value;
+};
+
+Comparator.prototype.test = function(version) {
+  debug('Comparator.test', version, this.loose);
+
+  if (this.semver === ANY)
+    return true;
+
+  if (typeof version === 'string')
+    version = new SemVer(version, this.loose);
+
+  return cmp(version, this.operator, this.semver, this.loose);
+};
+
+
+exports.Range = Range;
+function Range(range, loose) {
+  if ((range instanceof Range) && range.loose === loose)
+    return range;
+
+  if (!(this instanceof Range))
+    return new Range(range, loose);
+
+  this.loose = loose;
+
+  // First, split based on boolean or ||
+  this.raw = range;
+  this.set = range.split(/\s*\|\|\s*/).map(function(range) {
+    return this.parseRange(range.trim());
+  }, this).filter(function(c) {
+    // throw out any that are not relevant for whatever reason
+    return c.length;
+  });
+
+  if (!this.set.length) {
+    throw new TypeError('Invalid SemVer Range: ' + range);
+  }
+
+  this.format();
+}
+
+Range.prototype.inspect = function() {
+  return '<SemVer Range "' + this.range + '">';
+};
+
+Range.prototype.format = function() {
+  this.range = this.set.map(function(comps) {
+    return comps.join(' ').trim();
+  }).join('||').trim();
+  return this.range;
+};
+
+Range.prototype.toString = function() {
+  return this.range;
+};
+
+Range.prototype.parseRange = function(range) {
+  var loose = this.loose;
+  range = range.trim();
+  debug('range', range, loose);
+  // `1.2.3 - 1.2.4` => `>=1.2.3 <=1.2.4`
+  var hr = loose ? re[HYPHENRANGELOOSE] : re[HYPHENRANGE];
+  range = range.replace(hr, hyphenReplace);
+  debug('hyphen replace', range);
+  // `> 1.2.3 < 1.2.5` => `>1.2.3 <1.2.5`
+  range = range.replace(re[COMPARATORTRIM], comparatorTrimReplace);
+  debug('comparator trim', range, re[COMPARATORTRIM]);
+
+  // `~ 1.2.3` => `~1.2.3`
+  range = range.replace(re[TILDETRIM], tildeTrimReplace);
+
+  // `^ 1.2.3` => `^1.2.3`
+  range = range.replace(re[CARETTRIM], caretTrimReplace);
+
+  // normalize spaces
+  range = range.split(/\s+/).join(' ');
+
+  // At this point, the range is completely trimmed and
+  // ready to be split into comparators.
+
+  var compRe = loose ? re[COMPARATORLOOSE] : re[COMPARATOR];
+  var set = range.split(' ').map(function(comp) {
+    return parseComparator(comp, loose);
+  }).join(' ').split(/\s+/);
+  if (this.loose) {
+    // in loose mode, throw out any that are not valid comparators
+    set = set.filter(function(comp) {
+      return !!comp.match(compRe);
+    });
+  }
+  set = set.map(function(comp) {
+    return new Comparator(comp, loose);
+  });
+
+  return set;
+};
+
+// Mostly just for testing and legacy API reasons
+exports.toComparators = toComparators;
+function toComparators(range, loose) {
+  return new Range(range, loose).set.map(function(comp) {
+    return comp.map(function(c) {
+      return c.value;
+    }).join(' ').trim().split(' ');
+  });
+}
+
+// comprised of xranges, tildes, stars, and gtlt's at this point.
+// already replaced the hyphen ranges
+// turn into a set of JUST comparators.
+function parseComparator(comp, loose) {
+  debug('comp', comp);
+  comp = replaceCarets(comp, loose);
+  debug('caret', comp);
+  comp = replaceTildes(comp, loose);
+  debug('tildes', comp);
+  comp = replaceXRanges(comp, loose);
+  debug('xrange', comp);
+  comp = replaceStars(comp, loose);
+  debug('stars', comp);
+  return comp;
+}
+
+function isX(id) {
+  return !id || id.toLowerCase() === 'x' || id === '*';
+}
+
+// ~, ~> --> * (any, kinda silly)
+// ~2, ~2.x, ~2.x.x, ~>2, ~>2.x ~>2.x.x --> >=2.0.0 <3.0.0
+// ~2.0, ~2.0.x, ~>2.0, ~>2.0.x --> >=2.0.0 <2.1.0
+// ~1.2, ~1.2.x, ~>1.2, ~>1.2.x --> >=1.2.0 <1.3.0
+// ~1.2.3, ~>1.2.3 --> >=1.2.3 <1.3.0
+// ~1.2.0, ~>1.2.0 --> >=1.2.0 <1.3.0
+function replaceTildes(comp, loose) {
+  return comp.trim().split(/\s+/).map(function(comp) {
+    return replaceTilde(comp, loose);
+  }).join(' ');
+}
+
+function replaceTilde(comp, loose) {
+  var r = loose ? re[TILDELOOSE] : re[TILDE];
+  return comp.replace(r, function(_, M, m, p, pr) {
+    debug('tilde', comp, _, M, m, p, pr);
+    var ret;
+
+    if (isX(M))
+      ret = '';
+    else if (isX(m))
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0';
+    else if (isX(p))
+      // ~1.2 == >=1.2.0- <1.3.0-
+      ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0';
+    else if (pr) {
+      debug('replaceTilde pr', pr);
+      if (pr.charAt(0) !== '-')
+        pr = '-' + pr;
+      ret = '>=' + M + '.' + m + '.' + p + pr +
+            ' <' + M + '.' + (+m + 1) + '.0';
+    } else
+      // ~1.2.3 == >=1.2.3 <1.3.0
+      ret = '>=' + M + '.' + m + '.' + p +
+            ' <' + M + '.' + (+m + 1) + '.0';
+
+    debug('tilde return', ret);
+    return ret;
+  });
+}
+
+// ^ --> * (any, kinda silly)
+// ^2, ^2.x, ^2.x.x --> >=2.0.0 <3.0.0
+// ^2.0, ^2.0.x --> >=2.0.0 <3.0.0
+// ^1.2, ^1.2.x --> >=1.2.0 <2.0.0
+// ^1.2.3 --> >=1.2.3 <2.0.0
+// ^1.2.0 --> >=1.2.0 <2.0.0
+function replaceCarets(comp, loose) {
+  return comp.trim().split(/\s+/).map(function(comp) {
+    return replaceCaret(comp, loose);
+  }).join(' ');
+}
+
+function replaceCaret(comp, loose) {
+  debug('caret', comp, loose);
+  var r = loose ? re[CARETLOOSE] : re[CARET];
+  return comp.replace(r, function(_, M, m, p, pr) {
+    debug('caret', comp, _, M, m, p, pr);
+    var ret;
+
+    if (isX(M))
+      ret = '';
+    else if (isX(m))
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0';
+    else if (isX(p)) {
+      if (M === '0')
+        ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0';
+      else
+        ret = '>=' + M + '.' + m + '.0 <' + (+M + 1) + '.0.0';
+    } else if (pr) {
+      debug('replaceCaret pr', pr);
+      if (pr.charAt(0) !== '-')
+        pr = '-' + pr;
+      if (M === '0') {
+        if (m === '0')
+          ret = '>=' + M + '.' + m + '.' + p + pr +
+                ' <' + M + '.' + m + '.' + (+p + 1);
+        else
+          ret = '>=' + M + '.' + m + '.' + p + pr +
+                ' <' + M + '.' + (+m + 1) + '.0';
+      } else
+        ret = '>=' + M + '.' + m + '.' + p + pr +
+              ' <' + (+M + 1) + '.0.0';
+    } else {
+      debug('no pr');
+      if (M === '0') {
+        if (m === '0')
+          ret = '>=' + M + '.' + m + '.' + p +
+                ' <' + M + '.' + m + '.' + (+p + 1);
+        else
+          ret = '>=' + M + '.' + m + '.' + p +
+                ' <' + M + '.' + (+m + 1) + '.0';
+      } else
+        ret = '>=' + M + '.' + m + '.' + p +
+              ' <' + (+M + 1) + '.0.0';
+    }
+
+    debug('caret return', ret);
+    return ret;
+  });
+}
+
+function replaceXRanges(comp, loose) {
+  debug('replaceXRanges', comp, loose);
+  return comp.split(/\s+/).map(function(comp) {
+    return replaceXRange(comp, loose);
+  }).join(' ');
+}
+
+function replaceXRange(comp, loose) {
+  comp = comp.trim();
+  var r = loose ? re[XRANGELOOSE] : re[XRANGE];
+  return comp.replace(r, function(ret, gtlt, M, m, p, pr) {
+    debug('xRange', comp, ret, gtlt, M, m, p, pr);
+    var xM = isX(M);
+    var xm = xM || isX(m);
+    var xp = xm || isX(p);
+    var anyX = xp;
+
+    if (gtlt === '=' && anyX)
+      gtlt = '';
+
+    if (xM) {
+      if (gtlt === '>' || gtlt === '<') {
+        // nothing is allowed
+        ret = '<0.0.0';
+      } else {
+        // nothing is forbidden
+        ret = '*';
+      }
+    } else if (gtlt && anyX) {
+      // replace X with 0
+      if (xm)
+        m = 0;
+      if (xp)
+        p = 0;
+
+      if (gtlt === '>') {
+        // >1 => >=2.0.0
+        // >1.2 => >=1.3.0
+        // >1.2.3 => >= 1.2.4
+        gtlt = '>=';
+        if (xm) {
+          M = +M + 1;
+          m = 0;
+          p = 0;
+        } else if (xp) {
+          m = +m + 1;
+          p = 0;
+        }
+      } else if (gtlt === '<=') {
+        // <=0.7.x is actually <0.8.0, since any 0.7.x should
+        // pass.  Similarly, <=7.x is actually <8.0.0, etc.
+        gtlt = '<'
+        if (xm)
+          M = +M + 1
+        else
+          m = +m + 1
+      }
+
+      ret = gtlt + M + '.' + m + '.' + p;
+    } else if (xm) {
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0';
+    } else if (xp) {
+      ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0';
+    }
+
+    debug('xRange return', ret);
+
+    return ret;
+  });
+}
+
+// Because * is AND-ed with everything else in the comparator,
+// and '' means "any version", just remove the *s entirely.
+function replaceStars(comp, loose) {
+  debug('replaceStars', comp, loose);
+  // Looseness is ignored here.  star is always as loose as it gets!
+  return comp.trim().replace(re[STAR], '');
+}
+
+// This function is passed to string.replace(re[HYPHENRANGE])
+// M, m, patch, prerelease, build
+// 1.2 - 3.4.5 => >=1.2.0 <=3.4.5
+// 1.2.3 - 3.4 => >=1.2.0 <3.5.0 Any 3.4.x will do
+// 1.2 - 3.4 => >=1.2.0 <3.5.0
+function hyphenReplace($0,
+                       from, fM, fm, fp, fpr, fb,
+                       to, tM, tm, tp, tpr, tb) {
+
+  if (isX(fM))
+    from = '';
+  else if (isX(fm))
+    from = '>=' + fM + '.0.0';
+  else if (isX(fp))
+    from = '>=' + fM + '.' + fm + '.0';
+  else
+    from = '>=' + from;
+
+  if (isX(tM))
+    to = '';
+  else if (isX(tm))
+    to = '<' + (+tM + 1) + '.0.0';
+  else if (isX(tp))
+    to = '<' + tM + '.' + (+tm + 1) + '.0';
+  else if (tpr)
+    to = '<=' + tM + '.' + tm + '.' + tp + '-' + tpr;
+  else
+    to = '<=' + to;
+
+  return (from + ' ' + to).trim();
+}
+
+
+// if ANY of the sets match ALL of its comparators, then pass
+Range.prototype.test = function(version) {
+  if (!version)
+    return false;
+
+  if (typeof version === 'string')
+    version = new SemVer(version, this.loose);
+
+  for (var i = 0; i < this.set.length; i++) {
+    if (testSet(this.set[i], version))
+      return true;
+  }
+  return false;
+};
+
+function testSet(set, version) {
+  for (var i = 0; i < set.length; i++) {
+    if (!set[i].test(version))
+      return false;
+  }
+
+  if (version.prerelease.length) {
+    // Find the set of versions that are allowed to have prereleases
+    // For example, ^1.2.3-pr.1 desugars to >=1.2.3-pr.1 <2.0.0
+    // That should allow `1.2.3-pr.2` to pass.
+    // However, `1.2.4-alpha.notready` should NOT be allowed,
+    // even though it's within the range set by the comparators.
+    for (var i = 0; i < set.length; i++) {
+      debug(set[i].semver);
+      if (set[i].semver === ANY)
+        return true;
+
+      if (set[i].semver.prerelease.length > 0) {
+        var allowed = set[i].semver;
+        if (allowed.major === version.major &&
+            allowed.minor === version.minor &&
+            allowed.patch === version.patch)
+          return true;
+      }
+    }
+
+    // Version has a -pre, but it's not one of the ones we like.
+    return false;
+  }
+
+  return true;
+}
+
+exports.satisfies = satisfies;
+function satisfies(version, range, loose) {
+  try {
+    range = new Range(range, loose);
+  } catch (er) {
+    return false;
+  }
+  return range.test(version);
+}
+
+exports.maxSatisfying = maxSatisfying;
+function maxSatisfying(versions, range, loose) {
+  return versions.filter(function(version) {
+    return satisfies(version, range, loose);
+  }).sort(function(a, b) {
+    return rcompare(a, b, loose);
+  })[0] || null;
+}
+
+exports.validRange = validRange;
+function validRange(range, loose) {
+  try {
+    // Return '*' instead of '' so that truthiness works.
+    // This will throw if it's invalid anyway
+    return new Range(range, loose).range || '*';
+  } catch (er) {
+    return null;
+  }
+}
+
+// Determine if version is less than all the versions possible in the range
+exports.ltr = ltr;
+function ltr(version, range, loose) {
+  return outside(version, range, '<', loose);
+}
+
+// Determine if version is greater than all the versions possible in the range.
+exports.gtr = gtr;
+function gtr(version, range, loose) {
+  return outside(version, range, '>', loose);
+}
+
+exports.outside = outside;
+function outside(version, range, hilo, loose) {
+  version = new SemVer(version, loose);
+  range = new Range(range, loose);
+
+  var gtfn, ltefn, ltfn, comp, ecomp;
+  switch (hilo) {
+    case '>':
+      gtfn = gt;
+      ltefn = lte;
+      ltfn = lt;
+      comp = '>';
+      ecomp = '>=';
+      break;
+    case '<':
+      gtfn = lt;
+      ltefn = gte;
+      ltfn = gt;
+      comp = '<';
+      ecomp = '<=';
+      break;
+    default:
+      throw new TypeError('Must provide a hilo val of "<" or ">"');
+  }
+
+  // If it satisifes the range it is not outside
+  if (satisfies(version, range, loose)) {
+    return false;
+  }
+
+  // From now on, variable terms are as if we're in "gtr" mode.
+  // but note that everything is flipped for the "ltr" function.
+
+  for (var i = 0; i < range.set.length; ++i) {
+    var comparators = range.set[i];
+
+    var high = null;
+    var low = null;
+
+    comparators.forEach(function(comparator) {
+      high = high || comparator;
+      low = low || comparator;
+      if (gtfn(comparator.semver, high.semver, loose)) {
+        high = comparator;
+      } else if (ltfn(comparator.semver, low.semver, loose)) {
+        low = comparator;
+      }
+    });
+
+    // If the edge version comparator has a operator then our version
+    // isn't outside it
+    if (high.operator === comp || high.operator === ecomp) {
+      return false;
+    }
+
+    // If the lowest version comparator has an operator and our version
+    // is less than it then it isn't higher than the range
+    if ((!low.operator || low.operator === comp) &&
+        ltefn(version, low.semver)) {
+      return false;
+    } else if (low.operator === ecomp && ltfn(version, low.semver)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// Use the define() function if we're in AMD land
+if (true)
+  !(__WEBPACK_AMD_DEFINE_FACTORY__ = (exports),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+module.exports = {"_from":"pg@^7.4.0","_id":"pg@7.4.0","_inBundle":false,"_integrity":"sha1-4lYGHSxScjw8hY3vuX8RWcpmD4M=","_location":"/pg","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"pg@^7.4.0","name":"pg","escapedName":"pg","rawSpec":"^7.4.0","saveSpec":null,"fetchSpec":"^7.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/pg/-/pg-7.4.0.tgz","_shasum":"e256061d2c52723c3c858defb97f1159ca660f83","_spec":"pg@^7.4.0","_where":"/Users/wisdman/Projects/bitjournal","author":{"name":"Brian Carlson","email":"brian.m.carlson@gmail.com"},"bugs":{"url":"https://github.com/brianc/node-postgres/issues"},"bundleDependencies":false,"dependencies":{"buffer-writer":"1.0.1","js-string-escape":"1.0.1","packet-reader":"0.3.1","pg-connection-string":"0.1.3","pg-pool":"~2.0.3","pg-types":"~1.12.1","pgpass":"1.x","semver":"4.3.2"},"deprecated":false,"description":"PostgreSQL client - pure javascript & libpq with the same API","devDependencies":{"async":"0.9.0","co":"4.6.0","eslint":"4.2.0","eslint-config-standard":"10.2.1","eslint-plugin-import":"2.7.0","eslint-plugin-node":"5.1.0","eslint-plugin-promise":"3.5.0","eslint-plugin-standard":"3.0.1","pg-copy-streams":"0.3.0"},"engines":{"node":">= 4.5.0"},"homepage":"http://github.com/brianc/node-postgres","keywords":["database","libpq","pg","postgre","postgres","postgresql","rdbms"],"license":"MIT","main":"./lib","minNativeVersion":"2.0.0","name":"pg","repository":{"type":"git","url":"git://github.com/brianc/node-postgres.git"},"scripts":{"test":"make test-all"},"version":"7.4.0"}
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Copyright (c) 2010-2017 Brian Carlson (brian.m.carlson@gmail.com)
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * README.md file in the root directory of this source tree.
+ */
+
+var EventEmitter = __webpack_require__(5).EventEmitter
+var util = __webpack_require__(4)
+var utils = __webpack_require__(11)
+
+var NativeQuery = module.exports = function (config, values, callback) {
+  EventEmitter.call(this)
+  config = utils.normalizeQueryConfig(config, values, callback)
+  this.text = config.text
+  this.values = config.values
+  this.name = config.name
+  this.callback = config.callback
+  this.state = 'new'
+  this._arrayMode = config.rowMode === 'array'
+
+  // if the 'row' event is listened for
+  // then emit them as they come in
+  // without setting singleRowMode to true
+  // this has almost no meaning because libpq
+  // reads all rows into memory befor returning any
+  this._emitRowEvents = false
+  this.on('newListener', function (event) {
+    if (event === 'row') this._emitRowEvents = true
+  }.bind(this))
+}
+
+util.inherits(NativeQuery, EventEmitter)
+
+var errorFieldMap = {
+  'sqlState': 'code',
+  'statementPosition': 'position',
+  'messagePrimary': 'message',
+  'context': 'where',
+  'schemaName': 'schema',
+  'tableName': 'table',
+  'columnName': 'column',
+  'dataTypeName': 'dataType',
+  'constraintName': 'constraint',
+  'sourceFile': 'file',
+  'sourceLine': 'line',
+  'sourceFunction': 'routine'
+}
+
+NativeQuery.prototype.handleError = function (err) {
+  // copy pq error fields into the error object
+  var fields = this.native.pq.resultErrorFields()
+  if (fields) {
+    for (var key in fields) {
+      var normalizedFieldName = errorFieldMap[key] || key
+      err[normalizedFieldName] = fields[key]
+    }
+  }
+  if (this.callback) {
+    this.callback(err)
+  } else {
+    this.emit('error', err)
+  }
+  this.state = 'error'
+}
+
+NativeQuery.prototype.then = function (onSuccess, onFailure) {
+  return this._getPromise().then(onSuccess, onFailure)
+}
+
+NativeQuery.prototype.catch = function (callback) {
+  return this._getPromise().catch(callback)
+}
+
+NativeQuery.prototype._getPromise = function () {
+  if (this._promise) return this._promise
+  this._promise = new Promise(function (resolve, reject) {
+    this._once('end', resolve)
+    this._once('error', reject)
+  }.bind(this))
+  return this._promise
+}
+
+NativeQuery.prototype.submit = function (client) {
+  this.state = 'running'
+  var self = this
+  this.native = client.native
+  client.native.arrayMode = this._arrayMode
+
+  var after = function (err, rows, results) {
+    client.native.arrayMode = false
+    setImmediate(function () {
+      self.emit('_done')
+    })
+
+    // handle possible query error
+    if (err) {
+      return self.handleError(err)
+    }
+
+    // emit row events for each row in the result
+    if (self._emitRowEvents) {
+      if (results.length > 1) {
+        rows.forEach((rowOfRows, i) => {
+          rowOfRows.forEach(row => {
+            self.emit('row', row, results[i])
+          })
+        })
+      } else {
+        rows.forEach(function (row) {
+          self.emit('row', row, results)
+        })
+      }
+    }
+
+    // handle successful result
+    self.state = 'end'
+    self.emit('end', results)
+    if (self.callback) {
+      self.callback(null, results)
+    }
+  }
+
+  if (process.domain) {
+    after = process.domain.bind(after)
+  }
+
+  // named query
+  if (this.name) {
+    if (this.name.length > 63) {
+      console.error('Warning! Postgres only supports 63 characters for query names.')
+      console.error('You supplied', this.name, '(', this.name.length, ')')
+      console.error('This can cause conflicts and silent errors executing queries')
+    }
+    var values = (this.values || []).map(utils.prepareValue)
+
+    // check if the client has already executed this named query
+    // if so...just execute it again - skip the planning phase
+    if (client.namedQueries[this.name]) {
+      return client.native.execute(this.name, values, after)
+    }
+    // plan the named query the first time, then execute it
+    return client.native.prepare(this.name, this.text, values.length, function (err) {
+      if (err) return after(err)
+      client.namedQueries[self.name] = true
+      return self.native.execute(self.name, values, after)
+    })
+  } else if (this.values) {
+    if (!Array.isArray(this.values)) {
+      const err = new Error('Query values must be an array')
+      return after(err)
+    }
+    var vals = this.values.map(utils.prepareValue)
+    client.native.query(this.text, vals, after)
+  } else {
+    client.native.query(this.text, after)
+  }
+}
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/core/service/index.ts + 28 modules
+var service = __webpack_require__(0);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/error.ts
+class DBError {
+    constructor() { }
+    static *[Symbol.iterator]() {
+        const keys = Object.keys(this);
+        for (let key of keys) {
+            yield this[key];
+        }
+    }
+    static parseError(error) {
+        const code = error && parseInt(error.code) || NaN;
+        if (!code)
+            return NaN;
+        for (let item of this)
+            if (item === code)
+                return item;
+        return NaN;
+    }
+}
+DBError.UNIQUE_VIOLATION = 23505;
+DBError.UNDEFINED_OBJECT = 42704;
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/abstract.ts
+class AbstractQuery {
+    constructor(name) {
+        this.name = name;
+    }
+    valueOf() {
+        return {
+            text: this.text,
+            values: this.values,
+        };
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/where.ts
+class Where {
+    constructor(value = null, index = 0, inputValues = []) {
+        this.text = '';
+        this.values = [];
+        if (value === null) {
+            this.values = [];
+            this.text = '';
+            return this;
+        }
+        if (typeof value === 'string') {
+            let i = index;
+            this.values = [];
+            this.text = ' WHERE '
+                + value.replace(/\$\d+/g, (match) => {
+                    let j = ~~(/\d+/.exec(match)[0]) - 1;
+                    if (inputValues[j] === undefined)
+                        return 'DEFAULT';
+                    this.values.push(inputValues[j]);
+                    return `$${++i}`;
+                });
+            return this;
+        }
+        throw new TypeError('value is not a null, array, object or string');
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/order.ts
+class Order {
+    constructor(value = null) {
+        if (value === null) {
+            this.text = '';
+            return this;
+        }
+        if (Array.isArray(value)) {
+            this.text = ' ORDER BY '
+                + value.map(item => `"${item}" ASC`)
+                    .join(', ');
+            return this;
+        }
+        if (typeof value === 'object') {
+            let feelds = Object.keys(value);
+            if (feelds.length === 0) {
+                this.text = '';
+                return this;
+            }
+            this.text = ' ORDER BY '
+                + feelds.map(item => `"${item}" ${value[item]}`)
+                    .join(', ');
+            return this;
+        }
+        if (typeof value === 'string') {
+            this.text = ` ORDER BY "${value}" ASC`;
+            return this;
+        }
+        throw new TypeError('value is not a null, array, object or string');
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/limit.ts
+class Limit {
+    constructor(limit = Infinity) {
+        if (Number.isNaN(limit))
+            throw new TypeError('limit is not a number');
+        if (limit <= 0)
+            throw new TypeError('limit is less than or equal to zero');
+        if (limit < Infinity)
+            this.text = ' LIMIT ${limit}';
+        else
+            this.text = '';
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/offset.ts
+class Offset {
+    constructor(offset = 0) {
+        if (Number.isNaN(offset))
+            throw new TypeError('offset is not a number');
+        if (offset < 0)
+            throw new TypeError('offset is less than zero');
+        if (offset === Infinity)
+            throw new TypeError('offset is Infinity');
+        if (offset > 0)
+            this.text = ' OFFSET ${offset}';
+        else
+            this.text = '';
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/select.ts
+
+
+
+
+
+class select_Select extends AbstractQuery {
+    constructor(query, value = []) {
+        super('SELECT');
+        this._where = new Where();
+        this._order = new Order();
+        this._limit = new Limit();
+        this._offset = new Offset();
+        let feelds = Array.isArray(value) ? value : Object.keys(value);
+        feelds = feelds.map(item => `"${item}"`);
+        this._command = `SELECT ${feelds.join(', ') || '*'} FROM "${query.scheme}"."${query.table}"`;
+    }
+    where(value, ...values) {
+        this._where = new Where(value, 0, values);
+        return this;
+    }
+    order(value) {
+        this._order = new Order(value);
+        return this;
+    }
+    limit(limit) {
+        this._limit = new Limit(limit);
+        return this;
+    }
+    offset(offset) {
+        this._offset = new Offset(offset);
+        return this;
+    }
+    get text() {
+        return this._command
+            + this._where.text
+            + this._order.text
+            + this._limit.text
+            + this._offset.text;
+    }
+    get values() {
+        return this._where.values;
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/returning.ts
+class Returning {
+    constructor(value = []) {
+        let feelds = Array.isArray(value) ? value : Object.keys(value);
+        feelds = feelds.map(item => `"${item}"`);
+        this.text = ` RETURNING ${feelds.join(', ') || '*'}`;
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/insert.ts
+
+
+class insert_Insert extends AbstractQuery {
+    constructor(query, value = {}) {
+        super('INSERT');
+        this._returning = new Returning();
+        let feelds = Object.keys(value);
+        if (feelds.length === 0)
+            throw new TypeError('filtred value is an empty object');
+        this.values = [];
+        let values = [];
+        feelds.forEach(item => {
+            if (value[item] === undefined) {
+                values.push('DEFAULT');
+                return;
+            }
+            let i = this.values.push(value[item]);
+            values.push(`$${i}`);
+        });
+        feelds = feelds.map(item => `"${item}"`);
+        this._command = `INSERT INTO "${query.scheme}"."${query.table}" (${feelds.join(', ')}) VALUES (${values.join(', ')})`;
+    }
+    returning(value) {
+        this._returning = new Returning(value);
+        return this;
+    }
+    get text() {
+        return this._command
+            + this._returning.text;
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/update.ts
+
+
+
+class update_Update extends AbstractQuery {
+    constructor(query, value = []) {
+        super('UPDATE');
+        this._returning = new Returning();
+        this._where = new Where();
+        let feelds = Object.keys(value);
+        if (feelds.length === 0)
+            throw new TypeError('filtred value is an empty object');
+        this._values = [];
+        feelds = feelds.map(item => {
+            let set = `"${item}" = `;
+            if (value[item] === undefined) {
+                return set + 'DEFAULT';
+            }
+            let i = this._values.push(value[item]);
+            return set + `$${i}`;
+        });
+        this._command = `UPDATE "${query.scheme}"."${query.table}" SET ${feelds.join(', ')}`;
+    }
+    where(value, ...values) {
+        this._where = new Where(value, this._values.length, values);
+        return this;
+    }
+    returning(value) {
+        this._returning = new Returning(value);
+        return this;
+    }
+    get text() {
+        return this._command
+            + this._where.text
+            + this._returning.text;
+    }
+    get values() {
+        return [...this._values, ...this._where.values];
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/delete.ts
+
+
+
+class delete_Delete extends AbstractQuery {
+    constructor(query) {
+        super('DELETE');
+        this._where = new Where();
+        this._returning = new Returning();
+        this._command = `DELETE FROM "${query.scheme}"."${query.table}"`;
+    }
+    where(value, ...values) {
+        this._where = new Where(value, 0, values);
+        return this;
+    }
+    returning(value) {
+        this._returning = new Returning(value);
+        return this;
+    }
+    get text() {
+        return this._command
+            + this._where.text
+            + this._returning.text;
+    }
+    get values() {
+        return this._where.values;
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/query.ts
+
+
+
+
+class query_Query {
+    constructor(table, scheme = 'public') {
+        this.table = table;
+        this.scheme = scheme;
+    }
+    select(value) {
+        return new select_Select(this, value);
+    }
+    insert(value) {
+        return new insert_Insert(this, value);
+    }
+    update(value) {
+        return new update_Update(this, value);
+    }
+    delete() {
+        return new delete_Delete(this);
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/pg-query/index.ts
+
+
+
+// EXTERNAL MODULE: external "crypto"
+var external__crypto_ = __webpack_require__(10);
+var external__crypto__default = /*#__PURE__*/__webpack_require__.n(external__crypto_);
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/otp/base32.ts
+const CHAR_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+const BYTE_TABLE = [
+    0xff, 0xff, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
+    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+    0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+    0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+    0x17, 0x18, 0x19, 0xff, 0xff, 0xff, 0xff, 0xff,
+    0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+    0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e,
+    0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+    0x17, 0x18, 0x19, 0xff, 0xff, 0xff, 0xff, 0xff
+];
+function encode(value) {
+    const plain = Buffer.isBuffer(value) ? value : new Buffer(value);
+    let i = 0;
+    let j = 0;
+    let shiftIndex = 0;
+    let digit = 0;
+    const quintets = Math.floor(plain.length / 5);
+    const length = plain.length % 5 === 0 ? quintets : quintets + 1;
+    const encoded = new Buffer(length * 8);
+    while (i < plain.length) {
+        let current = plain[i];
+        if (shiftIndex > 3) {
+            digit = current & (0xff >> shiftIndex);
+            shiftIndex = (shiftIndex + 5) % 8;
+            digit = (digit << shiftIndex) | ((i + 1 < plain.length) ? plain[i + 1] : 0) >> (8 - shiftIndex);
+            i++;
+        }
+        else {
+            digit = (current >> (8 - (shiftIndex + 5))) & 0x1f;
+            shiftIndex = (shiftIndex + 5) % 8;
+            if (shiftIndex === 0)
+                i++;
+        }
+        encoded[j] = CHAR_TABLE.charCodeAt(digit);
+        j++;
+    }
+    for (i = j; i < encoded.length; i++)
+        encoded[i] = 0x3d;
+    return encoded;
+}
+function decode(value) {
+    const encoded = Buffer.isBuffer(value) ? value : new Buffer(value);
+    let shiftIndex = 0;
+    let plainDigit = 0;
+    let plainChar = 0;
+    let plainPos = 0;
+    const decoded = new Buffer(Math.ceil(encoded.length * 5 / 8));
+    for (let i = 0; i < encoded.length; i++) {
+        if (encoded[i] === 0x3d)
+            break;
+        let encodedByte = encoded[i] - 0x30;
+        if (encodedByte < BYTE_TABLE.length) {
+            plainDigit = BYTE_TABLE[encodedByte];
+            if (shiftIndex <= 3) {
+                shiftIndex = (shiftIndex + 5) % 8;
+                if (shiftIndex === 0) {
+                    plainChar |= plainDigit;
+                    decoded[plainPos] = plainChar;
+                    plainPos++;
+                    plainChar = 0;
+                }
+                else
+                    plainChar |= 0xff & (plainDigit << (8 - shiftIndex));
+            }
+            else {
+                shiftIndex = (shiftIndex + 5) % 8;
+                plainChar |= 0xff & (plainDigit >>> shiftIndex);
+                decoded[plainPos] = plainChar;
+                plainPos++;
+                plainChar = 0xff & (plainDigit << (8 - shiftIndex));
+            }
+        }
+        else
+            throw new Error('Invalid input - it is not base32 encoded string');
+    }
+    return decoded.slice(0, plainPos);
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/otp/otp.ts
+
+
+class otp_OTP {
+    constructor({ digits = 6, step = 30, secret, length = 32, } = {}) {
+        this._digits = Math.max(Math.floor(digits), 1);
+        this._step = Math.max(Math.floor(step), 1);
+        this._secret = secret ? secret : Object(external__crypto_["randomBytes"])(Math.max(Math.floor(length), 1)).toString('hex');
+    }
+    hotpToken(counter) {
+        const hexCounter = Number(counter).toString(16).padStart(16, '0');
+        const secret = decode(this.base32Secret).toString('hex');
+        const digest = Object(external__crypto_["createHmac"])('sha1', new Buffer(secret, 'hex'))
+            .update(new Buffer(hexCounter, 'hex'))
+            .digest();
+        const offset = digest[digest.length - 1] & 0xf;
+        const binary = ((digest[offset] & 0x7f) << 24)
+            | ((digest[offset + 1] & 0xff) << 16)
+            | ((digest[offset + 2] & 0xff) << 8)
+            | (digest[offset + 3] & 0xff);
+        return String(binary % Math.pow(10, this._digits)).padStart(this._digits, '0');
+    }
+    hotpCheck(token, counter) {
+        const systemToken = this.hotpToken(counter);
+        if (systemToken.length < 1)
+            return false;
+        return Number.parseFloat(token) === Number.parseFloat(systemToken);
+    }
+    totpToken(offset = 0) {
+        const counter = Math.floor(Date.now() / this._step / 1000) + offset;
+        return this.hotpToken(counter);
+    }
+    totpCheck(token, window = 0) {
+        const systemTokens = [];
+        if (window > 0) {
+            for (let i = window * -1; i <= window; i++)
+                systemTokens.push(Number.parseFloat(this.totpToken(i)));
+        }
+        else
+            systemTokens.push(Number.parseFloat(this.totpToken()));
+        return systemTokens.includes(Number.parseFloat(token));
+    }
+    get base32Secret() {
+        return encode(this._secret).toString()
+            .replace(/=/g, '');
+    }
+}
+
+// CONCATENATED MODULE: /Users/wisdman/Projects/bitjournal/core/otp/index.ts
+
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/common/models/index.ts + 23 modules
+var models = __webpack_require__(2);
+
+// CONCATENATED MODULE: ./api/auth/auth.api.ts
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+const ROUTE_BASE = 'auth';
+class auth_api_AuthAPI extends service["g" /* RouteMiddleware */] {
+    async auth(ctx, next) {
+        if (ctx.session.valid)
+            ctx.set(204);
+        else
+            ctx.set(403);
+    }
+    async logout(ctx, next) {
+        if (ctx.session.valid) {
+            const user = ctx.session.user;
+            const db = ctx.db;
+            const query = new query_Query('sessions').delete()
+                .where('owner = $1', String(user.id));
+            ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/logout] ===\n%s`, query);
+            const result = await db.query(query.valueOf());
+            ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}/logout] ===\n%s`, result.rows);
+        }
+        ctx.session.user = null;
+        ctx.session.id = '';
+        ctx.set(204);
+    }
+    async login(ctx, next) {
+        const body = await ctx.request.json();
+        if (typeof body !== 'object' || !body.email || !body.password) {
+            ctx.set(403);
+            return;
+        }
+        const db = ctx.db;
+        const query = {
+            text: `SELECT
+               *
+             FROM
+               "users"
+             WHERE
+               "users"."email" = $1
+               AND
+               "users"."password" = encode(digest($2, 'sha512'), 'hex')
+               AND
+               enable`,
+            values: [body.email, body.password]
+        };
+        ctx.debug(`=== SQL Query [POST /${ROUTE_BASE}/login] ===\n%s`, query);
+        const result = await db.query(query);
+        ctx.debug(`=== SQL Result [POST /${ROUTE_BASE}/login] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(403);
+            return;
+        }
+        const secret = result.rows[0].totp;
+        if (secret) {
+            if (!body.otp) {
+                ctx.set(403);
+                return;
+            }
+            const otp = new otp_OTP({ secret });
+            if (!otp.totpCheck(body.otp, 2)) {
+                ctx.set(403);
+                return;
+            }
+        }
+        ctx.session.user = new models["h" /* User */](result.rows[0]);
+        if (!ctx.session.user) {
+            ctx.set(403);
+            return;
+        }
+        const sessionQuery = {
+            text: `INSERT INTO
+               "sessions" ("owner", "ip")
+             VALUES
+               ($1, $2)
+             RETURNING
+               "id"`,
+            values: [String(ctx.session.user.id), ctx.session.ip]
+        };
+        ctx.debug(`=== SQL Query [POST /${ROUTE_BASE}/login] NEW ===\n%s`, sessionQuery);
+        const sessionResult = await db.query(sessionQuery);
+        ctx.debug(`=== SQL Result [POST /${ROUTE_BASE}/login] NEW ===\n%s`, sessionResult.rows);
+        ctx.session.id = sessionResult.rows[0] && sessionResult.rows[0].id || '';
+        ctx.set({ token: ctx.session.id });
+    }
+}
+__decorate([
+    Object(service["c" /* Get */])(`/${ROUTE_BASE}`),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    __metadata("design:returntype", Promise)
+], auth_api_AuthAPI.prototype, "auth", null);
+__decorate([
+    Object(service["c" /* Get */])(`/${ROUTE_BASE}/logout`),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    __metadata("design:returntype", Promise)
+], auth_api_AuthAPI.prototype, "logout", null);
+__decorate([
+    Object(service["e" /* Post */])(`/${ROUTE_BASE}/login`),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    __metadata("design:returntype", Promise)
+], auth_api_AuthAPI.prototype, "login", null);
+
+// CONCATENATED MODULE: ./api/auth/index.ts
+
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/common/middleware/index.ts + 4 modules
+var middleware = __webpack_require__(3);
+
+// CONCATENATED MODULE: ./api/currencies/currencies.api.ts
+var currencies_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var currencies_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+const currencies_api_ROUTE_BASE = 'currencies';
+const DATATABLE = 'currencies';
+class currencies_api_CurrenciesAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(DATATABLE).select(models["a" /* Currency */].MainFields);
+        ctx.debug(`=== SQL Query [GET /${currencies_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${currencies_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["a" /* Currency */](item));
+        ctx.set(resultItems);
+    }
+    async getAllEnabled(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(DATATABLE).select(models["a" /* Currency */].MainFields)
+            .where('enable');
+        ctx.debug(`=== SQL Query [GET /${currencies_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${currencies_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["a" /* Currency */](item));
+        ctx.set(resultItems);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const symbol = route.data.symbol.trim();
+        if (!symbol) {
+            ctx.set(404);
+            return;
+        }
+        const query = new query_Query(DATATABLE).select()
+            .where('symbol = $1', symbol);
+        ctx.debug(`=== SQL Query [GET /${currencies_api_ROUTE_BASE}/:symbol] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${currencies_api_ROUTE_BASE}/:symbol] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["a" /* Currency */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOneEnabled(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const symbol = route.data.symbol.trim();
+        if (!symbol) {
+            ctx.set(404);
+            return;
+        }
+        const query = new query_Query(DATATABLE).select()
+            .where('symbol = $1 AND enable', symbol);
+        ctx.debug(`=== SQL Query [GET /${currencies_api_ROUTE_BASE}/:symbol] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${currencies_api_ROUTE_BASE}/:symbol] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["a" /* Currency */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["a" /* Currency */](data);
+        const query = new query_Query(DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${currencies_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${currencies_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["a" /* Currency */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const symbol = route.data.symbol.trim();
+        if (!symbol) {
+            ctx.set(404);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new models["a" /* Currency */](data);
+        const query = new query_Query(DATATABLE).update(item.valueOf())
+            .where('symbol = $1', symbol)
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${currencies_api_ROUTE_BASE}/:symbol] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${currencies_api_ROUTE_BASE}/:symbol] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["a" /* Currency */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const symbol = route.data.symbol.trim();
+        if (!symbol) {
+            ctx.set(404);
+            return;
+        }
+        const query = new query_Query(DATATABLE).delete()
+            .where('symbol = $1', symbol)
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${currencies_api_ROUTE_BASE}/:symbol] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${currencies_api_ROUTE_BASE}/:symbol] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["a" /* Currency */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+}
+currencies_api___decorate([
+    Object(service["c" /* Get */])(`/${currencies_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    currencies_api___metadata("design:type", Function),
+    currencies_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    currencies_api___metadata("design:returntype", Promise)
+], currencies_api_CurrenciesAPI.prototype, "getAll", null);
+currencies_api___decorate([
+    Object(service["c" /* Get */])(`/${currencies_api_ROUTE_BASE}`),
+    currencies_api___metadata("design:type", Function),
+    currencies_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    currencies_api___metadata("design:returntype", Promise)
+], currencies_api_CurrenciesAPI.prototype, "getAllEnabled", null);
+currencies_api___decorate([
+    Object(service["c" /* Get */])(`/${currencies_api_ROUTE_BASE}/:symbol`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    currencies_api___metadata("design:type", Function),
+    currencies_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    currencies_api___metadata("design:returntype", Promise)
+], currencies_api_CurrenciesAPI.prototype, "getOne", null);
+currencies_api___decorate([
+    Object(service["c" /* Get */])(`/${currencies_api_ROUTE_BASE}/:symbol`),
+    currencies_api___metadata("design:type", Function),
+    currencies_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    currencies_api___metadata("design:returntype", Promise)
+], currencies_api_CurrenciesAPI.prototype, "getOneEnabled", null);
+currencies_api___decorate([
+    Object(service["e" /* Post */])(`/${currencies_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    currencies_api___metadata("design:type", Function),
+    currencies_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    currencies_api___metadata("design:returntype", Promise)
+], currencies_api_CurrenciesAPI.prototype, "add", null);
+currencies_api___decorate([
+    Object(service["e" /* Post */])(`/${currencies_api_ROUTE_BASE}/:symbol`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    currencies_api___metadata("design:type", Function),
+    currencies_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    currencies_api___metadata("design:returntype", Promise)
+], currencies_api_CurrenciesAPI.prototype, "update", null);
+currencies_api___decorate([
+    Object(service["b" /* Delete */])(`/${currencies_api_ROUTE_BASE}/:symbol`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    currencies_api___metadata("design:type", Function),
+    currencies_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    currencies_api___metadata("design:returntype", Promise)
+], currencies_api_CurrenciesAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/currencies/index.ts
+
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/core/uuid/index.ts + 5 modules
+var uuid = __webpack_require__(1);
+
+// CONCATENATED MODULE: ./api/exchanges/exchanges.api.ts
+var exchanges_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var exchanges_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+const exchanges_api_ROUTE_BASE = 'exchanges';
+const exchanges_api_DATATABLE = 'exchanges';
+class exchanges_api_ExchangesAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(exchanges_api_DATATABLE).select(models["b" /* Exchange */].MainFields);
+        ctx.debug(`=== SQL Query [GET /${exchanges_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${exchanges_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["b" /* Exchange */](item));
+        ctx.set(resultItems);
+    }
+    async getAllEnabled(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(exchanges_api_DATATABLE).select(models["b" /* Exchange */].MainFields)
+            .where('enable');
+        ctx.debug(`=== SQL Query [GET /${exchanges_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${exchanges_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["b" /* Exchange */](item));
+        ctx.set(resultItems);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(exchanges_api_DATATABLE).select()
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${exchanges_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${exchanges_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["b" /* Exchange */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOneEnabled(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(exchanges_api_DATATABLE).select()
+            .where('id = $1 AND enable', String(id));
+        ctx.debug(`=== SQL Query [GET /${exchanges_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${exchanges_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["b" /* Exchange */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["b" /* Exchange */](data);
+        const query = new query_Query(exchanges_api_DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${exchanges_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${exchanges_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["b" /* Exchange */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new models["b" /* Exchange */](data);
+        const query = new query_Query(exchanges_api_DATATABLE).update(item.valueOf())
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${exchanges_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${exchanges_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["b" /* Exchange */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(exchanges_api_DATATABLE).delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${exchanges_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${exchanges_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["b" /* Exchange */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+}
+exchanges_api___decorate([
+    Object(service["c" /* Get */])(`/${exchanges_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    exchanges_api___metadata("design:type", Function),
+    exchanges_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    exchanges_api___metadata("design:returntype", Promise)
+], exchanges_api_ExchangesAPI.prototype, "getAll", null);
+exchanges_api___decorate([
+    Object(service["c" /* Get */])(`/${exchanges_api_ROUTE_BASE}`),
+    exchanges_api___metadata("design:type", Function),
+    exchanges_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    exchanges_api___metadata("design:returntype", Promise)
+], exchanges_api_ExchangesAPI.prototype, "getAllEnabled", null);
+exchanges_api___decorate([
+    Object(service["c" /* Get */])(`/${exchanges_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    exchanges_api___metadata("design:type", Function),
+    exchanges_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    exchanges_api___metadata("design:returntype", Promise)
+], exchanges_api_ExchangesAPI.prototype, "getOne", null);
+exchanges_api___decorate([
+    Object(service["c" /* Get */])(`/${exchanges_api_ROUTE_BASE}/:id`),
+    exchanges_api___metadata("design:type", Function),
+    exchanges_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    exchanges_api___metadata("design:returntype", Promise)
+], exchanges_api_ExchangesAPI.prototype, "getOneEnabled", null);
+exchanges_api___decorate([
+    Object(service["e" /* Post */])(`/${exchanges_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    exchanges_api___metadata("design:type", Function),
+    exchanges_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    exchanges_api___metadata("design:returntype", Promise)
+], exchanges_api_ExchangesAPI.prototype, "add", null);
+exchanges_api___decorate([
+    Object(service["e" /* Post */])(`/${exchanges_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    exchanges_api___metadata("design:type", Function),
+    exchanges_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    exchanges_api___metadata("design:returntype", Promise)
+], exchanges_api_ExchangesAPI.prototype, "update", null);
+exchanges_api___decorate([
+    Object(service["b" /* Delete */])(`/${exchanges_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    exchanges_api___metadata("design:type", Function),
+    exchanges_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    exchanges_api___metadata("design:returntype", Promise)
+], exchanges_api_ExchangesAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/exchanges/index.ts
+
+
+// CONCATENATED MODULE: ./api/ico/ico.api.ts
+var ico_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var ico_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+const ico_api_ROUTE_BASE = 'ico';
+const ico_api_DATATABLE = 'ico';
+class ico_api_ICOAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(ico_api_DATATABLE).select(models["c" /* ICO */].MainFields);
+        ctx.debug(`=== SQL Query [GET /${ico_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${ico_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["c" /* ICO */](item));
+        ctx.set(resultItems);
+    }
+    async getAllEnabled(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(ico_api_DATATABLE).select(models["c" /* ICO */].MainFields)
+            .where('enable');
+        ctx.debug(`=== SQL Query [GET /${ico_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${ico_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["c" /* ICO */](item));
+        ctx.set(resultItems);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(ico_api_DATATABLE).select()
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${ico_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${ico_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["c" /* ICO */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOneEnabled(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(ico_api_DATATABLE).select()
+            .where('id = $1 AND enable', String(id));
+        ctx.debug(`=== SQL Query [GET /${ico_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${ico_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["c" /* ICO */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["c" /* ICO */](data);
+        const query = new query_Query(ico_api_DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${ico_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${ico_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["c" /* ICO */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new models["c" /* ICO */](data);
+        const query = new query_Query(ico_api_DATATABLE).update(item.valueOf())
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${ico_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${ico_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["c" /* ICO */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(ico_api_DATATABLE).delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${ico_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${ico_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["c" /* ICO */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+}
+ico_api___decorate([
+    Object(service["c" /* Get */])(`/${ico_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    ico_api___metadata("design:type", Function),
+    ico_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    ico_api___metadata("design:returntype", Promise)
+], ico_api_ICOAPI.prototype, "getAll", null);
+ico_api___decorate([
+    Object(service["c" /* Get */])(`/${ico_api_ROUTE_BASE}`),
+    ico_api___metadata("design:type", Function),
+    ico_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    ico_api___metadata("design:returntype", Promise)
+], ico_api_ICOAPI.prototype, "getAllEnabled", null);
+ico_api___decorate([
+    Object(service["c" /* Get */])(`/${ico_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    ico_api___metadata("design:type", Function),
+    ico_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    ico_api___metadata("design:returntype", Promise)
+], ico_api_ICOAPI.prototype, "getOne", null);
+ico_api___decorate([
+    Object(service["c" /* Get */])(`/${ico_api_ROUTE_BASE}/:id`),
+    ico_api___metadata("design:type", Function),
+    ico_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    ico_api___metadata("design:returntype", Promise)
+], ico_api_ICOAPI.prototype, "getOneEnabled", null);
+ico_api___decorate([
+    Object(service["e" /* Post */])(`/${ico_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    ico_api___metadata("design:type", Function),
+    ico_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    ico_api___metadata("design:returntype", Promise)
+], ico_api_ICOAPI.prototype, "add", null);
+ico_api___decorate([
+    Object(service["e" /* Post */])(`/${ico_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    ico_api___metadata("design:type", Function),
+    ico_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    ico_api___metadata("design:returntype", Promise)
+], ico_api_ICOAPI.prototype, "update", null);
+ico_api___decorate([
+    Object(service["b" /* Delete */])(`/${ico_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    ico_api___metadata("design:type", Function),
+    ico_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    ico_api___metadata("design:returntype", Promise)
+], ico_api_ICOAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/ico/index.ts
+
+
+// CONCATENATED MODULE: ./api/markets/markets.api.ts
+var markets_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var markets_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+const markets_api_ROUTE_BASE = 'markets';
+const markets_api_DATATABLE = 'markets';
+class markets_api_MarketsAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(markets_api_DATATABLE).select(models["d" /* Market */].MainFields);
+        ctx.debug(`=== SQL Query [GET /${markets_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${markets_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["d" /* Market */](item));
+        ctx.set(resultItems);
+    }
+    async getAllEnabled(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(markets_api_DATATABLE).select(models["d" /* Market */].MainFields)
+            .where('enable');
+        ctx.debug(`=== SQL Query [GET /${markets_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${markets_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["d" /* Market */](item));
+        ctx.set(resultItems);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(markets_api_DATATABLE).select()
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${markets_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${markets_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["d" /* Market */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOneEnabled(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(markets_api_DATATABLE).select()
+            .where('id = $1 AND enable', String(id));
+        ctx.debug(`=== SQL Query [GET /${markets_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${markets_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["d" /* Market */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["d" /* Market */](data);
+        const query = new query_Query(markets_api_DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${markets_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${markets_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["d" /* Market */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new models["d" /* Market */](data);
+        const query = new query_Query(markets_api_DATATABLE).update(item.valueOf())
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${markets_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${markets_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["d" /* Market */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(markets_api_DATATABLE).delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${markets_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${markets_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["d" /* Market */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+}
+markets_api___decorate([
+    Object(service["c" /* Get */])(`/${markets_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    markets_api___metadata("design:type", Function),
+    markets_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    markets_api___metadata("design:returntype", Promise)
+], markets_api_MarketsAPI.prototype, "getAll", null);
+markets_api___decorate([
+    Object(service["c" /* Get */])(`/${markets_api_ROUTE_BASE}`),
+    markets_api___metadata("design:type", Function),
+    markets_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    markets_api___metadata("design:returntype", Promise)
+], markets_api_MarketsAPI.prototype, "getAllEnabled", null);
+markets_api___decorate([
+    Object(service["c" /* Get */])(`/${markets_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    markets_api___metadata("design:type", Function),
+    markets_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    markets_api___metadata("design:returntype", Promise)
+], markets_api_MarketsAPI.prototype, "getOne", null);
+markets_api___decorate([
+    Object(service["c" /* Get */])(`/${markets_api_ROUTE_BASE}/:id`),
+    markets_api___metadata("design:type", Function),
+    markets_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    markets_api___metadata("design:returntype", Promise)
+], markets_api_MarketsAPI.prototype, "getOneEnabled", null);
+markets_api___decorate([
+    Object(service["e" /* Post */])(`/${markets_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    markets_api___metadata("design:type", Function),
+    markets_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    markets_api___metadata("design:returntype", Promise)
+], markets_api_MarketsAPI.prototype, "add", null);
+markets_api___decorate([
+    Object(service["e" /* Post */])(`/${markets_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    markets_api___metadata("design:type", Function),
+    markets_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    markets_api___metadata("design:returntype", Promise)
+], markets_api_MarketsAPI.prototype, "update", null);
+markets_api___decorate([
+    Object(service["b" /* Delete */])(`/${markets_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    markets_api___metadata("design:type", Function),
+    markets_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    markets_api___metadata("design:returntype", Promise)
+], markets_api_MarketsAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/markets/index.ts
+
+
+// CONCATENATED MODULE: ./api/publications/publications.api.ts
+var publications_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var publications_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+const publications_api_ROUTE_BASE = 'publications';
+const publications_api_DATATABLE = 'publications';
+class publications_api_PublicationsAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(publications_api_DATATABLE).select(models["e" /* Publication */].MainFields);
+        ctx.debug(`=== SQL Query [GET /${publications_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${publications_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["e" /* Publication */](item));
+        ctx.set(resultItems);
+    }
+    async getAllEnabled(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(publications_api_DATATABLE).select(models["e" /* Publication */].MainFields)
+            .where("enable AND ts <= timezone('UTC', now())");
+        ctx.debug(`=== SQL Query [GET /${publications_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${publications_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["e" /* Publication */](item));
+        ctx.set(resultItems);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(publications_api_DATATABLE).select()
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${publications_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${publications_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["e" /* Publication */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOneEnabled(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(publications_api_DATATABLE).select()
+            .where('id = $1 AND enable', String(id));
+        ctx.debug(`=== SQL Query [GET /${publications_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${publications_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["e" /* Publication */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["e" /* Publication */](data);
+        const query = new query_Query(publications_api_DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${publications_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${publications_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["e" /* Publication */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new models["e" /* Publication */](data);
+        const query = new query_Query(publications_api_DATATABLE).update(item.valueOf())
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${publications_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${publications_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["e" /* Publication */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(publications_api_DATATABLE).delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${publications_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${publications_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["e" /* Publication */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+}
+publications_api___decorate([
+    Object(service["c" /* Get */])(`/${publications_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    publications_api___metadata("design:type", Function),
+    publications_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    publications_api___metadata("design:returntype", Promise)
+], publications_api_PublicationsAPI.prototype, "getAll", null);
+publications_api___decorate([
+    Object(service["c" /* Get */])(`/${publications_api_ROUTE_BASE}`),
+    publications_api___metadata("design:type", Function),
+    publications_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    publications_api___metadata("design:returntype", Promise)
+], publications_api_PublicationsAPI.prototype, "getAllEnabled", null);
+publications_api___decorate([
+    Object(service["c" /* Get */])(`/${publications_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    publications_api___metadata("design:type", Function),
+    publications_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    publications_api___metadata("design:returntype", Promise)
+], publications_api_PublicationsAPI.prototype, "getOne", null);
+publications_api___decorate([
+    Object(service["c" /* Get */])(`/${publications_api_ROUTE_BASE}/:id`),
+    publications_api___metadata("design:type", Function),
+    publications_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    publications_api___metadata("design:returntype", Promise)
+], publications_api_PublicationsAPI.prototype, "getOneEnabled", null);
+publications_api___decorate([
+    Object(service["e" /* Post */])(`/${publications_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    publications_api___metadata("design:type", Function),
+    publications_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    publications_api___metadata("design:returntype", Promise)
+], publications_api_PublicationsAPI.prototype, "add", null);
+publications_api___decorate([
+    Object(service["e" /* Post */])(`/${publications_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    publications_api___metadata("design:type", Function),
+    publications_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    publications_api___metadata("design:returntype", Promise)
+], publications_api_PublicationsAPI.prototype, "update", null);
+publications_api___decorate([
+    Object(service["b" /* Delete */])(`/${publications_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    publications_api___metadata("design:type", Function),
+    publications_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    publications_api___metadata("design:returntype", Promise)
+], publications_api_PublicationsAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/publications/index.ts
+
+
+// EXTERNAL MODULE: /Users/wisdman/Projects/bitjournal/node_modules/pg-large-object/lib/index.js
+var lib = __webpack_require__(56);
+var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
+
+// CONCATENATED MODULE: ./api/raw/raw.api.ts
+var raw_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var raw_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+const raw_api_ROUTE_BASE = 'raw';
+const raw_api_DATATABLE = 'raw';
+const BUFFER_SIZE = 16384;
+class raw_api_rawAPI extends service["g" /* RouteMiddleware */] {
+    async getOIDList(ctx, next) {
+        const db = ctx.db;
+        ctx.set(404);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const oid = Math.max(parseInt(route.data.id), 0);
+        if (!oid) {
+            ctx.set(404);
+            return;
+        }
+        ctx.debug(`=== GET /${raw_api_ROUTE_BASE}/:id] LO [%s] ===`, oid);
+        const lom = new lib["LargeObjectManager"]({ pg: db });
+        await db.query('BEGIN');
+        let buffer;
+        try {
+            const lo = await lom.openAsync(oid, lib["LargeObjectManager"].READ);
+            const length = await lo.sizeAsync();
+            buffer = await lo.readAsync(length);
+            await lo.closeAsync();
+        }
+        catch (error) {
+            await db.query('ROLLBACK');
+            if (DBError.parseError(error) === DBError.UNDEFINED_OBJECT) {
+                ctx.set(404);
+                return;
+            }
+            ctx.throw(error);
+            return;
+        }
+        await db.query('COMMIT');
+        ctx.set(buffer);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const buffer = await ctx.request.raw();
+        ctx.debug(`=== PUT [/${raw_api_ROUTE_BASE}] LO ===`);
+        const lom = new lib["LargeObjectManager"]({ pg: db });
+        await db.query('BEGIN');
+        let oid;
+        try {
+            oid = await lom.createAsync();
+            const lo = await lom.openAsync(oid, lib["LargeObjectManager"].WRITE);
+            await lo.writeAsync(buffer);
+            await lo.closeAsync();
+        }
+        catch (error) {
+            await db.query('ROLLBACK');
+            ctx.throw(error);
+            return;
+        }
+        await db.query('COMMIT');
+        if (!oid) {
+            ctx.throw(new Error('LO empty oid error'));
+            return;
+        }
+        ctx.set({ oid });
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const oid = Math.max(parseInt(route.data.id), 0);
+        if (!oid) {
+            ctx.set(404);
+            return;
+        }
+        ctx.debug(`=== DELETE /${raw_api_ROUTE_BASE}/:id] LO [%s] ===`, oid);
+        const lom = new lib["LargeObjectManager"]({ pg: db });
+        await db.query('BEGIN');
+        try {
+            await lom.unlinkAsync(oid);
+        }
+        catch (error) {
+            await db.query('ROLLBACK');
+            if (DBError.parseError(error) === DBError.UNDEFINED_OBJECT) {
+                ctx.set(404);
+                return;
+            }
+            ctx.throw(error);
+            return;
+        }
+        await db.query('COMMIT');
+        ctx.set({ oid });
+    }
+}
+raw_api___decorate([
+    Object(service["c" /* Get */])(`/${raw_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    raw_api___metadata("design:type", Function),
+    raw_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    raw_api___metadata("design:returntype", Promise)
+], raw_api_rawAPI.prototype, "getOIDList", null);
+raw_api___decorate([
+    Object(service["c" /* Get */])(`/${raw_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    raw_api___metadata("design:type", Function),
+    raw_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    raw_api___metadata("design:returntype", Promise)
+], raw_api_rawAPI.prototype, "getOne", null);
+raw_api___decorate([
+    Object(service["f" /* Put */])(`/${raw_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    raw_api___metadata("design:type", Function),
+    raw_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    raw_api___metadata("design:returntype", Promise)
+], raw_api_rawAPI.prototype, "add", null);
+raw_api___decorate([
+    Object(service["b" /* Delete */])(`/${raw_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    raw_api___metadata("design:type", Function),
+    raw_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    raw_api___metadata("design:returntype", Promise)
+], raw_api_rawAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/raw/index.ts
+
+
+// CONCATENATED MODULE: ./api/sections/sections.api.ts
+var sections_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var sections_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+const sections_api_ROUTE_BASE = 'sections';
+const sections_api_DATATABLE = 'sections';
+class sections_api_SectionsAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(sections_api_DATATABLE).select(models["f" /* Section */].MainFields);
+        ctx.debug(`=== SQL Query [GET /${sections_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${sections_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["f" /* Section */](item));
+        ctx.set(resultItems);
+    }
+    async getAllEnabled(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(sections_api_DATATABLE).select(models["f" /* Section */].MainFields)
+            .where('enable');
+        ctx.debug(`=== SQL Query [GET /${sections_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${sections_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["f" /* Section */](item));
+        ctx.set(resultItems);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(sections_api_DATATABLE).select()
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${sections_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${sections_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["f" /* Section */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOneEnabled(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(sections_api_DATATABLE).select()
+            .where('id = $1 AND enable', String(id));
+        ctx.debug(`=== SQL Query [GET /${sections_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${sections_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["f" /* Section */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["f" /* Section */](data);
+        const query = new query_Query(sections_api_DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${sections_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${sections_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["f" /* Section */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new models["f" /* Section */](data);
+        const query = new query_Query(sections_api_DATATABLE).update(item.valueOf())
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${sections_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${sections_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["f" /* Section */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(sections_api_DATATABLE).delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${sections_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${sections_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["f" /* Section */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+}
+sections_api___decorate([
+    Object(service["c" /* Get */])(`/${sections_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "getAll", null);
+sections_api___decorate([
+    Object(service["c" /* Get */])(`/${sections_api_ROUTE_BASE}`),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "getAllEnabled", null);
+sections_api___decorate([
+    Object(service["c" /* Get */])(`/${sections_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "getOne", null);
+sections_api___decorate([
+    Object(service["c" /* Get */])(`/${sections_api_ROUTE_BASE}/:id`),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "getOneEnabled", null);
+sections_api___decorate([
+    Object(service["e" /* Post */])(`/${sections_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "add", null);
+sections_api___decorate([
+    Object(service["e" /* Post */])(`/${sections_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "update", null);
+sections_api___decorate([
+    Object(service["b" /* Delete */])(`/${sections_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    sections_api___metadata("design:type", Function),
+    sections_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    sections_api___metadata("design:returntype", Promise)
+], sections_api_SectionsAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/sections/index.ts
+
+
+// CONCATENATED MODULE: ./api/statuses/statuses.api.ts
+var statuses_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var statuses_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+const statuses_api_ROUTE_BASE = 'statuses';
+const statuses_api_DATATABLE = 'statuses';
+class statuses_api_StatusesAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(statuses_api_DATATABLE).select(models["g" /* Status */].MainFields)
+            .order('title');
+        ctx.debug(`=== SQL Query [GET /${statuses_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${statuses_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["g" /* Status */](item));
+        ctx.set(resultItems);
+    }
+    async getAllEnabled(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(statuses_api_DATATABLE).select(models["g" /* Status */].MainFields)
+            .where('enable')
+            .order('title');
+        ctx.debug(`=== SQL Query [GET /${statuses_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${statuses_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["g" /* Status */](item));
+        ctx.set(resultItems);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(statuses_api_DATATABLE).select()
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${statuses_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${statuses_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["g" /* Status */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOneEnabled(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(statuses_api_DATATABLE).select()
+            .where('id = $1 AND enable', String(id));
+        ctx.debug(`=== SQL Query [GET /${statuses_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${statuses_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["g" /* Status */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["g" /* Status */](data);
+        const query = new query_Query(statuses_api_DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${statuses_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${statuses_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["g" /* Status */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new models["g" /* Status */](data);
+        const query = new query_Query(statuses_api_DATATABLE).update(item.valueOf())
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${statuses_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${statuses_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["g" /* Status */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(statuses_api_DATATABLE).delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${statuses_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${statuses_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["g" /* Status */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+}
+statuses_api___decorate([
+    Object(service["c" /* Get */])(`/${statuses_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    statuses_api___metadata("design:type", Function),
+    statuses_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    statuses_api___metadata("design:returntype", Promise)
+], statuses_api_StatusesAPI.prototype, "getAll", null);
+statuses_api___decorate([
+    Object(service["c" /* Get */])(`/${statuses_api_ROUTE_BASE}`),
+    statuses_api___metadata("design:type", Function),
+    statuses_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    statuses_api___metadata("design:returntype", Promise)
+], statuses_api_StatusesAPI.prototype, "getAllEnabled", null);
+statuses_api___decorate([
+    Object(service["c" /* Get */])(`/${statuses_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    statuses_api___metadata("design:type", Function),
+    statuses_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    statuses_api___metadata("design:returntype", Promise)
+], statuses_api_StatusesAPI.prototype, "getOne", null);
+statuses_api___decorate([
+    Object(service["c" /* Get */])(`/${statuses_api_ROUTE_BASE}/:id`),
+    statuses_api___metadata("design:type", Function),
+    statuses_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    statuses_api___metadata("design:returntype", Promise)
+], statuses_api_StatusesAPI.prototype, "getOneEnabled", null);
+statuses_api___decorate([
+    Object(service["e" /* Post */])(`/${statuses_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    statuses_api___metadata("design:type", Function),
+    statuses_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    statuses_api___metadata("design:returntype", Promise)
+], statuses_api_StatusesAPI.prototype, "add", null);
+statuses_api___decorate([
+    Object(service["e" /* Post */])(`/${statuses_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    statuses_api___metadata("design:type", Function),
+    statuses_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    statuses_api___metadata("design:returntype", Promise)
+], statuses_api_StatusesAPI.prototype, "update", null);
+statuses_api___decorate([
+    Object(service["b" /* Delete */])(`/${statuses_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    statuses_api___metadata("design:type", Function),
+    statuses_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    statuses_api___metadata("design:returntype", Promise)
+], statuses_api_StatusesAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/statuses/index.ts
+
+
+// CONCATENATED MODULE: ./api/users/users.api.ts
+var users_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var users_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+const users_api_ROUTE_BASE = 'users';
+const users_api_DATATABLE = 'users';
+class users_api_UsersAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(users_api_DATATABLE).select(models["h" /* User */].MainFields);
+        ctx.debug(`=== SQL Query [GET /${users_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${users_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["h" /* User */](item));
+        ctx.set(resultItems);
+    }
+    async getMe(ctx, next) {
+        if (!ctx.session.valid) {
+            ctx.set(403);
+            return;
+        }
+        const db = ctx.db;
+        const user = ctx.session.user;
+        const query = new query_Query(users_api_DATATABLE).select()
+            .where('id = $1 AND enable', String(user.id));
+        ctx.debug(`=== SQL Query [GET /${users_api_ROUTE_BASE}/me] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${users_api_ROUTE_BASE}/me] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(403);
+            return;
+        }
+        const resultItem = new models["h" /* User */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(users_api_DATATABLE).select()
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${users_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${users_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["h" /* User */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async resetOTP(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = {
+            text: `UPDATE
+               ${users_api_DATATABLE}
+             SET
+               totp = encode(digest(uuid_generate_v4()::text, 'sha256'), 'hex')
+             WHERE
+               id = $1
+             RETURNING
+               totp`,
+            values: [String(id)]
+        };
+        ctx.debug(`=== SQL Query [POST /${users_api_ROUTE_BASE}/:id/otp] ===\n%s`, query);
+        const result = await db.query(query);
+        ctx.debug(`=== SQL Result [POST /${users_api_ROUTE_BASE}/:id/otp] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const secret = result.rows[0].totp;
+        if (!secret) {
+            ctx.set(204);
+            return;
+        }
+        const otp = new otp_OTP({ secret });
+        ctx.set({ secret: otp.base32Secret });
+    }
+    async password(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const password = data.password;
+        if (!password) {
+            ctx.set(400, 'Password is empty');
+            return;
+        }
+        const query = {
+            text: `UPDATE ${users_api_DATATABLE} SET password = encode(digest($1, 'sha512'), 'hex') WHERE id = $2 RETURNING id`,
+            values: [password, String(id)]
+        };
+        ctx.debug(`=== SQL Query [POST /${users_api_ROUTE_BASE}/:id/password] ===\n%s`, query);
+        const result = await db.query(query);
+        ctx.debug(`=== SQL Result [POST /${users_api_ROUTE_BASE}/:id/password] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        ctx.set(204);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["h" /* User */](data);
+        const query = new query_Query(users_api_DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${users_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${users_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["h" /* User */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const data = await ctx.request.json();
+        const item = new models["h" /* User */](data);
+        const query = new query_Query(users_api_DATATABLE).update(item.valueOf())
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${users_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${users_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["h" /* User */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(users_api_DATATABLE).delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${users_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${users_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["h" /* User */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOTP(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        let id;
+        try {
+            id = new uuid["a" /* UUID */](route.data.id);
+        }
+        catch (error) {
+            ctx.set(400, error.message);
+            return;
+        }
+        const query = new query_Query(users_api_DATATABLE).select(['totp'])
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${users_api_ROUTE_BASE}/:id/otp] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${users_api_ROUTE_BASE}/:id/otp] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        let secret = result.rows[0].totp;
+        if (!secret) {
+            ctx.set(204);
+            return;
+        }
+        const otp = new otp_OTP({ secret });
+        ctx.set({ secret: otp.base32Secret });
+    }
+}
+users_api___decorate([
+    Object(service["c" /* Get */])(`/${users_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "getAll", null);
+users_api___decorate([
+    Object(service["c" /* Get */])(`/${users_api_ROUTE_BASE}/me`),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "getMe", null);
+users_api___decorate([
+    Object(service["c" /* Get */])(`/${users_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "getOne", null);
+users_api___decorate([
+    Object(service["e" /* Post */])(`/${users_api_ROUTE_BASE}/:id/otp`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "resetOTP", null);
+users_api___decorate([
+    Object(service["e" /* Post */])(`/${users_api_ROUTE_BASE}/:id/password`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "password", null);
+users_api___decorate([
+    Object(service["e" /* Post */])(`/${users_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "add", null);
+users_api___decorate([
+    Object(service["e" /* Post */])(`/${users_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "update", null);
+users_api___decorate([
+    Object(service["b" /* Delete */])(`/${users_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "delete", null);
+users_api___decorate([
+    Object(service["c" /* Get */])(`/${users_api_ROUTE_BASE}/:id/otp`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    users_api___metadata("design:type", Function),
+    users_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    users_api___metadata("design:returntype", Promise)
+], users_api_UsersAPI.prototype, "getOTP", null);
+
+// CONCATENATED MODULE: ./api/users/index.ts
+
+
+// CONCATENATED MODULE: ./api/video/video.api.ts
+var video_api___decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var video_api___metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+const video_api_ROUTE_BASE = 'video';
+const video_api_DATATABLE = 'video';
+class video_api_VideoAPI extends service["g" /* RouteMiddleware */] {
+    async getAll(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(video_api_DATATABLE).select(models["j" /* Video */].MainFields);
+        ctx.debug(`=== SQL Query [GET /${video_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${video_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["j" /* Video */](item));
+        ctx.set(resultItems);
+    }
+    async getAllEnabled(ctx, next) {
+        const db = ctx.db;
+        const query = new query_Query(video_api_DATATABLE).select(models["j" /* Video */].MainFields)
+            .where('enable');
+        ctx.debug(`=== SQL Query [GET /${video_api_ROUTE_BASE}] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${video_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        const resultItems = result.rows.map(item => new models["j" /* Video */](item));
+        ctx.set(resultItems);
+    }
+    async getOne(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const id = String(route.data.id);
+        const query = new query_Query(video_api_DATATABLE).select()
+            .where('id = $1', String(id));
+        ctx.debug(`=== SQL Query [GET /${video_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${video_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["j" /* Video */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async getOneEnabled(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const id = String(route.data.id);
+        const query = new query_Query(video_api_DATATABLE).select()
+            .where('id = $1 AND enable', String(id));
+        ctx.debug(`=== SQL Query [GET /${video_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [GET /${video_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["j" /* Video */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async add(ctx, next) {
+        const db = ctx.db;
+        const data = await ctx.request.json();
+        const item = new models["j" /* Video */](data);
+        const query = new query_Query(video_api_DATATABLE).insert(item.valueOf())
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${video_api_ROUTE_BASE}] ===\n%s`, query);
+        let result;
+        try {
+            result = await db.query(query.valueOf());
+        }
+        catch (error) {
+            if (DBError.parseError(error) === DBError.UNIQUE_VIOLATION) {
+                ctx.set(409);
+                return;
+            }
+            ctx.throw(error);
+            return;
+        }
+        ctx.debug(`=== SQL Result [POST /${video_api_ROUTE_BASE}] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["j" /* Video */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async update(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const id = String(route.data.id);
+        const data = await ctx.request.json();
+        const item = new models["j" /* Video */](data);
+        const query = new query_Query(video_api_DATATABLE).update(item.valueOf())
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [POST /${video_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [POST /${video_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["j" /* Video */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+    async delete(ctx, next) {
+        const route = ctx.route;
+        const db = ctx.db;
+        const id = String(route.data.id);
+        const query = new query_Query(video_api_DATATABLE).delete()
+            .where('id = $1', String(id))
+            .returning();
+        ctx.debug(`=== SQL Query [DELETE /${video_api_ROUTE_BASE}/:id] ===\n%s`, query);
+        const result = await db.query(query.valueOf());
+        ctx.debug(`=== SQL Result [DELETE /${video_api_ROUTE_BASE}/:id] ===\n%s`, result.rows);
+        if (result.rowCount !== 1) {
+            ctx.set(404);
+            return;
+        }
+        const resultItem = new models["j" /* Video */](result.rows[0]);
+        ctx.set(resultItem);
+    }
+}
+video_api___decorate([
+    Object(service["c" /* Get */])(`/${video_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    video_api___metadata("design:type", Function),
+    video_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    video_api___metadata("design:returntype", Promise)
+], video_api_VideoAPI.prototype, "getAll", null);
+video_api___decorate([
+    Object(service["c" /* Get */])(`/${video_api_ROUTE_BASE}`),
+    video_api___metadata("design:type", Function),
+    video_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    video_api___metadata("design:returntype", Promise)
+], video_api_VideoAPI.prototype, "getAllEnabled", null);
+video_api___decorate([
+    Object(service["c" /* Get */])(`/${video_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    video_api___metadata("design:type", Function),
+    video_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    video_api___metadata("design:returntype", Promise)
+], video_api_VideoAPI.prototype, "getOne", null);
+video_api___decorate([
+    Object(service["c" /* Get */])(`/${video_api_ROUTE_BASE}/:id`),
+    video_api___metadata("design:type", Function),
+    video_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    video_api___metadata("design:returntype", Promise)
+], video_api_VideoAPI.prototype, "getOneEnabled", null);
+video_api___decorate([
+    Object(service["e" /* Post */])(`/${video_api_ROUTE_BASE}`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    video_api___metadata("design:type", Function),
+    video_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    video_api___metadata("design:returntype", Promise)
+], video_api_VideoAPI.prototype, "add", null);
+video_api___decorate([
+    Object(service["e" /* Post */])(`/${video_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    video_api___metadata("design:type", Function),
+    video_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    video_api___metadata("design:returntype", Promise)
+], video_api_VideoAPI.prototype, "update", null);
+video_api___decorate([
+    Object(service["b" /* Delete */])(`/${video_api_ROUTE_BASE}/:id`),
+    Object(middleware["a" /* ACL */])([
+        models["i" /* UserRoleEnum */].Administrator,
+        models["i" /* UserRoleEnum */].Su,
+    ]),
+    video_api___metadata("design:type", Function),
+    video_api___metadata("design:paramtypes", [service["a" /* Context */], Function]),
+    video_api___metadata("design:returntype", Promise)
+], video_api_VideoAPI.prototype, "delete", null);
+
+// CONCATENATED MODULE: ./api/video/index.ts
+
+
+// CONCATENATED MODULE: ./api/index.ts
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "a", function() { return auth_api_AuthAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "b", function() { return currencies_api_CurrenciesAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "c", function() { return exchanges_api_ExchangesAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "d", function() { return ico_api_ICOAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "e", function() { return markets_api_MarketsAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "f", function() { return publications_api_PublicationsAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "k", function() { return raw_api_rawAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "g", function() { return sections_api_SectionsAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "h", function() { return statuses_api_StatusesAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "i", function() { return users_api_UsersAPI; });
+/* concated harmony reexport */__webpack_require__.d(__webpack_exports__, "j", function() { return video_api_VideoAPI; });
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/** @module pg-large-object */
+
+/**
+ * {@link module:pg-large-object/lib/LargeObjectManager}
+ * @constant
+ * @type {function}
+ */
+exports.LargeObjectManager = __webpack_require__(57);
+
+/**
+ * {@link module:pg-large-object/lib/LargeObject}
+ * @constant
+ * @type {function}
+ */
+exports.LargeObject = __webpack_require__(23);
+
+/**
+ * {@link module:pg-large-object/lib/ReadStream}
+ * @constant
+ * @type {function}
+ */
+exports.ReadStream = __webpack_require__(24);
+
+/**
+ * {@link module:pg-large-object/lib/WriteStream}
+ * @constant
+ * @type {function}
+ */
+exports.WriteStream = __webpack_require__(25);
+
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var promiseFromCallback = __webpack_require__(22);
+var LargeObject = __webpack_require__(23);
+
+function pgPromiseAdapter(tx) {
+        return function query(options, callback) {
+                tx.query(options)
+                .then(function(rows) {
+                        callback(null, {rows: rows});
+                })
+                .catch(function(error) {
+                        callback(error);
+                });
+        };
+}
+
+/** This class lets you use the Large Object functionality of PostgreSQL.
+  * All usage of Large Object should take place within a transaction block!
+  * (BEGIN ... COMMIT)   
+  * 
+  * @example new LargeObjectManager(client)
+  * @constructor
+  * @exports pg-large-object/lib/LargeObjectManager
+  * @param {object} options Either `pg` or `pgPromise` must be given
+  * @param {module:pg/Client} options.pg A pg (https://www.npmjs.com/package/pg) Client object
+  * @param {module:pg-promise/Task} options.pgPromise A pg-promise (https://www.npmjs.com/package/pg-promise) transaction
+ *         object as given by `db.tx()`
+  */
+function LargeObjectManager(options)
+{
+        if (typeof options.query === 'function') { // backwards compatibility
+                // `client` is a https://www.npmjs.com/package/pg client instance
+                var client = options;
+                this._query = client.query.bind(client);
+        }
+        else if (options.pg) {
+                var client = options.pg;
+                this._query = client.query.bind(client);
+        }
+        else if (options.pgPromise) {
+                // https://www.npmjs.com/package/pg-promise
+                var tx = options.pgPromise;
+                this._query = pgPromiseAdapter(tx);
+        }
+        else {
+                throw Error('Either the `pg` or `pgPromise` option must be given');
+        }
+}
+
+/** @constant {Number} */
+LargeObjectManager.WRITE = 0x00020000;
+/** @constant {Number} */
+LargeObjectManager.READ = 0x00040000;
+/** @constant {Number} */ 
+LargeObjectManager.READWRITE = 0x00020000 | 0x00040000;
+
+/** @callback module:pg-large-object/lib/LargeObjectManager~openCallback
+  * @param {?Error} error If set, an error occurred.
+  * @param {module:pg-large-object/lib/LargeObject} result
+  */
+/** Open an existing large object, based on its OID.
+  * In mode READ, the data read from it will reflect the 
+  * contents of the large object at the time of the transaction 
+  * snapshot that was active when open was executed, 
+  * regardless of later writes by this or other transactions.
+  * If opened using WRITE (or READWRITE), data read will reflect 
+  * all writes of other committed transactions as well as 
+  * writes of the current transaction.
+  * @param {Number} oid
+  * @param {Number} mode One of WRITE, READ, or READWRITE
+  * @param {module:pg-large-object/lib/LargeObjectManager~openCallback} callback
+  */
+LargeObjectManager.prototype.open = function(oid, mode, callback)
+{
+        if (!oid)
+        {
+                throw Error("Illegal Argument");
+        }
+        
+        this._query(
+                {name: "npg_lo_open", text:"SELECT lo_open($1, $2) AS fd", values: [oid, mode]},
+                function(err, result)
+                {
+                        if (err) return callback(err);
+                        
+                        var fd = result.rows[0].fd;
+                        
+                        callback(null, new LargeObject(this._query, oid, fd));
+                }.bind(this)
+        );
+};
+
+/** Open an existing large object, based on its OID.
+ * In mode READ, the data read from it will reflect the
+ * contents of the large object at the time of the transaction
+ * snapshot that was active when open was executed,
+ * regardless of later writes by this or other transactions.
+ * If opened using WRITE (or READWRITE), data read will reflect
+ * all writes of other committed transactions as well as
+ * writes of the current transaction.
+ * @param {Number} oid
+ * @param {Number} mode One of WRITE, READ, or READWRITE
+ * @returns {Promise.<module:pg-large-object/lib/LargeObject>}
+ */
+LargeObjectManager.prototype.openAsync = function(oid, mode)
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.open(oid, mode, callback);
+        }, this);
+};
+
+/** @callback module:pg-large-object/lib/LargeObjectManager~createCallback
+  * @param {?Error} error If set, an error occurred.
+  * @param {Number} oid
+  */
+/** Creates a large object, returning its OID. 
+  * After which you can open() it.
+  * @param {module:pg-large-object/lib/LargeObjectManager~createCallback} callback
+  */
+LargeObjectManager.prototype.create = function(callback)
+{
+        this._query(
+                {name: "npg_lo_creat", text:"SELECT lo_creat($1) AS oid", values: [LargeObjectManager.READWRITE]},
+                function(err, result)
+                {
+                        if (err) return callback(err);
+                        
+                        var oid = result.rows[0].oid;
+                        callback(null, oid);
+                }
+        );
+};
+
+/** Creates a large object, returning its OID.
+ * After which you can open() it.
+ * @returns {Promise.<number>} oid
+ */
+LargeObjectManager.prototype.createAsync = function()
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.create(callback);
+        }, this);
+};
+
+
+/** @callback module:pg-large-object/lib/LargeObjectManager~unlinkCallback
+  * @param {?Error} error If set, an error occurred.
+  */
+/** Unlinks (deletes) a large object
+  * @param {number} oid
+  * @param {module:pg-large-object/lib/LargeObjectManager~unlinkCallback} [callback]
+  */
+LargeObjectManager.prototype.unlink = function(oid, callback)
+{
+        if (!oid)
+        {
+                throw Error("Illegal Argument");
+        }
+        
+        this._query(
+                {name: "npg_lo_unlink", text:"SELECT lo_unlink($1) as ok", values: [oid]},
+                callback ? function(err, result)
+                {
+                        callback(err);
+                } : undefined
+        );
+};
+
+/** Unlinks (deletes) a large object
+ * @param {number} oid
+ * @returns {Promise}
+ */
+LargeObjectManager.prototype.unlinkAsync = function(oid)
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.unlink(oid, callback);
+        }, this);
+};
+
+/** @callback module:pg-large-object/lib/LargeObjectManager~openAndReadableStreamCallback
+  * @param {?Error} error If set, an error occurred.
+  * @param {Number} size The total size of the large object
+  * @param {module:pg-large-object/lib/ReadStream} stream
+  */
+/** Open a large object, return a stream and close the object when done streaming.
+  * Only call this within a transaction block.
+  * @param {Number} oid  
+  * @param {Number} [bufferSize=16384]  
+  * @param {module:pg-large-object/lib/LargeObjectManager~openAndReadableStreamCallback} callback
+  * 
+  */
+LargeObjectManager.prototype.openAndReadableStream = function(oid, bufferSize, callback)
+{
+        if (typeof bufferSize === 'function')
+        {
+                callback = bufferSize;
+                bufferSize = undefined;
+        }
+        
+        this.open(oid, LargeObjectManager.READ, function(err, obj)
+        {
+                if (err) return callback(err);
+                
+                obj.size(function(err, size)
+                {
+                        if (err) return callback(err);
+                        
+                        var stream = obj.getReadableStream(bufferSize);
+                        
+                        stream.on('end', function()
+                        {
+                                // this should rarely happen, but if it does
+                                // use a callback so that error handling is consistent
+                                // (otherwise an error will be emmited by node-postgres) 
+                                obj.close(function(err)
+                                {
+                                        if (err)
+                                        {
+                                                console.error('Warning: closing a large object failed:', err);
+                                        }
+                                });
+                        });
+                        
+                        callback(null, size, stream);
+                });
+        });
+};
+
+/** Open a large object, return a stream and close the object when done streaming.
+ * Only call this within a transaction block.
+ * @param {Number} oid
+ * @param {Number} [bufferSize=16384]
+ * @returns {Promise.<Array>} The total size and a ReadStream
+ *
+ */
+LargeObjectManager.prototype.openAndReadableStreamAsync = function(oid, bufferSize)
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.openAndReadableStream(oid, bufferSize, callback);
+        }, this, {twoArgs: true});
+};
+
+/** @callback module:pg-large-object/lib/LargeObjectManager~createAndWritableStreamCallback
+  * @param {?Error} error If set, an error occurred.
+  * @param {Number} oid  
+  * @param {module:pg-large-object/lib/WriteStream} stream
+  */
+/** Create and open a large object, return a stream and close the object when done streaming.
+  * Only call this within a transaction block.
+  * @param {Number} [bufferSize=16384]  
+  * @param {module:pg-large-object/lib/LargeObjectManager~createAndWritableStreamCallback} [callback]
+  */
+LargeObjectManager.prototype.createAndWritableStream = function(bufferSize, callback)
+{
+        if (typeof bufferSize === 'function')
+        {
+                callback = bufferSize;
+                bufferSize = undefined;
+        }
+
+        var man = this;
+        
+        man.create(function(err, oid)
+        {
+                if (err) return callback(err);
+                
+                man.open(oid, LargeObjectManager.WRITE, function(err, obj)
+                {
+                        if (err) return callback(err);
+                        
+                        var stream = obj.getWritableStream(bufferSize);
+                        stream.on('finish', function()
+                        { 
+                                obj.close(function(err)
+                                {
+                                        if (err)
+                                        {
+                                                console.error('Warning: closing a large object failed:', err);
+                                        }
+                                });
+                        });
+                        
+                        callback(null, oid, stream);
+                });
+        });
+};
+
+/** Create and open a large object, return a stream and close the object when done streaming.
+ * Only call this within a transaction block.
+ * @param {Number} [bufferSize=16384]
+ * @returns {promise.<Array>} The oid and a WriteStream
+ */
+LargeObjectManager.prototype.createAndWritableStreamAsync = function(bufferSize)
+{
+        return promiseFromCallback(function(callback)
+        {
+                this.createAndWritableStream(bufferSize, callback);
+        }, this, {twoArgs: true});
+};
+
+module.exports = LargeObjectManager;
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(59);
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_service__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_middleware__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pgdb__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__api__ = __webpack_require__(55);
+
+
+
+
+process.env.TZ = 'UTC';
+new __WEBPACK_IMPORTED_MODULE_0__core_service__["h" /* Service */](new __WEBPACK_IMPORTED_MODULE_2__pgdb__["a" /* PgDBMiddleware */](), new __WEBPACK_IMPORTED_MODULE_1__common_middleware__["b" /* SessionMiddleware */](), new __WEBPACK_IMPORTED_MODULE_3__api__["a" /* AuthAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["b" /* CurrenciesAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["c" /* ExchangesAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["d" /* ICOAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["e" /* MarketsAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["f" /* PublicationsAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["g" /* SectionsAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["h" /* StatusesAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["i" /* UsersAPI */](), new __WEBPACK_IMPORTED_MODULE_3__api__["j" /* VideoAPI */]());
+
+
+/***/ })
+/******/ ]);

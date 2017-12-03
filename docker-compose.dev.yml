@@ -19,7 +19,7 @@ services:
       - 5432:5432
     command: postgres -c config_file=/etc/postgresql.conf
 
-  api:
+  api-main:
     restart: unless-stopped
     build: ./api
     networks:
@@ -28,6 +28,8 @@ services:
       - db
     depends_on:
       - db
+    volumes:
+      - ./api/dist/main.bundle.js:/app/main.js:ro
     environment:
       POSTGRES_HOST: db
       POSTGRES_DB: bitjournal
@@ -39,23 +41,50 @@ services:
     networks:
       default:
     ports:
-      - 8081:80
+      - 8091:80
+
+  api-raw:
+    restart: unless-stopped
+    build: ./api
+    networks:
+      default:
+    links:
+      - db
+    depends_on:
+      - db
+    volumes:
+      - ./api/dist/raw.bundle.js:/app/main.js:ro
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: bitjournal
+      POSTGRES_USER: bitjournal
+      POSTGRES_PASSWORD: bitjournal
+      POSTGRES_IDLE_TIMEOUT: 30
+      POSTGRES_POOL_SIZE: 128
+      NODE_DEBUG: service
+    networks:
+      default:
+    ports:
+      - 8092:80
 
   api-front:
     restart: unless-stopped
     build: ./nginx
     links:
-      - api
+      - api-main
+      - api-raw
     depends_on:
-      - api
+      - api-main
+      - api-raw
     volumes:
       - ./api/assets:/www:ro
       - ./api/server.dev.conf:/etc/nginx/server.conf:ro
-      - ./api/server.api.conf:/etc/nginx/server.api.conf:ro
+      - ./api/api.conf:/etc/nginx/api.conf:ro
     networks:
       default:
     ports:
-      - 8082:80
+      - 8081:80
+
 
   admin:
     restart: unless-stopped
@@ -66,7 +95,7 @@ services:
     networks:
       default:
     ports:
-      - 8083:80
+      - 8090:80
 
 volumes:
   data-volume:

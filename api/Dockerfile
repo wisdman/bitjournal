@@ -1,10 +1,10 @@
 FROM node:carbon-alpine
 MAINTAINER Wisdman <wisdman@ajaw.it>
 
-COPY ./dist/main.bundle.js /app/main.js
-RUN chmod +x /app/main.js
+RUN mkdir -p /app
 
 EXPOSE 80
 
 WORKDIR /app
-CMD ["/app/main.js"]
+
+CMD node /app/main.js

@@ -10,8 +10,6 @@ import {
   ExchangeListComponent,
   ICOItemComponent,
   ICOListComponent,
-  ImageItemComponent,
-  ImageListComponent,
   LogsBlockComponent,
   MarketItemComponent,
   MarketListComponent,
@@ -40,9 +38,6 @@ export const ROUTES: Routes = [
 
   { path: 'ico/:id'          , component: ICOItemComponent         },
   { path: 'ico'              , component: ICOListComponent         },
-
-  { path: 'images/:id'       , component: ImageItemComponent       },
-  { path: 'images'           , component: ImageListComponent       },
 
   { path: 'logs'             , component: LogsBlockComponent       },
 

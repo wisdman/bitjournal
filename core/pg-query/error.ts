@@ -1,6 +1,7 @@
 
 export class DBError {
   static UNIQUE_VIOLATION = 23505
+  static UNDEFINED_OBJECT = 42704
 
   static *[Symbol.iterator](): IterableIterator<number> {
     const keys = Object.keys(this)
