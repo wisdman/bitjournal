@@ -8,7 +8,6 @@ export class Status implements IStatus {
     'id',
     'enable',
     'title',
-    'description',
     'image',
   ]
 
