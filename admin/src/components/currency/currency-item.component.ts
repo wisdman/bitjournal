@@ -65,6 +65,19 @@ export class CurrencyItemComponent implements OnInit {
                        Validators.required
                      ] ],
 
+      startDate:     [ new Date(), [
+                       Validators.required,
+                     ] ],
+
+      founder:       [ '' ],
+
+      maxCoin:       [ Infinity, [
+                       Validators.min(0)
+                     ] ],
+
+      algorithm:     [ '' ],
+      system:        [ '' ],
+
       description:   [ '' ],
 
       ogTitle:       [ '' ],

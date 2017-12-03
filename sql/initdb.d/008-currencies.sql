@@ -19,15 +19,31 @@ CREATE TABLE currencies (
   "image"         oid          DEFAULT NULL,
   "ogImage"       oid          DEFAULT NULL,
 
+  "startDate"     timestamp without time zone NOT NULL DEFAULT timezone('UTC', now()),
+
+  "founder"       text         NOT NULL DEFAULT '',
+
+  "maxCoin"       bigint       NOT NULL DEFAULT 0,
+
+  "algorithm"     text         NOT NULL DEFAULT '',
+
+  "system"        text         NOT NULL DEFAULT '',
+
   "content"       text         NOT NULL DEFAULT '',
 
   "rating"        jsonb        NOT NULL DEFAULT '{}'::jsonb,
+
+  "bjr"           smallint     NOT NULL DEFAULT 0,
 
   "branding"      jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
   CONSTRAINT currencies__idx_pkey PRIMARY KEY ("symbol"),
 
   CONSTRAINT currencies__check__symbol CHECK ("symbol" ~ '^[A-Z]+$'),
+
+  CONSTRAINT currencies__check__maxCoin CHECK ("maxCoin" >= 0),
+
+  CONSTRAINT currencies__check__bjr CHECK ("bjr" >= 0 AND "bjr" <= 5),
 
   CONSTRAINT currencies__check__rating CHECK ("rating"::text  ~ '^{'),
 

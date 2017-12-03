@@ -3,6 +3,8 @@ import { ICurrency } from './currency.interface'
 
 import { Rating } from '../rating'
 
+import { Timestamp } from '@core/timestamp'
+
 export class Currency implements ICurrency {
   static MainFields = [
     'symbol',
@@ -28,9 +30,21 @@ export class Currency implements ICurrency {
   readonly image: number | null
   readonly ogImage: number | null
 
+  readonly startDate: Timestamp
+
+  readonly founder: string
+
+  readonly maxCoin: number
+
+  readonly algorithm: string
+
+  readonly system: string
+
   readonly content: string
 
   readonly rating: Rating
+
+  readonly bjr: number
 
   readonly branding: object
 
@@ -53,9 +67,19 @@ export class Currency implements ICurrency {
     this.image = Math.max(~~value.image, 0) || null
     this.ogImage = Math.max(~~value.ogImage, 0) || null
 
+    this.startDate = new Timestamp(value.startDate)
+
+    this.founder = String(value.founder || '').trim()
+    this.maxCoin = Math.max(~~value.maxCoin, 0)
+
+    this.algorithm = String(value.algorithm || '').trim()
+    this.system = String(value.system || '').trim()
+
     this.content = String(value.content || '').trim()
 
     this.rating = new Rating(value.rating)
+
+    this.bjr = Math.min(Math.max(~~value.bjr, 0), 5)
 
     this.branding = {}
   }
@@ -77,7 +101,15 @@ export class Currency implements ICurrency {
       image: this.image,
       ogImage: this.ogImage,
 
+      startDate: this.startDate,
+      founder: this.founder,
+      maxCoin: this.maxCoin,
+      algorithm: this.algorithm,
+      system: this.system,
+
       content: this.content,
+
+      bjr: this.bjr,
 
       branding: this.branding,
     }
@@ -100,9 +132,17 @@ export class Currency implements ICurrency {
       image: this.image,
       ogImage: this.ogImage,
 
+      startDate: this.startDate.isValid ? this.startDate : undefined,
+
+      founder: this.founder,
+      maxCoin: this.maxCoin,
+      algorithm: this.algorithm,
+      system: this.system,
+
       content: this.content,
 
       rating: this.rating,
+      bjr: this.bjr,
 
       branding: this.branding,
     }

@@ -1,12 +1,15 @@
 
 import {
   MatButtonModule,
+  MatCheckboxModule,
+  MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
   MatMenuModule,
+  MatNativeDateModule,
   MatPaginatorModule,
   MatSidenavModule,
   MatSnackBarModule,
@@ -14,7 +17,6 @@ import {
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
-  MatCheckboxModule,
 } from '@angular/material';
 
 import {
@@ -23,12 +25,15 @@ import {
 
 export const MATERIAL: any[] = [
   MatButtonModule,
+  MatCheckboxModule,
+  MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
   MatMenuModule,
+  MatNativeDateModule,
   MatPaginatorModule,
   MatSidenavModule,
   MatSnackBarModule,
@@ -36,7 +41,6 @@ export const MATERIAL: any[] = [
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
-  MatCheckboxModule,
 
   ScrollDispatchModule,
 ]
