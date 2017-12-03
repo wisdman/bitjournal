@@ -47,7 +47,7 @@ export class FileService {
   }
 
   upload(options?: { accept?: string, multiple?: boolean }): Observable<{ oid: number }> {
-    return this.open()
+    return this.open(options)
                .map( file => this.put(file) )
                .switchMap( items => Observable.from(items) )
   }
