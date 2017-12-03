@@ -3,6 +3,7 @@
  */
 
 import MAGIC from './magic'
+import isSVG from './is-svg'
 
 export class FileType {
   readonly extension: string
@@ -20,6 +21,12 @@ export class FileType {
         this.extension = pattern.extension
         return this
       }
+
+    if (isSVG(buffer)) {
+      this.mime = 'image/svg+xml'
+      this.extension = 'svg'
+      return this
+    }
 
     this.mime = 'application/octet-stream'
     this.extension = ''

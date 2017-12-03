@@ -46,7 +46,7 @@ export class APIService {
           break
 
         default:
-           this._dialog.open({ title: `Ошибка {error.status}`, message: error.message })
+           this._dialog.open({ title: `Ошибка ${error.status}`, message: error.message })
       }
     } else
       this._dialog.open({ title: 'Ошибка приложения', message: String(error) })
@@ -64,15 +64,15 @@ export class APIService {
                      .filter(item => item !== null) as Observable<T>
   }
 
-  post<T>(path: string, data: T): Observable<T> {
+  post<T>(path: string, data: Partial<T>): Observable<T> {
     return this._http.post<T>(APIService.buildPath(path),
                               data, { headers: this._user.authHeaders })
                      .catch(error => this._handleError(error))
                      .filter(item => item !== null) as Observable<T>
   }
 
-  put<T>(path: string, data: T): Observable<T> {
-    return this._http.put<T>(APIService.buildPath(path),
+  put<T>(path: string, data: Blob | ArrayBuffer): Observable<T> {
+    return this._http.put(APIService.buildPath(path),
                              data, { headers: this._user.authHeaders })
                      .catch(error => this._handleError(error))
                      .filter(item => item !== null) as Observable<T>

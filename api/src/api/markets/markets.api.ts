@@ -157,6 +157,48 @@ export class MarketsAPI extends RouteMiddleware {
     ctx.set( resultItem )
   }
 
+
+  @Get(`/${ROUTE_BASE}/:id/toggle`)
+  @ACL([
+    UserRoleEnum.Administrator,
+    UserRoleEnum.Su,
+  ])
+  async toggle(ctx: Context, next: INext) {
+    const route = ctx.route as Route
+
+    const db = ctx.db as Client
+
+    let id: UUID
+
+    try {
+      id = new UUID(route.data.id)
+    } catch (error) {
+      ctx.set(400, error.message)
+      return
+    }
+
+    const query = {
+      text: `UPDATE "${DATATABLE}" SET enable = NOT enable WHERE id = $1 RETURNING enable`,
+      values: [String(id)]
+    }
+
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/:id/toggle] ===\n%s`, query)
+
+    const result = await db.query(query)
+
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}/:id/toggle] ===\n%s`, result.rows)
+
+    if (result.rowCount !== 1) {
+      ctx.set(404)
+      return
+    }
+
+    const enable = result.rows[0].enable
+
+    ctx.set({ enable })
+  }
+
+
   @Post(`/${ROUTE_BASE}/:id`)
   @ACL([
     UserRoleEnum.Administrator,

@@ -8,6 +8,7 @@ import { UUID } from '@core/uuid'
 import {
   APIService,
   DialogService,
+  FileService,
 } from '../../services'
 
 import { IStatus } from '@common/models'
@@ -25,7 +26,8 @@ export class StatusListComponent {
   constructor(
     private readonly _router: Router,
     private readonly _apiService: APIService,
-    private readonly _dialog: DialogService
+    private readonly _dialog: DialogService,
+    private readonly _fileService: FileService
   ) {}
 
   displayedColumns = [
@@ -89,8 +91,8 @@ export class StatusListComponent {
 
   toggle(item: IStatus) {
     this._apiService
-        .post<IStatus>(`/${API_BASE}/${item.id}`, Object.assign({}, item, { enable: !item.enable } ))
-        .subscribe( newItem => item.enable = newItem.enable )
+        .get<{ enable: boolean }>(`/${API_BASE}/${item.id}/toggle`)
+        .subscribe( result => item.enable = result.enable )
   }
 
   editTitle(item: IStatus) {
@@ -106,6 +108,29 @@ export class StatusListComponent {
           .post<IStatus>(`/${API_BASE}/${item.id}`, Object.assign({}, item, { title: result }))
           .subscribe( newItem => Object.assign(item, newItem) )
     })
+  }
+
+  replaceImage(item: IStatus) {
+    this._fileService
+        .upload({
+          accept: 'image/svg+xml'
+        })
+        .subscribe( result => {
+          this._apiService
+              .post<IStatus>(`/${API_BASE}/${item.id}`, Object.assign({}, item, { image: result.oid }))
+              .subscribe( newItem => {
+                let oldOid = item.image
+
+                Object.assign(item, newItem)
+
+                if (!oldOid)
+                  return
+
+                this._fileService
+                    .delete(oldOid)
+                    .subscribe(_ => {})
+              })
+        })
   }
 
 }

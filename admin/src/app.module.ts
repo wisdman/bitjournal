@@ -13,6 +13,7 @@ import { RouterModule, PreloadAllModules } from '@angular/router'
 import { COMPONENTS, ENTRY_COMPONENTS } from './app.components'
 import { MATERIAL } from './app.material'
 import { MODULES } from './app.modules'
+import { PIPES } from './app.pipes'
 import { ROUTES }   from './app.routes'
 import { SERVICES } from './app.services'
 
@@ -25,7 +26,8 @@ import { AuthDialogComponent } from './components'
 
   declarations: [
     LayoutComponent,
-    ...COMPONENTS
+    ...COMPONENTS,
+    ...PIPES
   ],
 
   imports: [

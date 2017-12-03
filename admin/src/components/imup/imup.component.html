@@ -1,0 +1,14 @@
+<figure class="imup-figure">
+  <img [src]="oid | image" class="imup-img">
+  <figcaption *ngIf="oid" class="imup-figcaption">{{ oid }}</figcaption>
+  <button *ngIf="!oid" mat-fab color="accent" (click)="$event.preventDefault(); add()" class="imup-add">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button *ngIf="oid" mat-mini-fab color="accent" (click)="$event.preventDefault(); delete()" class="imup-delete">
+    <mat-icon>close</mat-icon>
+  </button>
+  <button *ngIf="oid" mat-mini-fab color="accent" (click)="$event.preventDefault(); edit()" class="imup-edit">
+    <mat-icon>mode_edit</mat-icon>
+  </button>
+</figure>
+

@@ -21,8 +21,8 @@ export class Context {
 
   constructor(req: IncomingMessage, res: ServerResponse) {
     try {
-      this.request  = new Request(req)
-      this.response = new Response(res)
+      this.request  = new Request(req, this)
+      this.response = new Response(res, this)
     } catch (error) {
       this.throw(error)
     }

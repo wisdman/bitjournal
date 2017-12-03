@@ -21,5 +21,5 @@ new Service(
 
   new SessionMiddleware(), // Add session to context
 
-  new rawAPI(),
+  new RAW(),
 )

@@ -17,7 +17,7 @@ services:
       default:
     command: postgres -c config_file=/etc/postgresql.conf
 
-  api:
+  api-main:
     restart: unless-stopped
     build: ./api
     networks:
@@ -26,6 +26,30 @@ services:
       - db
     depends_on:
       - db
+    volumes:
+      - ./api/dist/main.bundle.js:/app/main.js:ro
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: bitjournal
+      POSTGRES_USER: bitjournal
+      POSTGRES_PASSWORD: bitjournal
+      POSTGRES_IDLE_TIMEOUT: 30
+      POSTGRES_POOL_SIZE: 128
+      NODE_DEBUG: service
+    networks:
+      default:
+
+  api-raw:
+    restart: unless-stopped
+    build: ./api
+    networks:
+      default:
+    links:
+      - db
+    depends_on:
+      - db
+    volumes:
+      - ./api/dist/raw.bundle.js:/app/main.js:ro
     environment:
       POSTGRES_HOST: db
       POSTGRES_DB: bitjournal
@@ -41,19 +65,61 @@ services:
     restart: unless-stopped
     build: ./nginx
     links:
-      - api
+      - api-main
+      - api-raw
     depends_on:
-      - api
+      - api-main
+      - api-raw
     volumes:
       - ./api/assets:/www:ro
+      - ./api/server.conf.d:/etc/nginx/server.conf.d:ro
       - ./api/server.conf:/etc/nginx/server.conf:ro
-      - ./api/server.api.conf:/etc/nginx/server.api.conf:ro
     networks:
       default:
       outside:
         ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:65
     ports:
       - 145.239.188.65:443:443
+
+  raw:
+    restart: unless-stopped
+    build: ./raw
+    networks:
+      default:
+    links:
+      - db
+    depends_on:
+      - db
+    volumes:
+      - ./raw/dist/main.bundle.js:/app/main.js:ro
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: bitjournal
+      POSTGRES_USER: bitjournal
+      POSTGRES_PASSWORD: bitjournal
+      POSTGRES_IDLE_TIMEOUT: 30
+      POSTGRES_POOL_SIZE: 128
+      NODE_DEBUG: service
+    networks:
+      default:
+
+  raw-front:
+    restart: unless-stopped
+    build: ./nginx
+    links:
+      - raw
+    depends_on:
+      - raw
+    volumes:
+      - ./raw/assets:/www:ro
+      - ./raw/raw.conf:/etc/nginx/raw.conf:ro
+      - ./raw/server.conf:/etc/nginx/server.conf:ro
+    networks:
+      default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:66
+    ports:
+      - 145.239.188.66:443:443
 
   admin:
     restart: unless-stopped

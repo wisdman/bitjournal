@@ -1,7 +1,8 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core'
+import { Component, ViewEncapsulation, OnInit, isDevMode } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router'
 
-import { Router, ActivatedRoute } from '@angular/router'
 import { UUID } from '@core/uuid'
 
 import {
@@ -9,7 +10,12 @@ import {
   DialogService,
 } from '../../services'
 
+import { ISection } from '@common/models'
+
+const API_BASE = 'sections'
 const ROUTE_BASE = 'sections'
+
+const URL_PATTERN = /^[a-z0-9]([a-z0-9_-]*[a-z0-9])?(\/[a-z0-9]([a-z0-9_-]*[a-z0-9])?)?$/
 
 @Component({
   selector: 'section-item',
@@ -17,6 +23,10 @@ const ROUTE_BASE = 'sections'
   encapsulation: ViewEncapsulation.None
 })
 export class SectionItemComponent implements OnInit {
+
+  get DEBUG(): boolean {
+    return isDevMode()
+  }
 
   private _id: UUID = new UUID(null)
 
@@ -28,21 +38,33 @@ export class SectionItemComponent implements OnInit {
 
   constructor(
     private readonly _fb: FormBuilder,
-    private readonly _router: Router,
     private readonly _route: ActivatedRoute,
     private readonly _apiService: APIService,
-    private readonly _dialog: DialogService
+    private readonly _dialog: DialogService,
+    private readonly _location: Location
   ) {
     this.itemForm = this._fb.group({
-      enable:        [true, Validators.required],
+      enable:        [ true, [
+                       Validators.required
+                     ] ],
 
-      url:           ['', Validators.required ],
+      url:           [ '', [
+                       Validators.required,
+                       Validators.maxLength(256),
+                       Validators.pattern(URL_PATTERN)
+                     ] ],
 
-      title:         ['', Validators.required ],
-      description:   [''],
+      title:         [ '', [
+                       Validators.required
+                     ] ],
 
-      ogTitle:       [''],
-      ogDescription: [''],
+      description:   [ '' ],
+
+      ogTitle:       [ '' ],
+      ogDescription: [ '' ],
+
+      image:         [ null ],
+      ogImage:       [ null ],
     })
   }
 
@@ -53,14 +75,35 @@ export class SectionItemComponent implements OnInit {
         this._id = new UUID(params['id'])
       } catch (error) {
         this._dialog.open({ title: 'Оштбка', message: 'Неверный ID' })
-        this._router.navigate([ROUTE_BASE])
+        this._location.back()
         return
       }
 
       if (!this.isNew)
-        this._apiService.get<any>(`/${ROUTE_BASE}/${this._id}`).subscribe( (item: any) => {
-          this.itemForm.patchValue(item)
-        })
+        this._apiService
+            .get<ISection>(`/${API_BASE}/${this._id}`)
+            .subscribe( item => {
+              this.itemForm.patchValue(item)
+            })
+    })
+  }
+
+  back() {
+    if (this.itemForm.pristine) {
+      this._location.back()
+      return
+    }
+
+    this._dialog.open({
+      title: 'Форма была изменена',
+      message: `Возможна потеря данных. Покинуть раздел?`,
+      buttons: {
+        'Отмена': false,
+        'Да': true
+      }
+    }).subscribe( result => {
+      if (result === true)
+        this._location.back()
     })
   }
 
@@ -68,10 +111,11 @@ export class SectionItemComponent implements OnInit {
     if (this.itemForm.invalid)
       return
 
-    const postURL = this.isNew ? `/${ROUTE_BASE}` : `/${ROUTE_BASE}/${this._id}`
+    const postURL = this.isNew ? `/${API_BASE}` : `/${API_BASE}/${this._id}`
 
-    this._apiService.post<any>(postURL, this.itemForm.value)
-                    .subscribe( _ => this._router.navigate([ROUTE_BASE]) )
+    this._apiService
+        .post<ISection>(postURL, this.itemForm.value)
+        .subscribe( _ => this._location.back() )
   }
 
   delete() {
@@ -79,16 +123,16 @@ export class SectionItemComponent implements OnInit {
       return
 
     this._dialog.open({
-      title: 'Удалить ICO?',
-      message: `Вы уверены, что хотите удалить ICO "${this.itemForm.value.title}"?`,
+      title: 'Удалить раздел?',
+      message: `Вы уверены, что хотите удалить раздел "${this.itemForm.value.title}"?`,
       buttons: {
         'Отмена': false,
         'Удалить': true
       }
     }).subscribe( result => {
       if (result === true)
-        this._apiService.delete(`/${ROUTE_BASE}/${this._id}`)
-                        .subscribe( _ => this._router.navigate([ROUTE_BASE]) )
+        this._apiService.delete<ISection>(`/${ROUTE_BASE}/${this._id}`)
+                        .subscribe( _ => this._location.back() )
     })
   }
 }

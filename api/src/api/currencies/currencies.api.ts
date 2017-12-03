@@ -124,6 +124,45 @@ export class CurrenciesAPI extends RouteMiddleware {
   }
 
 
+  @Get(`/${ROUTE_BASE}/:symbol/toggle`)
+  @ACL([
+    UserRoleEnum.Administrator,
+    UserRoleEnum.Su,
+  ])
+  async toggle(ctx: Context, next: INext) {
+    const route = ctx.route as Route
+
+    const db = ctx.db as Client
+
+    const symbol = route.data.symbol.trim()
+
+    if (!symbol) {
+      ctx.set(404)
+      return
+    }
+
+    const query = {
+      text: `UPDATE "${DATATABLE}" SET enable = NOT enable WHERE symbol = $1 RETURNING enable`,
+      values: [symbol]
+    }
+
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/:id/toggle] ===\n%s`, query)
+
+    const result = await db.query(query)
+
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}/:id/toggle] ===\n%s`, result.rows)
+
+    if (result.rowCount !== 1) {
+      ctx.set(404)
+      return
+    }
+
+    const enable = result.rows[0].enable
+
+    ctx.set({ enable })
+  }
+
+
   @Post(`/${ROUTE_BASE}`)
   @ACL([
     UserRoleEnum.Administrator,

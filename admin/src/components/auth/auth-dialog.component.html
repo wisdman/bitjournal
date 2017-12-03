@@ -2,25 +2,17 @@
 <form mat-dialog-content class="auth-form" [formGroup]="authForm" (ngSubmit)="onSubmit()" novalidate>
   <mat-form-field class="auth-form-row">
     <input matInput type="text" placeholder="E-mail" formControlName="email">
-    <mat-error *ngIf="authForm.controls.email.hasError('email') && !authForm.controls.email.hasError('required')">
-      Please enter a valid email address
-    </mat-error>
-    <mat-error *ngIf="authForm.controls.email.hasError('required')">
-      Email is <strong>required</strong>
-    </mat-error>
+    <mat-error *ngIf="authForm.controls.email.hasError('required')">Email is <strong>required</strong></mat-error>
+    <mat-error *ngIf="authForm.controls.email.hasError('email')">Please enter a valid email address</mat-error>
   </mat-form-field>
   <mat-form-field class="auth-form-row">
     <input matInput type="password" placeholder="Password" formControlName="password">
-    <mat-error *ngIf="authForm.controls.password.hasError('required')">
-      Password is <strong>required</strong>
-    </mat-error>
+    <mat-error *ngIf="authForm.controls.password.hasError('required')">Password is <strong>required</strong></mat-error>
   </mat-form-field>
   <mat-form-field class="auth-form-row">
-    <input #otpInput matInput type="text" maxlength="6" placeholder="OTP Key" formControlName="otp">
-    <mat-hint align="end">{{ otpInput.value.length }} / 6</mat-hint>
-    <mat-error *ngIf="authForm.controls.otp.hasError('required')">
-      OTP Key is <strong>required</strong>
-    </mat-error>
+    <input matInput type="text" maxlength="6" placeholder="OTP Key" formControlName="otp">
+    <mat-hint align="end">{{ authForm.controls.otp.value.length }} / 6</mat-hint>
+    <mat-error *ngIf="authForm.controls.otp.hasError('required')">OTP Key is <strong>required</strong></mat-error>
   </mat-form-field>
   <input type="submit" hidden>
 </form>

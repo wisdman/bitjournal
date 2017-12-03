@@ -1,12 +1,19 @@
-import { Component, ViewEncapsulation, OnInit, AfterViewInit, ViewChild } from '@angular/core'
+import { Component, ViewEncapsulation, ViewChild, AfterViewInit, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 
-import { MatTableDataSource, MatPaginator } from '@angular/material'
+import { MatTableDataSource, MatSort } from '@angular/material'
 
 import { UUID } from '@core/uuid'
 
-import { APIService } from '../../services'
+import {
+  APIService,
+  DialogService,
+} from '../../services'
 
+import { ISection } from '@common/models'
+import { ISectionListItem } from './section-list-item.interface'
+
+const API_BASE = 'sections'
 const ROUTE_BASE = 'sections'
 
 @Component({
@@ -14,7 +21,7 @@ const ROUTE_BASE = 'sections'
   templateUrl: './section-list.component.html',
   encapsulation: ViewEncapsulation.None
 })
-export class SectionListComponent implements OnInit {
+export class SectionListComponent implements OnInit, AfterViewInit {
 
   constructor(
     private readonly _router: Router,
@@ -25,18 +32,15 @@ export class SectionListComponent implements OnInit {
     'enable',
     'url',
     'title',
+    'view'
   ]
 
-  dataSource = new MatTableDataSource(new Array<any>())
+  dataSource = new MatTableDataSource(new Array<ISectionListItem>())
 
-  ngOnInit(){
-    this._apiService.get<any>(`/${ROUTE_BASE}`).subscribe( items => this.dataSource.data = items )
-  }
-
-  @ViewChild(MatPaginator) paginator: MatPaginator
+  @ViewChild(MatSort) sort: MatSort
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator
+    this.dataSource.sort = this.sort
   }
 
   applyFilter(filterValue: string) {
@@ -45,11 +49,30 @@ export class SectionListComponent implements OnInit {
     this.dataSource.filter = filterValue
   }
 
+  updateStatistic(item?: ISectionListItem) {
+
+  }
+
+  ngOnInit(){
+    this._apiService
+        .get< Array<ISection> >(`/${API_BASE}`)
+        .subscribe( items => {
+          this.dataSource.data = items
+          this.updateStatistic()
+        })
+  }
+
   add() {
     this._router.navigate([ROUTE_BASE, new UUID(null).value])
   }
 
-  select(element: any) {
-    this._router.navigate([ROUTE_BASE, String(element.id)])
+  select(item: ISection) {
+    this._router.navigate([ROUTE_BASE, String(item.id)])
+  }
+
+  toggle(item: ISection) {
+    this._apiService
+        .get<{ enable: boolean }>(`/${API_BASE}/${item.id}/toggle`)
+        .subscribe( result => item.enable = result.enable )
   }
 }

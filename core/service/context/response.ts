@@ -2,8 +2,11 @@
  * HTTP Response wrapper
  */
 
+import { parse as pathParse } from 'path'
 import { ServerResponse, OutgoingHttpHeaders, STATUS_CODES } from 'http'
 import { FileType } from '@core/file-type'
+
+import { Context } from './context'
 
 export type IBody = null | undefined | string | Buffer | object
 
@@ -11,7 +14,7 @@ export class Response {
 
   private _body: null | undefined | string | Buffer
 
-  constructor(readonly res: ServerResponse) {
+  constructor(readonly res: ServerResponse, private ctx: Context) {
     this.set(404)
   }
 
@@ -109,6 +112,17 @@ export class Response {
       this._body = value
       this.setHeader('Content-Type', type.mime || 'application/octet-stream' )
       this.setHeader('Content-Length', value.length)
+
+      let contentDisposition = 'inline'
+
+      const path = pathParse(this.ctx.request.path)
+      if (path.name) {
+        const ext = type.extension || path.ext || ''
+        if (ext)
+          contentDisposition += `; filename=${path.name}.${ext}`
+      }
+
+      this.setHeader('Content-Disposition', contentDisposition)
       return
     }
 

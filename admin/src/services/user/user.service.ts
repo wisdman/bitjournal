@@ -57,7 +57,7 @@ export class UserService {
                             this._matDialog.open(AuthDialogComponent, { data: this })
 
                           else
-                            this._dialog.open({ title: `Ошибка {error.status}`, message: error.message })
+                            this._dialog.open({ title: `Ошибка ${error.status}`, message: error.message })
 
                         } else
                           this._dialog.open({ title: 'Ошибка приложения', message: String(error) })

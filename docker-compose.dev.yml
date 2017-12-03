@@ -78,13 +78,52 @@ services:
       - api-raw
     volumes:
       - ./api/assets:/www:ro
+      - ./api/server.conf.d:/etc/nginx/server.conf.d:ro
       - ./api/server.dev.conf:/etc/nginx/server.conf:ro
-      - ./api/api.conf:/etc/nginx/api.conf:ro
     networks:
       default:
     ports:
       - 8081:80
 
+  raw:
+    restart: unless-stopped
+    build: ./raw
+    networks:
+      default:
+    links:
+      - db
+    depends_on:
+      - db
+    volumes:
+      - ./raw/dist/main.bundle.js:/app/main.js:ro
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: bitjournal
+      POSTGRES_USER: bitjournal
+      POSTGRES_PASSWORD: bitjournal
+      POSTGRES_IDLE_TIMEOUT: 30
+      POSTGRES_POOL_SIZE: 128
+      NODE_DEBUG: service
+    networks:
+      default:
+    ports:
+      - 8090:80
+
+  raw-front:
+    restart: unless-stopped
+    build: ./nginx
+    links:
+      - raw
+    depends_on:
+      - raw
+    volumes:
+      - ./raw/assets:/www:ro
+      - ./raw/raw.conf:/etc/nginx/raw.conf:ro
+      - ./raw/server.dev.conf:/etc/nginx/server.conf:ro
+    networks:
+      default:
+    ports:
+      - 8082:80
 
   admin:
     restart: unless-stopped
@@ -95,7 +134,7 @@ services:
     networks:
       default:
     ports:
-      - 8090:80
+      - 8083:80
 
 volumes:
   data-volume:

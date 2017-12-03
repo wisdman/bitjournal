@@ -1,15 +1,23 @@
 
-export class Currency {
+import { ICurrency } from './currency.interface'
+
+import { Rating } from '../rating'
+
+export class Currency implements ICurrency {
   static MainFields = [
     'symbol',
     'enable',
+    'extUrl',
     'title',
-    'image'
+    'image',
+    'rating',
   ]
 
   readonly symbol: string
 
   readonly enable: boolean
+
+  readonly extUrl: string
 
   readonly title: string
   readonly description: string
@@ -22,6 +30,8 @@ export class Currency {
 
   readonly content: string
 
+  readonly rating: Rating
+
   readonly branding: object
 
   constructor(value: any = {}) {
@@ -31,6 +41,8 @@ export class Currency {
     this.symbol = String(value.symbol || '').trim()
 
     this.enable = !!value.enable
+
+    this.extUrl = String(value.extUrl || '').trim()
 
     this.title = String(value.title || '').trim()
     this.ogTitle = String(value.ogTitle || '').trim()
@@ -43,6 +55,8 @@ export class Currency {
 
     this.content = String(value.content || '').trim()
 
+    this.rating = new Rating(value.rating)
+
     this.branding = {}
   }
 
@@ -51,6 +65,8 @@ export class Currency {
       symbol: this.symbol,
 
       enable: this.enable,
+
+      extUrl: this.extUrl,
 
       title: this.title,
       ogTitle: this.ogTitle,
@@ -73,6 +89,8 @@ export class Currency {
 
       enable: this.enable,
 
+      extUrl: this.extUrl,
+
       title: this.title,
       ogTitle: this.ogTitle,
 
@@ -83,6 +101,8 @@ export class Currency {
       ogImage: this.ogImage,
 
       content: this.content,
+
+      rating: this.rating,
 
       branding: this.branding,
     }

@@ -28,7 +28,14 @@ export class rawAPI extends RouteMiddleware {
 
     const db = ctx.db as Client
 
-    const oid = Math.max(parseInt(route.data.id), 0)
+    const strOid = route.data.id
+
+    if (!/^[0-9]+&/.test(strOid)) {
+      ctx.set(404)
+      return
+    }
+
+    const oid = parseInt(strOid)
 
     if (!oid) {
       ctx.set(404)
@@ -127,7 +134,14 @@ export class rawAPI extends RouteMiddleware {
 
     const db = ctx.db as Client
 
-    const oid = Math.max(parseInt(route.data.id), 0)
+    const strOid = route.data.id
+
+    if (!/^[0-9]+&/.test(strOid)) {
+      ctx.set(404)
+      return
+    }
+
+    const oid = parseInt(strOid)
 
     if (!oid) {
       ctx.set(404)

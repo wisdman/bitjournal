@@ -25,38 +25,38 @@ import {
 } from './components'
 
 export const ROUTES: Routes = [
-  { path: ''                 , component: DashboardBlockComponent  },
+  { path: ''                   , component: DashboardBlockComponent  },
 
-  { path: 'ads/:id'          , component: AdsItemComponent         },
-  { path: 'ads'              , component: AdsListComponent         },
+  { path: 'ads/:id'            , component: AdsItemComponent         },
+  { path: 'ads'                , component: AdsListComponent         },
 
-  { path: 'currencies/:id'   , component: CurrencyItemComponent    },
-  { path: 'currencies'       , component: CurrencyListComponent    },
+  { path: 'currencies/:symbol' , component: CurrencyItemComponent    },
+  { path: 'currencies'         , component: CurrencyListComponent    },
 
-  { path: 'exchanges/:id'    , component: ExchangeItemComponent    },
-  { path: 'exchanges'        , component: ExchangeListComponent    },
+  { path: 'exchanges/:id'      , component: ExchangeItemComponent    },
+  { path: 'exchanges'          , component: ExchangeListComponent    },
 
-  { path: 'ico/:id'          , component: ICOItemComponent         },
-  { path: 'ico'              , component: ICOListComponent         },
+  { path: 'ico/:id'            , component: ICOItemComponent         },
+  { path: 'ico'                , component: ICOListComponent         },
 
-  { path: 'logs'             , component: LogsBlockComponent       },
+  { path: 'logs'               , component: LogsBlockComponent       },
 
-  { path: 'markets/:id'      , component: MarketItemComponent      },
-  { path: 'markets'          , component: MarketListComponent      },
+  { path: 'markets/:id'        , component: MarketItemComponent      },
+  { path: 'markets'            , component: MarketListComponent      },
 
-  { path: 'publications/:id' , component: PublicationItemComponent },
-  { path: 'publications'     , component: PublicationListComponent },
+  { path: 'publications/:id'   , component: PublicationItemComponent },
+  { path: 'publications'       , component: PublicationListComponent },
 
-  { path: 'sections/:id'     , component: SectionItemComponent     },
-  { path: 'sections'         , component: SectionListComponent     },
+  { path: 'sections/:id'       , component: SectionItemComponent     },
+  { path: 'sections'           , component: SectionListComponent     },
 
-  { path: 'statuses'         , component: StatusListComponent      },
+  { path: 'statuses'           , component: StatusListComponent      },
 
-  { path: 'users/:id'        , component: UserItemComponent        },
-  { path: 'users'            , component: UserListComponent        },
+  { path: 'users/:id'          , component: UserItemComponent        },
+  { path: 'users'              , component: UserListComponent        },
 
-  { path: 'video'            , component: VideoListComponent       },
+  { path: 'video'              , component: VideoListComponent       },
 
-  // { path: '**'               , component: NoContentComponent       },
+  { path: '**'                 , component: NoContentComponent       },
 ]
 

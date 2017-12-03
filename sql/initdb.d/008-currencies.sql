@@ -8,6 +8,8 @@ CREATE TABLE currencies (
 
   "enable"        boolean      NOT NULL DEFAULT TRUE,
 
+  "extUrl"        varchar(256) NOT NULL DEFAULT '',
+
   "title"         varchar(160) NOT NULL DEFAULT '',
   "ogTitle"       varchar(160) NOT NULL DEFAULT '',
 
@@ -19,11 +21,15 @@ CREATE TABLE currencies (
 
   "content"       text         NOT NULL DEFAULT '',
 
+  "rating"        jsonb        NOT NULL DEFAULT '{}'::jsonb,
+
   "branding"      jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
   CONSTRAINT currencies__idx_pkey PRIMARY KEY ("symbol"),
 
   CONSTRAINT currencies__check__symbol CHECK ("symbol" ~ '^[A-Z]+$'),
+
+  CONSTRAINT currencies__check__rating CHECK ("rating"::text  ~ '^{'),
 
   CONSTRAINT currencies__check__branding CHECK ("branding"::text  ~ '^{')
 ) WITH (OIDS = FALSE);

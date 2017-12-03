@@ -132,8 +132,8 @@ export class VideoListComponent implements OnInit, AfterViewInit {
 
   toggle(item: IVideoListItem) {
     this._apiService
-        .post<IVideo>(`/${API_BASE}/${item.id}`, { id: item.id, enable: !item.enable })
-        .subscribe( newItem => item.enable = newItem.enable )
+        .get<{ enable: boolean }>(`/${API_BASE}/${item.id}/toggle`)
+        .subscribe( result => item.enable = result.enable )
   }
 
 }

@@ -8,10 +8,11 @@ import { StringDecoder, NodeStringDecoder } from 'string_decoder'
 import { parse as QuerystringParse } from 'querystring'
 
 import { HttpError } from '../error'
+import { Context } from './context'
 
 export class Request {
 
-  constructor(private req: IncomingMessage) {}
+  constructor(private req: IncomingMessage, private ctx: Context) {}
 
   getHeader(key: string): string | undefined {
     let value = this.req.headers[key.toLowerCase()]

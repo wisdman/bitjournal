@@ -23,8 +23,13 @@
 
     <!-- Image Column -->
     <ng-container matColumnDef="image">
-      <mat-header-cell *matHeaderCellDef style="max-width:32px">IMG</mat-header-cell>
-      <mat-cell *matCellDef="let item" style="max-width:32px"><img class="status-image" [src]="item.image"></mat-cell>
+      <mat-header-cell *matHeaderCellDef style="max-width:40px">IMG</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:40px">
+        <button mat-icon-button (click)="replaceImage(item)">
+          <mat-icon *ngIf="!item.image">add</mat-icon>
+          <img *ngIf="item.image" class="status-image" [src]="item.image | image">
+        </button>
+      </mat-cell>
     </ng-container>
 
     <!-- Title Column -->

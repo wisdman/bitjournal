@@ -1,7 +1,9 @@
 
 import { UUID } from '@core/uuid'
 
-export class Section {
+import { ISection } from './section.interface'
+
+export class Section implements ISection {
   static MainFields = [
     'id',
     'enable',

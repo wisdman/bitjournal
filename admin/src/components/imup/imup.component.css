@@ -1,0 +1,50 @@
+.imup-figure {
+  position: relative;
+  background: #eee;
+  margin: 0;
+}
+
+.imup-img {
+  position: relative;
+  display: block;
+  width: 380px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.imup-figcaption {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  text-align: center;
+  padding: .5rem 1rem;
+
+  background: rgba(0, 0, 0, 0.52);
+  color: #fff;
+  font-size: 18px;
+}
+
+
+.imup-add {
+  position: absolute;
+  bottom: .5rem;
+  right: .5rem;
+}
+
+.imup-delete {
+  position: absolute;
+  right: .5rem;
+  top: .5rem;
+  color: #fff;
+}
+
+.imup-edit {
+  position: absolute;
+  right: .5rem;
+  top: calc(1rem + 40px);
+  color: #fff;
+}

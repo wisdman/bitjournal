@@ -11,24 +11,39 @@
   <mat-form-field class="col-100">
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
   </mat-form-field>
-  <mat-table #table [dataSource]="dataSource">
+  <mat-table #table [dataSource]="dataSource" matSort matSortActive="url" matSortDirection="desc" matSortDisableClear>
 
     <!-- Enabled Column -->
     <ng-container matColumnDef="enable">
-      <mat-header-cell *matHeaderCellDef style="flex: 0 0 30px">#</mat-header-cell>
-      <mat-cell *matCellDef="let element" style="flex: 0 0 30px"><mat-icon *ngIf="element.enable">check</mat-icon></mat-cell>
+      <mat-header-cell *matHeaderCellDef style="max-width:24px">#</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:24px">
+        <mat-checkbox [ngModel]="item.enable" (click)="$event.stopPropagation(); toggle(item)"></mat-checkbox>
+      </mat-cell>
     </ng-container>
 
     <!-- URL Column -->
     <ng-container matColumnDef="url">
-      <mat-header-cell *matHeaderCellDef>Ссылка</mat-header-cell>
-      <mat-cell *matCellDef="let element">/{{ element.url }}</mat-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Ссылка</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <span>/</span>
+        <span>{{ element.url }}</span>
+      </mat-cell>
     </ng-container>
 
     <!-- Title Column -->
     <ng-container matColumnDef="title">
-      <mat-header-cell *matHeaderCellDef>Заголовок</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Название</mat-header-cell>
       <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
+    </ng-container>
+
+    <!-- View count Column -->
+    <ng-container matColumnDef="view">
+      <mat-header-cell *matHeaderCellDef style="max-width:200px">Просмотры</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:200px">
+        <i class="fa fa-eye" aria-hidden="true"></i>
+        <span>{{ item.viewToday | number:'1.0-0' }}</span>
+        <span>/</span>
+        <span>{{ item.view | number:'1.0-0' }}</span></mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

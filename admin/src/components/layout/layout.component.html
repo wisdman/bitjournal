@@ -8,7 +8,7 @@
     </svg>
     <a *ngIf="currentUser" mat-button (click)="profile()">
       <span>{{ currentUser.email }}</span>
-      <img class="layout-avatar" [src]="currentUser.imege">
+      <img class="layout-avatar" [src]="currentUser.imege | image">
     </a>
   </mat-toolbar-row>
 </mat-toolbar>
