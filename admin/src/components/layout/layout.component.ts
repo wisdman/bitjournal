@@ -3,7 +3,7 @@ import { Router } from '@angular/router'
 
 import { UserService } from '../../services'
 
-import { User, UserRoleEnum } from '@common/models'
+import { User, RoleEnum } from '@common/models'
 
 @Component({
   selector: 'body',

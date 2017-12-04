@@ -3,7 +3,7 @@
  */
 
 import { UUID } from '@core/uuid'
-import { UserRoleEnum } from './user-role.enum'
+import { RoleEnum } from './role.enum'
 
 const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/
 
@@ -23,7 +23,7 @@ export class User {
 
   readonly id: UUID
   readonly enable: boolean
-  readonly roles: Array<UserRoleEnum>
+  readonly roles: Array<RoleEnum>
 
   readonly url: string | null
 
@@ -49,9 +49,9 @@ export class User {
     if (value.roles) {
       const match = ENUM_PG_ARRAY_PATTERN.exec(value.roles)
       const roles = match && match[1].split(',') || value.roles
-      this.roles = UserRoleEnum.getArray(roles) as Array<UserRoleEnum>
+      this.roles = RoleEnum.getArray(roles) as Array<RoleEnum>
     } else
-      this.roles = new Array<UserRoleEnum>()
+      this.roles = new Array<RoleEnum>()
 
     this.url = String(value.url || '').trim() || null
 
@@ -71,7 +71,7 @@ export class User {
                                                   : new Array<UUID>()
   }
 
-  checkRole(roles: Array<UserRoleEnum>): boolean {
+  checkRole(roles: Array<RoleEnum>): boolean {
     for (let role of roles)
       if (this.roles.includes(role))
         return true

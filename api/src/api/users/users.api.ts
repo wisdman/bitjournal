@@ -8,7 +8,7 @@ import { OTP } from '@core/otp'
 import { ACL } from '@common/middleware'
 
 import {
-  UserRoleEnum,
+  RoleEnum,
   User,
 } from '@common/models'
 
@@ -19,8 +19,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async getAll(ctx: Context, next: INext) {
     const db = ctx.db as Client
@@ -70,8 +69,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}/:id`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async getOne(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -107,8 +105,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}/:id/toggle`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async toggle(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -147,8 +144,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Post(`/${ROUTE_BASE}/:id/otp`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async resetOTP(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -200,8 +196,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Post(`/${ROUTE_BASE}/:id/password`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async password(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -247,8 +242,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Post(`/${ROUTE_BASE}`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async add(ctx: Context, next: INext) {
     const db = ctx.db as Client
@@ -290,8 +284,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Post(`/${ROUTE_BASE}/:id`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async update(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -345,8 +338,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Delete(`/${ROUTE_BASE}/:id`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async delete(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -384,8 +376,7 @@ export class UsersAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}/:id/otp`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Su,
   ])
   async getOTP(ctx: Context, next: INext) {
     const route = ctx.route as Route

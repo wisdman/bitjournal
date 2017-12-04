@@ -8,7 +8,7 @@ import { UUID } from '@core/uuid'
 import { ACL } from '@common/middleware'
 
 import {
-  UserRoleEnum,
+  RoleEnum,
 } from '@common/models'
 
 const ROUTE_BASE = 'raw'
@@ -20,8 +20,8 @@ export class rawAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}/:id`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async getOne(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -80,8 +80,8 @@ export class rawAPI extends RouteMiddleware {
 
   @Put(`/${ROUTE_BASE}`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async add(ctx: Context, next: INext) {
     const db = ctx.db as Client
@@ -126,8 +126,8 @@ export class rawAPI extends RouteMiddleware {
 
   @Delete(`/${ROUTE_BASE}/:id`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async delete(ctx: Context, next: INext) {
     const route = ctx.route as Route

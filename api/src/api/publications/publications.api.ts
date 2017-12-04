@@ -7,7 +7,7 @@ import { UUID } from '@core/uuid'
 import { ACL } from '@common/middleware'
 
 import {
-  UserRoleEnum,
+  RoleEnum,
   Publication,
 } from '@common/models'
 
@@ -18,8 +18,8 @@ export class PublicationsAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async getAll(ctx: Context, next: INext) {
     const db = ctx.db as Client
@@ -57,8 +57,8 @@ export class PublicationsAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}/:id`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async getOne(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -128,8 +128,8 @@ export class PublicationsAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}/:id/toggle`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async toggle(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -169,8 +169,8 @@ export class PublicationsAPI extends RouteMiddleware {
 
   @Post(`/${ROUTE_BASE}`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async add(ctx: Context, next: INext) {
     const db = ctx.db as Client
@@ -212,8 +212,8 @@ export class PublicationsAPI extends RouteMiddleware {
 
   @Post(`/${ROUTE_BASE}/:id`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async update(ctx: Context, next: INext) {
     const route = ctx.route as Route
@@ -267,8 +267,8 @@ export class PublicationsAPI extends RouteMiddleware {
 
   @Delete(`/${ROUTE_BASE}/:id`)
   @ACL([
-    UserRoleEnum.Administrator,
-    UserRoleEnum.Su,
+    RoleEnum.Administrator,
+    RoleEnum.Su,
   ])
   async delete(ctx: Context, next: INext) {
     const route = ctx.route as Route

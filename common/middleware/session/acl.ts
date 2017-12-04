@@ -1,10 +1,10 @@
 
 import { Context, INext } from '@core/service'
-import { UserRoleEnum } from '@common/models'
+import { RoleEnum } from '@common/models'
 
 import { Session } from './session'
 
-export function ACL(roles: Array<UserRoleEnum> = []): MethodDecorator {
+export function ACL(roles: Array<RoleEnum> = []): MethodDecorator {
   const rolesIds = roles.map( item => item.id)
 
   return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor): PropertyDescriptor => {

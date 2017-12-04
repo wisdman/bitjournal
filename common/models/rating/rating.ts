@@ -4,11 +4,8 @@ import { IRating } from './rating.interface'
 
 export class Rating implements IRating {
   static MainFields = [
-    'symbol',
-    'enable',
-    'logo',
-    'extUrl',
-    'title',
+    'like',
+    'dislike',
   ]
 
   readonly like: number

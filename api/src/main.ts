@@ -10,6 +10,7 @@ import {
 } from '@common/middleware'
 
 import {
+  AdsAPI,
   AuthAPI,
   CurrenciesAPI,
   ExchangesAPI,
@@ -33,6 +34,7 @@ new Service(
   new SessionMiddleware(), // Add session to context
 
   // === API ===
+  new AdsAPI(),
   new AuthAPI(),
   new CurrenciesAPI(),
   new ExchangesAPI(),

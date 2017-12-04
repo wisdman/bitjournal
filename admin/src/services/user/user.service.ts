@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material'
 
 import { AuthDialogComponent } from '../../components'
 
-import { User, UserRoleEnum } from '@common/models'
+import { User, RoleEnum } from '@common/models'
 
 import { APIService } from '../api'
 import { DialogService } from '../dialog'
