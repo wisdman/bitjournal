@@ -136,7 +136,7 @@ export class rawAPI extends RouteMiddleware {
 
     const strOid = route.data.id
 
-    if (!/^[0-9]+&/.test(strOid)) {
+    if (!/^[0-9]+$/.test(strOid)) {
       ctx.set(404)
       return
     }

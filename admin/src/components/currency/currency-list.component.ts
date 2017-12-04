@@ -34,7 +34,8 @@ constructor(
     'rating',
     'btc',
     'usd',
-    'rub'
+    'rub',
+    'bjr',
   ]
 
   dataSource = new MatTableDataSource(new Array<ICurrencyListItem>())

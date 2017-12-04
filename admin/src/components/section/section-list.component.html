@@ -15,7 +15,7 @@
 
     <!-- Enabled Column -->
     <ng-container matColumnDef="enable">
-      <mat-header-cell *matHeaderCellDef style="max-width:24px">#</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef style="max-width:24px"></mat-header-cell>
       <mat-cell *matCellDef="let item" style="max-width:24px">
         <mat-checkbox [ngModel]="item.enable" (click)="$event.stopPropagation(); toggle(item)"></mat-checkbox>
       </mat-cell>

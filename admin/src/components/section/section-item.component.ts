@@ -13,7 +13,6 @@ import {
 import { ISection } from '@common/models'
 
 const API_BASE = 'sections'
-const ROUTE_BASE = 'sections'
 
 const URL_PATTERN = /^[a-z0-9]([a-z0-9_-]*[a-z0-9])?(\/[a-z0-9]([a-z0-9_-]*[a-z0-9])?)?$/
 
@@ -55,13 +54,21 @@ export class SectionItemComponent implements OnInit {
                      ] ],
 
       title:         [ '', [
+                       Validators.maxLength(160),
                        Validators.required
                      ] ],
 
-      description:   [ '' ],
+      description:   [ '', [
+                       Validators.maxLength(160)
+                     ] ],
 
-      ogTitle:       [ '' ],
-      ogDescription: [ '' ],
+      ogTitle:       [ '', [
+                       Validators.maxLength(160)
+                     ] ],
+
+      ogDescription: [ '', [
+                       Validators.maxLength(160)
+                     ] ],
 
       image:         [ null ],
       ogImage:       [ null ],
@@ -131,7 +138,7 @@ export class SectionItemComponent implements OnInit {
       }
     }).subscribe( result => {
       if (result === true)
-        this._apiService.delete<ISection>(`/${ROUTE_BASE}/${this._id}`)
+        this._apiService.delete<ISection>(`/${API_BASE}/${this._id}`)
                         .subscribe( _ => this._location.back() )
     })
   }

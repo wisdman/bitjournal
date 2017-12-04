@@ -14,7 +14,6 @@ import {
 import { ICurrency, IRating } from '@common/models'
 
 const API_BASE = 'currencies'
-const ROUTE_BASE = 'currencies'
 
 const SYMBOL_PATTERN = /^[A-Z]+$/
 
@@ -37,6 +36,7 @@ export class CurrencyItemComponent implements OnInit {
   }
 
   itemForm: FormGroup
+  rating: IRating
 
   constructor(
     private readonly _fb: FormBuilder,
@@ -62,6 +62,7 @@ export class CurrencyItemComponent implements OnInit {
                      ] ],
 
       title:         [ '', [
+                       Validators.maxLength(160),
                        Validators.required
                      ] ],
 
@@ -78,10 +79,17 @@ export class CurrencyItemComponent implements OnInit {
       algorithm:     [ '' ],
       system:        [ '' ],
 
-      description:   [ '' ],
+      description:   [ '', [
+                       Validators.maxLength(160)
+                     ] ],
 
-      ogTitle:       [ '' ],
-      ogDescription: [ '' ],
+      ogTitle:       [ '', [
+                       Validators.maxLength(160)
+                     ] ],
+
+      ogDescription: [ '', [
+                       Validators.maxLength(160)
+                     ] ],
 
       image:         [ null ],
       ogImage:       [ null ],
@@ -89,8 +97,6 @@ export class CurrencyItemComponent implements OnInit {
       content:       [ '' ],
     })
   }
-
-  rating: IRating
 
   ngOnInit() {
     this._route.params.subscribe(params => {
@@ -169,7 +175,7 @@ export class CurrencyItemComponent implements OnInit {
       }
     }).subscribe( result => {
       if (result === true)
-        this._apiService.delete<ICurrency>(`/${ROUTE_BASE}/${this._symbol}`)
+        this._apiService.delete<ICurrency>(`/${API_BASE}/${this._symbol}`)
                         .subscribe( _ => this._location.back() )
     })
   }

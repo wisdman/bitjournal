@@ -1,18 +1,28 @@
 
 import { UUID } from '@core/uuid'
+import { Timestamp } from '@core/timestamp'
 
-export class Market {
+import { Rating } from '../rating'
+
+import { IMarket } from './market.interface'
+
+export class Market implements IMarket {
   static MainFields = [
     'id',
     'enable',
     'url',
     'title',
+    'image',
+    'rating',
+    'bjr',
   ]
 
   readonly id: UUID
   readonly enable: boolean
 
-  readonly url: string | null
+  readonly url: string
+
+  readonly extUrl: string
 
   readonly title: string
   readonly description: string
@@ -23,7 +33,15 @@ export class Market {
   readonly image: number | null
   readonly ogImage: number | null
 
+  readonly startDate: Timestamp
+
+  readonly referral: boolean
+
   readonly content: string
+
+  readonly rating: Rating
+
+  readonly bjr: number
 
   readonly branding: object
 
@@ -33,9 +51,11 @@ export class Market {
 
     this.id = new UUID(value.id || null)
 
-    this.enable = !!value.enable
+    this.enable = value.enable === undefined ? true : !!value.enable
 
-    this.url = String(value.url || '').trim() || null
+    this.url = String(value.url || '').trim()
+
+    this.extUrl = String(value.extUrl || '').trim()
 
     this.title = String(value.title || '').trim()
     this.ogTitle = String(value.ogTitle || '').trim()
@@ -46,7 +66,15 @@ export class Market {
     this.image = Math.max(~~value.image, 0) || null
     this.ogImage = Math.max(~~value.ogImage, 0) || null
 
+    this.startDate = new Timestamp(value.startDate)
+
+    this.referral = !!value.referral
+
     this.content = String(value.content || '').trim()
+
+    this.rating = new Rating(value.rating)
+
+    this.bjr = Math.min(Math.max(~~value.bjr, 0), 5)
 
     this.branding = {}
   }
@@ -57,6 +85,8 @@ export class Market {
 
       url: this.url,
 
+      extUrl: this.extUrl,
+
       title: this.title,
       ogTitle: this.ogTitle,
 
@@ -66,9 +96,13 @@ export class Market {
       image: this.image,
       ogImage: this.ogImage,
 
+      startDate: this.startDate,
+
+      referral: this.referral,
+
       content: this.content,
 
-      branding: this.branding,
+      bjr: this.bjr,
     }
   }
 
@@ -80,6 +114,8 @@ export class Market {
 
       url: this.url,
 
+      extUrl: this.extUrl,
+
       title: this.title,
       ogTitle: this.ogTitle,
 
@@ -89,7 +125,14 @@ export class Market {
       image: this.image,
       ogImage: this.ogImage,
 
+      startDate: this.startDate.isValid ? this.startDate : undefined,
+
+      referral: this.referral,
+
       content: this.content,
+
+      rating: this.rating,
+      bjr: this.bjr,
 
       branding: this.branding,
     }

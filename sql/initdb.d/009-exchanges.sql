@@ -21,17 +21,23 @@ CREATE TABLE exchanges (
   "image"         oid          DEFAULT NULL,
   "ogImage"       oid          DEFAULT NULL,
 
+  "startDate"     timestamp without time zone NOT NULL DEFAULT timezone('UTC', now()),
+
+  "referral"      boolean      NOT NULL DEFAULT FALSE,
+
   "content"       text         NOT NULL DEFAULT '',
 
   "rating"        jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
-  "bjr"           bigint       NOT NULL DEFAULT 0,
+  "bjr"           smallint     NOT NULL DEFAULT 0,
 
   "branding"      jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
   CONSTRAINT exchanges__idx_pkey PRIMARY KEY ("id"),
 
   CONSTRAINT exchanges__check__url CHECK ("url" ~ '^[a-z0-9]([a-z0-9_-]*[a-z0-9])?$'),
+
+  CONSTRAINT exchanges__check__bjr CHECK ("bjr" >= 0 AND "bjr" <= 5),
 
   CONSTRAINT exchanges__check__rating CHECK ("rating"::text ~ '^{'),
 

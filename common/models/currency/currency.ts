@@ -9,10 +9,10 @@ export class Currency implements ICurrency {
   static MainFields = [
     'symbol',
     'enable',
-    'extUrl',
     'title',
     'image',
     'rating',
+    'bjr',
   ]
 
   readonly symbol: string
@@ -54,7 +54,7 @@ export class Currency implements ICurrency {
 
     this.symbol = String(value.symbol || '').trim()
 
-    this.enable = !!value.enable
+    this.enable = value.enable === undefined ? true : !!value.enable
 
     this.extUrl = String(value.extUrl || '').trim()
 
@@ -102,6 +102,7 @@ export class Currency implements ICurrency {
       ogImage: this.ogImage,
 
       startDate: this.startDate,
+
       founder: this.founder,
       maxCoin: this.maxCoin,
       algorithm: this.algorithm,
@@ -110,8 +111,6 @@ export class Currency implements ICurrency {
       content: this.content,
 
       bjr: this.bjr,
-
-      branding: this.branding,
     }
   }
 

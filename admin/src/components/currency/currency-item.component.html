@@ -18,47 +18,61 @@
 <main>
   <form mat-dialog-content [formGroup]="itemForm" novalidate>
     <mat-tab-group>
+
       <mat-tab label="Основное">
+
         <div class="row">
+
           <div class="col">
-            <h4>Иконка</h4>
+            <h4>Логотип</h4>
             <button mat-icon-button (click)="replaceImage()">
               <mat-icon *ngIf="!itemForm.value.image">add</mat-icon>
-              <img *ngIf="itemForm.value.image" [src]="itemForm.value.image | image" class="currency-image">
+              <img *ngIf="itemForm.value.image" [src]="itemForm.value.image | image" class="currency-item-logo">
             </button>
           </div>
+
           <mat-form-field class="col">
             <input matInput type="text" maxlength="6" placeholder="Бирживой символ" formControlName="symbol">
             <mat-hint align="end">{{ itemForm.controls.symbol.value.length }} / 6</mat-hint>
             <mat-error *ngIf="itemForm.controls.symbol.hasError('required')">Должено быть заполнено</mat-error>
             <mat-error *ngIf="itemForm.controls.symbol.hasError('pattern')">Содержит недопустимые символы</mat-error>
           </mat-form-field>
+
           <mat-form-field class="col-max">
             <input matInput type="text" maxlength="160" placeholder="Название" formControlName="title">
             <mat-hint align="end">{{ itemForm.controls.title.value.length }} / 160</mat-hint>
             <mat-error *ngIf="itemForm.controls.title.hasError('required')">Должено быть заполнено</mat-error>
           </mat-form-field>
+
         </div>
+
         <div class="row">
+
           <mat-form-field class="col">
             <input matInput [matDatepicker]="startDatePicker" placeholder="Дата основания" formControlName="startDate">
             <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #startDatePicker></mat-datepicker>
           </mat-form-field>
+
           <mat-form-field class="col-max">
             <input matInput type="text" placeholder="Основатель" formControlName="founder">
           </mat-form-field>
+
           <mat-form-field class="col">
             <input matInput type="number" placeholder="Всего монет" formControlName="maxCoin">
-            <mat-error *ngIf="itemForm.controls.title.hasError('min')">Должено быть положительным</mat-error>
+            <mat-error *ngIf="itemForm.controls.maxCoin.hasError('min')">Должено быть положительным</mat-error>
           </mat-form-field>
+
           <mat-form-field class="col">
             <input matInput type="text" placeholder="Алгоритм" formControlName="algorithm">
           </mat-form-field>
+
           <mat-form-field class="col-max">
             <input matInput type="text" placeholder="Система генерации" formControlName="system">
           </mat-form-field>
+
         </div>
+
         <div class="row">
           <mat-form-field class="col-max">
             <input matInput type="text" maxlength="256" placeholder="Ссылка на сайт" formControlName="extUrl">
@@ -66,16 +80,22 @@
             <mat-hint align="end">{{ itemForm.controls.extUrl.value.length }} / 256</mat-hint>
           </mat-form-field>
         </div>
+
         <div class="row">
           <mat-form-field class="col-max">
             <input matInput type="text" maxlength="160" placeholder="Описание" formControlName="description">
             <mat-hint align="end">{{ itemForm.controls.description.value.length }} / 160</mat-hint>
           </mat-form-field>
         </div>
+
       </mat-tab>
+
       <mat-tab label="Шаринг">
+
         <div class="row">
+
           <div class="col-max">
+
             <div class="row">
               <mat-form-field class="col-max">
                 <input matInput type="text" maxlength="160" placeholder="Заголовок для шаринга" formControlName="ogTitle">
@@ -83,6 +103,7 @@
                 <mat-hint align="end">{{ itemForm.controls.ogTitle.value.length }} / 160</mat-hint>
               </mat-form-field>
             </div>
+
             <div class="row">
               <mat-form-field class="col-max">
                 <input matInput type="text" maxlength="160" placeholder="Описание для шаринга" formControlName="ogDescription">
@@ -90,7 +111,9 @@
                 <mat-hint align="end">{{ itemForm.controls.ogDescription.value.length }} / 160</mat-hint>
               </mat-form-field>
             </div>
+
           </div>
+
           <div class="col">
             <div class="row">
               <div class="col">
@@ -99,35 +122,47 @@
               </div>
             </div>
           </div>
+
         </div>
+
       </mat-tab>
+
       <mat-tab label="Страница валюты">
         <content-editor class="col-100"></content-editor>
       </mat-tab>
+
       <mat-tab *ngIf="!isNew" label="Брендирование">
         <div class="row">Under construction</div>
       </mat-tab>
+
       <mat-tab *ngIf="!isNew" label="Показатели">
         <div class="row">{{ rating | json }}</div>
       </mat-tab>
+
       <mat-tab *ngIf="!isNew" label="Комментарии">
 
       </mat-tab>
+
       <mat-tab *ngIf="!isNew" label="Статьи">
 
       </mat-tab>
+
       <mat-tab *ngIf="!isNew" label="Биржи">
 
       </mat-tab>
+
       <mat-tab *ngIf="!isNew" label="Обменники">
 
       </mat-tab>
+
       <mat-tab *ngIf="!isNew" label="Логи">
         <div class="row">Logging disabled</div>
       </mat-tab>
+
       <mat-tab *ngIf="DEBUG" label="Отладка">
         <p>{{ itemForm.value | json }}</p>
       </mat-tab>
+
     </mat-tab-group>
   </form>
 </main>

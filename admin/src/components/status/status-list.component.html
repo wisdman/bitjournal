@@ -23,7 +23,7 @@
 
     <!-- Image Column -->
     <ng-container matColumnDef="image">
-      <mat-header-cell *matHeaderCellDef style="max-width:40px">IMG</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef style="max-width:40px">Лого</mat-header-cell>
       <mat-cell *matCellDef="let item" style="max-width:40px">
         <button mat-icon-button (click)="replaceImage(item)">
           <mat-icon *ngIf="!item.image">add</mat-icon>

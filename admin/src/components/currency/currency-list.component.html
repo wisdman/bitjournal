@@ -23,9 +23,9 @@
 
     <!-- Logo Column -->
     <ng-container matColumnDef="image">
-      <mat-header-cell *matHeaderCellDef style="max-width:40px">IMG</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef style="max-width:40px">Лого</mat-header-cell>
       <mat-cell *matCellDef="let item" style="max-width:40px">
-        <img class="currency-image" [src]="item.image | image">
+        <img class="currency-list-logo" [src]="item.image | image">
       </mat-cell>
     </ng-container>
 
@@ -91,6 +91,14 @@
       <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">RUB</mat-header-cell>
       <mat-cell *matCellDef="let item" style="max-width:90px">
         <span>{{ item.rub | number:'1.1-2' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- BJR Column -->
+    <ng-container matColumnDef="bjr">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">BJR</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <span>{{ item.bjr | number:'1.1-2' }}</span>
       </mat-cell>
     </ng-container>
 

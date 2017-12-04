@@ -63,8 +63,6 @@ export class Section implements ISection {
 
       image: this.image,
       ogImage: this.ogImage,
-
-      branding: this.branding,
     }
   }
 

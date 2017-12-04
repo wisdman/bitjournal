@@ -1,6 +1,10 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <h1>{{ itemForm.value.title || 'Новое ICO' }}</h1>
+    <h1>{{ itemForm.value.title || 'Новый проект' }}</h1>
+    <button mat-button (click)="back()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Назад</span>
+    </button>
     <button mat-button (click)="save()">
       <mat-icon>save</mat-icon>
       <span>Сохранить</span>
@@ -15,27 +19,135 @@
   <form mat-dialog-content [formGroup]="itemForm" novalidate>
     <mat-tab-group>
       <mat-tab label="Основное">
+
         <div class="row">
+
+          <div class="col">
+            <h4>Логотип</h4>
+            <button mat-button (click)="replaceImage()">
+              <mat-icon *ngIf="!itemForm.value.image">add</mat-icon>
+              <img *ngIf="itemForm.value.image" [src]="itemForm.value.image | image" class="ico-item-logo">
+            </button>
+          </div>
+
           <mat-form-field class="col-max">
-            <input #titleInput matInput type="text" maxlength="160" placeholder="Название" formControlName="title">
-            <mat-hint align="end">{{titleInput.value.length}} / 160</mat-hint>
-            <mat-error *ngIf="itemForm.controls.title.hasError('required')">Название должено быть заполнено <strong>обязательно</strong></mat-error>
+            <input matInput type="text" maxlength="256" placeholder="Ссылка" formControlName="url">
+            <mat-hint>При изменении ссылки може пострадать SEO</mat-hint>
+            <mat-hint align="end">{{ itemForm.controls.url.value.length }} / 256</mat-hint>
+            <mat-error *ngIf="itemForm.controls.url.hasError('required')">Должено быть заполнено</mat-error>
+            <mat-error *ngIf="itemForm.controls.url.hasError('pattern')">Содержит недопустимые символы</mat-error>
           </mat-form-field>
+
+          <mat-form-field class="col-max">
+            <input matInput type="text" maxlength="160" placeholder="Название" formControlName="title">
+            <mat-hint align="end">{{ itemForm.controls.title.value.length }} / 160</mat-hint>
+            <mat-error *ngIf="itemForm.controls.title.hasError('required')">Должено быть заполнено</mat-error>
+          </mat-form-field>
+
         </div>
+
         <div class="row">
-          <mat-form-field class="col-max">
-            <input #descriptionInput matInput type="text" maxlength="160" placeholder="Описание" formControlName="description">
-            <mat-hint align="end">{{descriptionInput.value.length}} / 160</mat-hint>
+
+          <mat-form-field class="col">
+            <input matInput [matDatepicker]="startDatePicker" placeholder="Дата начала" formControlName="startDate">
+            <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #startDatePicker></mat-datepicker>
           </mat-form-field>
+
+          <mat-form-field class="col">
+            <input matInput type="number" placeholder="Цель" formControlName="goal">
+            <mat-error *ngIf="itemForm.controls.goal.hasError('min')">Должено быть положительным</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="col">
+            <input matInput type="number" placeholder="Собрано" formControlName="collected">
+            <mat-error *ngIf="itemForm.controls.collected.hasError('min')">Должено быть положительным</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="col">
+            <input matInput type="text" placeholder="Статус" formControlName="status">
+          </mat-form-field>
+
+          <mat-form-field class="col-max">
+            <input matInput type="text" maxlength="256" placeholder="Ссылка на сайт" formControlName="extUrl">
+            <mat-hint>Указывайте полную ссылку</mat-hint>
+            <mat-hint align="end">{{ itemForm.controls.extUrl.value.length }} / 256</mat-hint>
+          </mat-form-field>
+
+        </div>
+
+        <div class="row">
+
+          <mat-form-field class="col-max">
+            <input matInput type="text" maxlength="160" placeholder="Описание" formControlName="description">
+            <mat-hint align="end">{{ itemForm.controls.description.value.length }} / 160</mat-hint>
+          </mat-form-field>
+
+        </div>
+
+      </mat-tab>
+
+      <mat-tab label="Шаринг">
+        <div class="row">
+
+          <div class="col-max">
+
+            <div class="row">
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="160" placeholder="Заголовок для шаринга" formControlName="ogTitle">
+                <mat-hint>Виден только при шаринге. Если не заполнено используется "Название"</mat-hint>
+                <mat-hint align="end">{{ itemForm.controls.ogTitle.value.length }} / 160</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="160" placeholder="Описание для шаринга" formControlName="ogDescription">
+                <mat-hint>Виден только при шаринге. Если не заполнено используется "Описание"</mat-hint>
+                <mat-hint align="end">{{ itemForm.controls.ogDescription.value.length }} / 160</mat-hint>
+              </mat-form-field>
+            </div>
+
+          </div>
+
+          <div class="col">
+            <div class="row">
+              <div class="col">
+                <h3>Картинка для шаринга</h3>
+                <imup formControlName="ogImage"></imup>
+              </div>
+            </div>
+          </div>
+
         </div>
       </mat-tab>
-      <mat-tab label="Подробно">
-        <div class="row">
-        </div>
+
+      <mat-tab label="Страница проекта">
+        <content-editor class="col-100"></content-editor>
       </mat-tab>
-      <mat-tab label="Статьи">
-        <div class="row">
-        </div>
+
+      <mat-tab *ngIf="!isNew" label="Брендирование">
+        <div class="row">Under construction</div>
+      </mat-tab>
+
+      <mat-tab *ngIf="!isNew" label="Показатели">
+        <div class="row">{{ rating | json }}</div>
+      </mat-tab>
+
+      <mat-tab *ngIf="!isNew" label="Комментарии">
+
+      </mat-tab>
+
+      <mat-tab *ngIf="!isNew" label="Статьи">
+
+      </mat-tab>
+
+      <mat-tab *ngIf="!isNew" label="Логи">
+        <div class="row">Logging disabled</div>
+      </mat-tab>
+
+      <mat-tab *ngIf="DEBUG" label="Отладка">
+        <p>{{ itemForm.value | json }}</p>
       </mat-tab>
     </mat-tab-group>
   </form>

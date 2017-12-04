@@ -1,18 +1,28 @@
 
 import { UUID } from '@core/uuid'
+import { Timestamp } from '@core/timestamp'
 
-export class ICO {
+import { Rating } from '../rating'
+
+import { IICO } from './ico.interface'
+
+export class ICO implements IICO {
   static MainFields = [
     'id',
     'enable',
     'url',
     'title',
+    'image',
+    'rating',
+    'bjr',
   ]
 
   readonly id: UUID
   readonly enable: boolean
 
-  readonly url: string | null
+  readonly url: string
+
+  readonly extUrl: string
 
   readonly title: string
   readonly description: string
@@ -23,7 +33,18 @@ export class ICO {
   readonly image: number | null
   readonly ogImage: number | null
 
+  readonly startDate: Timestamp
+
+  readonly goal: number
+  readonly collected: number
+
+  readonly status: string
+
   readonly content: string
+
+  readonly rating: Rating
+
+  readonly bjr: number
 
   readonly branding: object
 
@@ -33,9 +54,11 @@ export class ICO {
 
     this.id = new UUID(value.id || null)
 
-    this.enable = !!value.enable
+    this.enable = value.enable === undefined ? true : !!value.enable
 
-    this.url = String(value.url || '').trim() || null
+    this.url = String(value.url || '').trim()
+
+    this.extUrl = String(value.extUrl || '').trim()
 
     this.title = String(value.title || '').trim()
     this.ogTitle = String(value.ogTitle || '').trim()
@@ -46,7 +69,18 @@ export class ICO {
     this.image = Math.max(~~value.image, 0) || null
     this.ogImage = Math.max(~~value.ogImage, 0) || null
 
+    this.startDate = new Timestamp(value.startDate)
+
+    this.goal = Math.max(~~value.goal, 0)
+    this.collected = Math.max(~~value.collected, 0)
+
+    this.status = String(value.status || '').trim()
+
     this.content = String(value.content || '').trim()
+
+    this.rating = new Rating(value.rating)
+
+    this.bjr = Math.min(Math.max(~~value.bjr, 0), 5)
 
     this.branding = {}
   }
@@ -57,6 +91,8 @@ export class ICO {
 
       url: this.url,
 
+      extUrl: this.extUrl,
+
       title: this.title,
       ogTitle: this.ogTitle,
 
@@ -66,9 +102,16 @@ export class ICO {
       image: this.image,
       ogImage: this.ogImage,
 
+      startDate: this.startDate,
+
+      goal: this.goal,
+      collected: this.collected,
+
+      status: this.status,
+
       content: this.content,
 
-      branding: this.branding,
+      bjr: this.bjr,
     }
   }
 
@@ -80,6 +123,8 @@ export class ICO {
 
       url: this.url,
 
+      extUrl: this.extUrl,
+
       title: this.title,
       ogTitle: this.ogTitle,
 
@@ -89,7 +134,17 @@ export class ICO {
       image: this.image,
       ogImage: this.ogImage,
 
+      startDate: this.startDate.isValid ? this.startDate : undefined,
+
+      goal: this.goal,
+      collected: this.collected,
+
+      status: this.status,
+
       content: this.content,
+
+      rating: this.rating,
+      bjr: this.bjr,
 
       branding: this.branding,
     }
