@@ -58,7 +58,7 @@
           <mat-form-field class="col-max">
             <input matInput type="text" placeholder="Ссылка" formControlName="url">
             <mat-hint>При сбросе ссылки може пострадать SEO</mat-hint>
-            <mat-icon matSuffix (click)="resetUrl()" class="pointer">refresh</mat-icon>
+            <mat-icon *ngIf="!isNew" matSuffix (click)="resetUrl()" class="pointer">refresh</mat-icon>
           </mat-form-field>
 
         </div>
@@ -184,7 +184,7 @@
       </mat-tab>
 
       <mat-tab label="Контент">
-        <editor class="col-100"></editor>
+        <editor class="col-100" formControlName="content"></editor>
       </mat-tab>
 
       <mat-tab label="Шаринг">

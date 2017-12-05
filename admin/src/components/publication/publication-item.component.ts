@@ -8,6 +8,7 @@ import { ENTER, COMMA } from '@angular/cdk/keycodes'
 import QRious from 'qrious'
 
 import { UUID } from '@core/uuid'
+import { URLBuilder } from '@core/url-builder'
 
 import {
   APIService,
@@ -137,6 +138,8 @@ export class PublicationItemComponent implements OnInit {
       comments:      [ true, [
                        Validators.required
                      ] ],
+
+      content:       [ '' ]
     })
   }
 
@@ -217,6 +220,13 @@ export class PublicationItemComponent implements OnInit {
     if (this.isNew)
       return
 
+    const title = String(this.itemForm.value.title).trim()
+
+    if (!title) {
+      this._dialog.message('Не заполнен заголовок')
+      return
+    }
+
     this._dialog.open({
       title: 'Необратимая операция',
       message: `Вы уверены, что хотите заменить ссылку. Это может сказаться на SEO?`,
@@ -225,13 +235,8 @@ export class PublicationItemComponent implements OnInit {
         'Заменить': true
       }
     }).subscribe( result => {
-      // if (result === true)
-      //   this._apiService
-      //       .post<{url: string}>(`/${API_BASE}/${this._id}/reseturl`, {})
-      //       .subscribe(item => {
-      //         this.otpSecret = item.secret
-      //         this.reloadOTPCanvas()
-      //       })
+      if (result === true)
+        this.itemForm.patchValue({ url: URLBuilder.build(title) })
     })
   }
 

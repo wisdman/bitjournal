@@ -1,5 +1,6 @@
 
 import { UUID } from '@core/uuid'
+import { URLBuilder } from '@core/url-builder'
 import { Timestamp } from '@core/timestamp'
 
 import { Rating } from '../rating'
@@ -115,6 +116,10 @@ export class Publication implements IPublication {
     this.branding = {}
 
     this.lastModified = new Timestamp(value.lastModified)
+
+    // === Replace url if empty ===
+    if (!this.url)
+      this.url = URLBuilder.build(this.title)
   }
 
   valueOf() {
