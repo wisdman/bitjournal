@@ -8,7 +8,7 @@ CREATE TABLE markets (
 
   "enable"        boolean      NOT NULL DEFAULT TRUE,
 
-  "url"           varchar(256) DEFAULT NULL,
+  "url"           varchar(256) NOT NULL,
 
   "extUrl"        varchar(256) NOT NULL DEFAULT '',
 
@@ -49,4 +49,5 @@ CREATE UNIQUE INDEX markets__idx__unique_url ON markets USING btree ("url");
 
 -- Scann indexes
 CREATE INDEX markets__idx__enable ON markets USING btree ("enable");
-CREATE INDEX markets__idx__bjr ON markets USING btree ("bjr");
+CREATE INDEX markets__idx__rating ON markets USING gin   ("rating");
+CREATE INDEX markets__idx__bjr    ON markets USING btree ("bjr");

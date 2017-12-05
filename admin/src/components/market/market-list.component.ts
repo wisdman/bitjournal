@@ -16,7 +16,7 @@ const ROUTE_BASE = 'markets'
 @Component({
   selector: 'market-list',
   templateUrl: './market-list.component.html',
-   styleUrls: ['./market-list.component.css'],
+  styleUrls: ['./market-list.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class MarketListComponent {

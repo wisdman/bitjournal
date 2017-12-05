@@ -11,11 +11,11 @@ CREATE TABLE publications (
 
   "enable"        boolean      NOT NULL DEFAULT TRUE,
 
-  "currencies"    uuid[]       NOT NULL DEFAULT '{}'::uuid[],
+  "sections"      uuid[]       NOT NULL DEFAULT '{}'::uuid[],
+  "currencies"    varchar(5)[] NOT NULL DEFAULT '{}'::varchar(5)[],
   "exchanges"     uuid[]       NOT NULL DEFAULT '{}'::uuid[],
   "ico"           uuid[]       NOT NULL DEFAULT '{}'::uuid[],
   "markets"       uuid[]       NOT NULL DEFAULT '{}'::uuid[],
-  "sections"      uuid[]       NOT NULL DEFAULT '{}'::uuid[],
 
   "weight"        smallint     NOT NULL DEFAULT 1,
 
@@ -34,16 +34,13 @@ CREATE TABLE publications (
 
   "sharing"       boolean      NOT NULL DEFAULT TRUE,
   "comments"      boolean      NOT NULL DEFAULT TRUE,
-  "advertising"   boolean      NOT NULL DEFAULT TRUE,
+  "ads"           boolean      NOT NULL DEFAULT TRUE,
 
   "rss"           boolean      NOT NULL DEFAULT TRUE,
 
-  "yandexNews"    boolean      NOT NULL DEFAULT TRUE,
-  "yandexZen"     boolean      NOT NULL DEFAULT TRUE,
-
-  "facebookIA"    boolean      NOT NULL DEFAULT TRUE,
-
   "content"       text         NOT NULL DEFAULT '',
+
+  "rating"        jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
   "branding"      jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
@@ -52,6 +49,10 @@ CREATE TABLE publications (
   CONSTRAINT publications__idx_pkey PRIMARY KEY ("id"),
 
   CONSTRAINT publications__check__url CHECK ("url" ~ '^[a-z0-9]([a-z0-9_-]*[a-z0-9])?$'),
+
+  CONSTRAINT publications__check__weight CHECK ("weight" >= 0 AND "weight" <= 2),
+
+  CONSTRAINT publications__check__rating CHECK ("rating"::text ~ '^{'),
 
   CONSTRAINT publications__check__branding CHECK ("branding"::text ~ '^{')
 ) WITH (OIDS = FALSE);
@@ -63,17 +64,15 @@ CREATE UNIQUE INDEX publications__idx__unique_ts_and_url ON publications USING b
 CREATE INDEX publications__idx__ts           ON publications USING btree ("ts");
 CREATE INDEX publications__idx__url          ON publications USING btree ("url");
 CREATE INDEX publications__idx__enable       ON publications USING btree ("enable");
+CREATE INDEX publications__idx__sections     ON publications USING gin   ("sections");
 CREATE INDEX publications__idx__currencies   ON publications USING gin   ("currencies");
 CREATE INDEX publications__idx__exchanges    ON publications USING gin   ("exchanges");
 CREATE INDEX publications__idx__ico          ON publications USING gin   ("ico");
 CREATE INDEX publications__idx__markets      ON publications USING gin   ("markets");
-CREATE INDEX publications__idx__sections     ON publications USING gin   ("sections");
 CREATE INDEX publications__idx__weight       ON publications USING btree ("weight");
 CREATE INDEX publications__idx__authors      ON publications USING gin   ("authors");
 CREATE INDEX publications__idx__rss          ON publications USING btree ("rss");
-CREATE INDEX publications__idx__yandexNews   ON publications USING btree ("yandexNews");
-CREATE INDEX publications__idx__yandexZen    ON publications USING btree ("yandexZen");
-CREATE INDEX publications__idx__facebookIA   ON publications USING btree ("facebookIA");
+CREATE INDEX publications__idx__rating       ON publications USING gin   ("rating");
 CREATE INDEX publications__idx__lastModified ON publications USING btree ("lastModified");
 
 -- Prevent change publications id

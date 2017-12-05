@@ -5,24 +5,29 @@
 import { UUID } from '@core/uuid'
 import { RoleEnum } from './role.enum'
 
+import { IUser } from './user.interface'
+
+import { Rating } from '../rating'
+
 const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/
 
-export class User {
+export class User implements IUser {
   static MainFields = [
     'id',
     'enable',
-    'roles',
-    'url',
     'title',
-    'description',
     'email',
     'phone',
+    'url',
+    'roles',
     'image',
-    'statuses',
+    'rating',
+    'bjr',
   ]
 
   readonly id: UUID
   readonly enable: boolean
+
   readonly roles: Array<RoleEnum>
 
   readonly url: string | null
@@ -33,10 +38,17 @@ export class User {
   readonly email: string
   readonly phone: string | null
 
+  readonly oauth: object
+
   readonly image: number | null
 
+  readonly statuses: Array<string | UUID>
+
+  readonly rating: Rating
+
+  readonly bjr: number
+
   readonly card: object
-  readonly statuses: Array<UUID>
 
   constructor(value: any = {}) {
     if (!value)
@@ -61,14 +73,17 @@ export class User {
     this.email = String(value.email || '').trim()
     this.phone = String(value.phone || '').trim() || null
 
+    this.oauth = {}
+
     this.image = Math.max(~~value.image, 0) || null
 
-    this.card = {}
+    this.statuses = UUID.getArray(value.statuses)
 
-    this.statuses = Array.isArray(value.statuses) ? value.statuses
-                                                         .map( (item:any) => new UUID(value && value.id || value) )
-                                                         .filter( (item: UUID) => item.version !== null )
-                                                  : new Array<UUID>()
+    this.rating = new Rating(value.rating)
+
+    this.bjr = Math.min(Math.max(~~value.bjr, 0), 5)
+
+    this.card = {}
   }
 
   checkRole(roles: Array<RoleEnum>): boolean {
@@ -88,7 +103,7 @@ export class User {
     return {
       enable: this.enable,
 
-      roles: this.roles,
+      roles: this.roles.map( item => item.valueOf() ),
 
       url: this.url,
 
@@ -100,9 +115,11 @@ export class User {
 
       image: this.image,
 
-      card: this.card,
+      statuses: this.statuses.map( item => item.valueOf() ),
 
-      statuses: this.statuses,
+      bjr: this.bjr,
+
+      card: this.card
     }
   }
 
@@ -122,11 +139,17 @@ export class User {
       email: this.email,
       phone: this.phone,
 
+      oauth: this.oauth,
+
       image: this.image,
 
-      card: this.card,
-
       statuses: this.statuses,
+
+      rating: this.rating,
+
+      bjr: this.bjr,
+
+      card: this.card
     }
   }
 

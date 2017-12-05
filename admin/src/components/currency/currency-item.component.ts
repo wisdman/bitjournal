@@ -132,25 +132,6 @@ export class CurrencyItemComponent implements OnInit {
     })
   }
 
-  replaceImage() {
-    this._fileService
-        .upload({
-          accept: 'image/svg+xml'
-        })
-        .subscribe( result => {
-          let oldOid = this.itemForm.value.image
-
-          this.itemForm.patchValue({ image: result.oid })
-
-          if (!oldOid)
-            return
-
-          this._fileService
-              .delete(oldOid)
-              .subscribe(_ => {})
-        })
-  }
-
   save() {
     if (this.itemForm.invalid)
       return

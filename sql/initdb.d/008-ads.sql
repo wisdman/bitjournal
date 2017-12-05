@@ -18,7 +18,8 @@ CREATE TABLE ads (
   "startDate" timestamp without time zone NOT NULL DEFAULT timezone('UTC', now()),
   "endDate"   timestamp without time zone NOT NULL DEFAULT timezone('UTC', now() + '1 month'::interval),
 
-  "banner"    oid          DEFAULT NULL,
+  "content"   text         NOT NULL DEFAULT '',
+  "files"     oid[]        NOT NULL DEFAULT '{}'::oid[],
 
   "limits"    jsonb        NOT NULL DEFAULT '{}'::jsonb,
 

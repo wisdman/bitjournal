@@ -1,25 +1,46 @@
-import { Component, ViewEncapsulation, OnInit, ViewChild, ElementRef } from '@angular/core'
+import { Component, ViewEncapsulation, OnInit, isDevMode, ViewChild, ElementRef } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-
-import { Router, ActivatedRoute } from '@angular/router'
-import { UUID } from '@core/uuid'
+import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router'
 
 import QRious from 'qrious'
+
+import { UUID } from '@core/uuid'
 
 import {
   APIService,
   DialogService,
+  FileService,
 } from '../../services'
 
-const ROUTE_BASE = 'users'
+import {
+  IUser,
+  IRating,
+  RoleEnum,
+  IStatus,
+} from '@common/models'
+
+const API_BASE = 'users'
+const API_STATUSES = 'statuses'
+
 const TOTP_SERVICE_NAME = 'BitJournal'
+const URL_PATTERN = /^[a-z0-9]([a-z0-9_-]*[a-z0-9])?$/
 
 @Component({
   selector: 'user-item',
   templateUrl: './user-item.component.html',
+  styleUrls: ['./user-item.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class UserItemComponent implements OnInit {
+
+  roles = RoleEnum
+
+  statuses = new Array<IStatus>()
+
+  get DEBUG(): boolean {
+    return isDevMode()
+  }
 
   private _id: UUID = new UUID(null)
 
@@ -30,23 +51,49 @@ export class UserItemComponent implements OnInit {
   itemForm: FormGroup
   passwordForm: FormGroup
 
+  rating: IRating
+
   constructor(
     private readonly _fb: FormBuilder,
-    private readonly _router: Router,
     private readonly _route: ActivatedRoute,
     private readonly _apiService: APIService,
-    private readonly _dialog: DialogService
+    private readonly _dialog: DialogService,
+    private readonly _location: Location
   ) {
     this.itemForm = this._fb.group({
-      enable:        [true, Validators.required],
+      enable:        [ true, [
+                       Validators.required
+                     ] ],
 
-      url:           [''],
+      url:           [ '', [
+                       Validators.maxLength(256),
+                       Validators.pattern(URL_PATTERN)
+                     ] ],
 
-      email:         [''],
-      phone:         [''],
+      roles:         [ new Array<RoleEnum>() ],
 
-      title:         ['', Validators.required ],
-      description:   [''],
+      title:         [ '', [
+                       Validators.maxLength(160),
+                       Validators.required
+                     ] ],
+
+      statuses:      [ new Array<string>() ],
+
+      email:         [ '', [
+                       Validators.maxLength(256),
+                       Validators.email,
+                       Validators.required
+                     ] ],
+
+      phone:         [ '', [
+                       Validators.maxLength(18)
+                     ] ],
+
+      image:         [ null ],
+
+      description:   [ '', [
+                       Validators.maxLength(160)
+                     ] ],
     })
 
     this.passwordForm = this._fb.group({
@@ -60,6 +107,7 @@ export class UserItemComponent implements OnInit {
   get keyuri(): string {
     if (!this.otpSecret)
       return ''
+
     return `otpauth://totp/${TOTP_SERVICE_NAME}:${this.itemForm.value.email}?secret=${this.otpSecret}&issuer=${TOTP_SERVICE_NAME}`
   }
 
@@ -73,7 +121,7 @@ export class UserItemComponent implements OnInit {
     const qr = new QRious({
       element: canvas,
       value: this.keyuri,
-      size: 250,
+      size: 200,
     })
   }
 
@@ -84,19 +132,61 @@ export class UserItemComponent implements OnInit {
         this._id = new UUID(params['id'])
       } catch (error) {
         this._dialog.open({ title: 'Оштбка', message: 'Неверный ID' })
-        this._router.navigate([ROUTE_BASE])
+        this._location.back()
         return
       }
 
-      if (!this.isNew)
-        this._apiService.get<any>(`/${ROUTE_BASE}/${this._id}`).subscribe( (item: any) => {
-          this.itemForm.patchValue(item)
+      // Add statuses
+      this._apiService
+          .get< Array<IStatus> >(`/${API_STATUSES}`)
+          .subscribe( items => this.statuses = items )
 
-          this._apiService.get<{secret: string}>(`/${ROUTE_BASE}/${this._id}/otp`).subscribe(item => {
-            this.otpSecret = item.secret
-            this.reloadOTPCanvas()
-          })
-        })
+      if (!this.isNew)
+        this._apiService
+            .get<IUser>(`/${API_BASE}/${this._id}`)
+            .subscribe( item => {
+
+              // Get rating
+              this.rating = item.rating
+
+              // Get otp data
+              this._apiService
+                  .get<{secret: string}>(`/${API_BASE}/${this._id}/otp`)
+                  .subscribe(item => {
+                    this.otpSecret = item.secret
+                    this.reloadOTPCanvas()
+                  })
+
+              // Fix null url
+              item.url = item.url || ''
+
+              // Fix phone url
+              item.phone = item.phone || ''
+
+              // Get roles
+              item.roles = RoleEnum.getArray(item.roles) as Array<RoleEnum>
+
+              this.itemForm.patchValue(item)
+            })
+    })
+  }
+
+  back() {
+    if (this.itemForm.pristine) {
+      this._location.back()
+      return
+    }
+
+    this._dialog.open({
+      title: 'Форма была изменена',
+      message: `Возможна потеря данных. Покинуть раздел?`,
+      buttons: {
+        'Отмена': false,
+        'Да': true
+      }
+    }).subscribe( result => {
+      if (result === true)
+        this._location.back()
     })
   }
 
@@ -104,39 +194,47 @@ export class UserItemComponent implements OnInit {
     if (this.isNew)
       return
 
-    if (this.passwordForm.invalid) {
+    if (this.passwordForm.invalid || this.passwordForm.value.password1 !== this.passwordForm.value.password2) {
       this._dialog.message('Пароли не совпадают')
       return
     }
 
-    if (this.passwordForm.value.password1 !== this.passwordForm.value.password2) {
-      this._dialog.message('Пароли не совпадают')
-      return
-    }
-
-    this._apiService.post<void>(`/${ROUTE_BASE}/${this._id}/password`, this.passwordForm.value)
-                    .subscribe( _ => this._dialog.message('Пароль успешно изменен') )
+    this._apiService
+        .post<{ success: true }>(`/${API_BASE}/${this._id}/password`, this.passwordForm.value)
+        .subscribe( _ => this._dialog.message('Пароль успешно изменен') )
   }
 
   resetOTP() {
     if (this.isNew)
       return
 
-    this._apiService.post<{secret: string}>(`/${ROUTE_BASE}/${this._id}/password`, {secret: ''})
-                    .subscribe(item => {
-                        this.otpSecret = item.secret
-                        this.reloadOTPCanvas()
-                    })
+    this._dialog.open({
+      title: 'Необратимая операция',
+      message: `Вы уверены, что хотите заменить OTP для пользователя "${this.itemForm.value.title}"?`,
+      buttons: {
+        'Отмена': false,
+        'Заменить': true
+      }
+    }).subscribe( result => {
+      if (result === true)
+        this._apiService
+            .post<{secret: string}>(`/${API_BASE}/${this._id}/otp`, {})
+            .subscribe(item => {
+              this.otpSecret = item.secret
+              this.reloadOTPCanvas()
+            })
+    })
   }
 
   save() {
     if (this.itemForm.invalid)
       return
 
-    const postURL = this.isNew ? `/${ROUTE_BASE}` : `/${ROUTE_BASE}/${this._id}`
+    const postURL = this.isNew ? `/${API_BASE}` : `/${API_BASE}/${this._id}`
 
-    this._apiService.post<any>(postURL, this.itemForm.value)
-                    .subscribe( _ => this._router.navigate([ROUTE_BASE]) )
+    this._apiService
+        .post<IUser>(postURL, this.itemForm.value)
+        .subscribe( _ => this._location.back() )
   }
 
   delete() {
@@ -152,8 +250,8 @@ export class UserItemComponent implements OnInit {
       }
     }).subscribe( result => {
       if (result === true)
-        this._apiService.delete(`/${ROUTE_BASE}/${this._id}`)
-                        .subscribe( _ => this._router.navigate([ROUTE_BASE]) )
+        this._apiService.delete<IUser>(`/${API_BASE}/${this._id}`)
+                        .subscribe( _ => this._location.back() )
     })
   }
 }

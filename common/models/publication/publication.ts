@@ -2,7 +2,11 @@
 import { UUID } from '@core/uuid'
 import { Timestamp } from '@core/timestamp'
 
-export class Publication {
+import { Rating } from '../rating'
+
+import { IPublication } from './publication.interface'
+
+export class Publication implements IPublication {
   static MainFields = [
     'id',
     'ts',
@@ -10,6 +14,8 @@ export class Publication {
     'enable',
     'weight',
     'title',
+    'description',
+    'rating',
     'lastModified',
   ]
 
@@ -20,11 +26,11 @@ export class Publication {
 
   readonly enable: boolean
 
-  readonly currencies: Array<UUID>
+  readonly sections: Array<UUID>
+  readonly currencies: Array<string>
   readonly exchanges: Array<UUID>
   readonly ico: Array<UUID>
   readonly markets: Array<UUID>
-  readonly sections: Array<UUID>
 
   readonly weight: number
 
@@ -43,16 +49,13 @@ export class Publication {
 
   readonly sharing: boolean
   readonly comments: boolean
-  readonly advertising: boolean
+  readonly ads: boolean
 
   readonly rss: boolean
 
-  readonly yandexNews: boolean
-  readonly yandexZen: boolean
-
-  readonly facebookIA: boolean
-
   readonly content: string
+
+  readonly rating: Rating
 
   readonly branding: object
 
@@ -65,37 +68,22 @@ export class Publication {
     this.id = new UUID(value.id || null)
 
     this.ts = new Timestamp(value.ts)
-
     this.url = String(value.url || '').trim()
 
     this.enable = !!value.enable
 
+    this.sections = UUID.getArray(value.sections)
+
     this.currencies = Array.isArray(value.currencies) ? value.currencies
-                                                             .map( (item:any) => new UUID(value && value.id || value) )
-                                                             .filter( (item: UUID) => item.version !== null)
-                                                      : new Array<UUID>()
+                                                             .map( (item:any) => String(item).trim().toLowerCase() )
+                                                             .filter( (item:string) => !!item )
+                                                      : new Array<string>()
 
-    this.exchanges = Array.isArray(value.exchanges) ? value.exchanges
-                                                           .map( (item:any) => new UUID(value && value.id || value) )
-                                                           .filter( (item: UUID) => item.version !== null)
-                                                    : new Array<UUID>()
+    this.exchanges = UUID.getArray(value.exchanges)
+    this.ico = UUID.getArray(value.ico)
+    this.markets = UUID.getArray(value.markets)
 
-    this.ico = Array.isArray(value.ico) ? value.ico
-                                               .map( (item:any) => new UUID(value && value.id || value) )
-                                               .filter( (item: UUID) => item.version !== null)
-                                        : new Array<UUID>()
-
-    this.markets = Array.isArray(value.markets) ? value.markets
-                                                       .map( (item:any) => new UUID(value && value.id || value) )
-                                                       .filter( (item: UUID) => item.version !== null)
-                                                : new Array<UUID>()
-
-    this.sections = Array.isArray(value.sections) ? value.sections
-                                                         .map( (item:any) => new UUID(value && value.id || value) )
-                                                         .filter( (item: UUID) => item.version !== null)
-                                                  : new Array<UUID>()
-
-    this.weight = Math.max(~~value.weight, 0)
+    this.weight = Math.min(Math.max(~~value.weight, 0), 3)
 
     this.bigTitle = String(value.bigTitle || '').trim()
     this.title = String(value.title || '').trim()
@@ -107,27 +95,22 @@ export class Publication {
     this.image = Math.max(~~value.image, 0) || null
     this.ogImage = Math.max(~~value.ogImage, 0) || null
 
-    this.authors = Array.isArray(value.authors) ? value.authors
-                                                       .map( (item:any) => new UUID(value && value.id || value) )
-                                                       .filter( (item: UUID) => item.version !== null)
-                                                : new Array<UUID>()
+    this.authors = UUID.getArray(value.authors)
 
-    this.tags = Array.isArray(value.tags) ? value.tags.map( (item:any) => String(item).trim().toLowerCase() )
-                                                      .filter( (item:string) => !!item )
+    this.tags = Array.isArray(value.tags) ? value.tags
+                                                 .map( (item:any) => String(item).trim().toLowerCase() )
+                                                 .filter( (item:string) => !!item )
                                           : new Array<string>()
 
-    this.sharing = !!value.sharing
-    this.comments = !!value.comments
-    this.advertising = !!value.advertising
+    this.sharing    = value.sharing    === undefined ? true : !!value.sharing
+    this.comments   = value.comments   === undefined ? true : !!value.comments
+    this.ads        = value.ads        === undefined ? true : !!value.ads
 
-    this.rss = !!value.rss
-
-    this.yandexNews = !!value.yandexNews
-    this.yandexZen = !!value.yandexZen
-
-    this.facebookIA = !!value.facebookIA
+    this.rss        = value.rss        === undefined ? true : !!value.rss
 
     this.content = String(value.content || '').trim()
+
+    this.rating = new Rating(value.rating)
 
     this.branding = {}
 
@@ -137,15 +120,15 @@ export class Publication {
   valueOf() {
     return {
       ts: this.ts,
-
       url: this.url,
+
       enable: this.enable,
 
+      sections:   this.sections.map( item => item.valueOf() ),
       currencies: this.currencies,
-      exchanges: this.exchanges,
-      ico: this.ico,
-      markets: this.markets,
-      sections: this.sections,
+      exchanges:  this.exchanges.map( item => item.valueOf() ),
+      ico:        this.ico.map( item => item.valueOf() ),
+      markets:    this.markets.map( item => item.valueOf() ),
 
       weight: this.weight,
 
@@ -159,25 +142,16 @@ export class Publication {
       image: this.image,
       ogImage: this.ogImage,
 
-      authors: this.authors,
+      authors: this.authors.map( item => item.valueOf() ),
       tags: this.tags,
 
       sharing: this.sharing,
       comments: this.comments,
-      advertising: this.advertising,
+      ads: this.ads,
 
       rss: this.rss,
 
-      yandexNews: this.yandexNews,
-      yandexZen: this.yandexZen,
-
-      facebookIA: this.facebookIA,
-
-      branding: this.branding,
-
-      content: this.content,
-
-      lastModified: this.lastModified,
+      content: this.content
     }
   }
 
@@ -186,15 +160,15 @@ export class Publication {
       id: this.id,
 
       ts: this.ts,
-
       url: this.url,
+
       enable: this.enable,
 
+      sections: this.sections,
       currencies: this.currencies,
       exchanges: this.exchanges,
       ico: this.ico,
       markets: this.markets,
-      sections: this.sections,
 
       weight: this.weight,
 
@@ -213,20 +187,17 @@ export class Publication {
 
       sharing: this.sharing,
       comments: this.comments,
-      advertising: this.advertising,
+      ads: this.ads,
 
       rss: this.rss,
 
-      yandexNews: this.yandexNews,
-      yandexZen: this.yandexZen,
+      content: this.content,
 
-      facebookIA: this.facebookIA,
+      rating: this.rating,
 
       branding: this.branding,
 
-      content: this.content,
-
-      lastModified: this.lastModified,
+      lastModified: this.lastModified.isValid ? this.lastModified : undefined,
     }
   }
 

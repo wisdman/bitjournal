@@ -22,50 +22,67 @@
 
         <div class="row">
 
-          <div class="col">
-            <h4>Логотип</h4>
-            <button mat-button (click)="replaceImage()">
-              <mat-icon *ngIf="!itemForm.value.image">add</mat-icon>
-              <img *ngIf="itemForm.value.image" [src]="itemForm.value.image | image" class="market-item-logo">
-            </button>
+          <div class="col-max">
+
+            <div class="row">
+
+              <mat-form-field class="col">
+                <mat-select placeholder="Доступность" formControlName="enable">
+                  <mat-option [value]="true">Доступна</mat-option>
+                  <mat-option [value]="false">Скрыта</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="256" placeholder="Ссылка" formControlName="url">
+                <mat-hint align="end">{{ itemForm.controls.url.value.length }} / 256</mat-hint>
+                <mat-error *ngIf="itemForm.controls.url.hasError('required')">Должено быть заполнено</mat-error>
+                <mat-error *ngIf="itemForm.controls.url.hasError('pattern')">Содержит недопустимые символы</mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="160" placeholder="Название" formControlName="title">
+                <mat-hint align="end">{{ itemForm.controls.title.value.length }} / 160</mat-hint>
+                <mat-error *ngIf="itemForm.controls.title.hasError('required')">Должено быть заполнено</mat-error>
+              </mat-form-field>
+
+            </div>
+
+            <div class="row">
+
+              <mat-form-field class="col">
+                <input matInput [matDatepicker]="startDatePicker" placeholder="Дата основания" formControlName="startDate">
+                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #startDatePicker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="col">
+                <mat-select placeholder="Реферальная программа" formControlName="referral">
+                  <mat-option [value]="true">Есть</mat-option>
+                  <mat-option [value]="false">Нет</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="256" placeholder="Ссылка на сайт" formControlName="extUrl">
+                <mat-hint>Указывайте полную ссылку</mat-hint>
+                <mat-hint align="end">{{ itemForm.controls.extUrl.value.length }} / 256</mat-hint>
+              </mat-form-field>
+
+            </div>
+
           </div>
 
-          <mat-form-field class="col-max">
-            <input matInput type="text" maxlength="256" placeholder="Ссылка" formControlName="url">
-            <mat-hint>При изменении ссылки може пострадать SEO</mat-hint>
-            <mat-hint align="end">{{ itemForm.controls.url.value.length }} / 256</mat-hint>
-            <mat-error *ngIf="itemForm.controls.url.hasError('required')">Должено быть заполнено</mat-error>
-            <mat-error *ngIf="itemForm.controls.url.hasError('pattern')">Содержит недопустимые символы</mat-error>
-          </mat-form-field>
+          <div class="col">
 
-          <mat-form-field class="col-max">
-            <input matInput type="text" maxlength="160" placeholder="Название" formControlName="title">
-            <mat-hint align="end">{{ itemForm.controls.title.value.length }} / 160</mat-hint>
-            <mat-error *ngIf="itemForm.controls.title.hasError('required')">Должено быть заполнено</mat-error>
-          </mat-form-field>
+            <div class="row">
+              <div class="col">
+                <h4>Логотип</h4>
+                <imup width="110" height="110" formControlName="image"></imup>
+              </div>
+            </div>
 
-        </div>
-
-        <div class="row">
-
-          <mat-form-field class="col">
-            <input matInput [matDatepicker]="startDatePicker" placeholder="Дата основания" formControlName="startDate">
-            <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-            <mat-datepicker #startDatePicker></mat-datepicker>
-          </mat-form-field>
-
-          <mat-form-field class="col-max">
-            <input matInput type="text" maxlength="256" placeholder="Ссылка на сайт" formControlName="extUrl">
-            <mat-hint>Указывайте полную ссылку</mat-hint>
-            <mat-hint align="end">{{ itemForm.controls.extUrl.value.length }} / 256</mat-hint>
-          </mat-form-field>
-
-          <mat-form-field class="col">
-            <mat-select placeholder="Реферальная программа" formControlName="referral">
-              <mat-option [value]="true">Есть</mat-option>
-              <mat-option [value]="false">Нет</mat-option>
-            </mat-select>
-          </mat-form-field>
+          </div>
 
         </div>
 
@@ -112,7 +129,7 @@
       </mat-tab>
 
       <mat-tab label="Страница биржи">
-        <content-editor class="col-100"></content-editor>
+        <editor class="col-100"></editor>
       </mat-tab>
 
       <mat-tab *ngIf="!isNew" label="Брендирование">

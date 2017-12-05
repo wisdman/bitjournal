@@ -212,9 +212,9 @@ export class UsersAPI extends RouteMiddleware {
       return
     }
 
-    const data = await ctx.request.json() as { password: string }
+    const data = await ctx.request.json() as { password: string, password1: string }
 
-    const password = data.password
+    const password = data.password || data.password1
 
     if (!password) {
       ctx.set(400, 'Password is empty')
@@ -237,7 +237,7 @@ export class UsersAPI extends RouteMiddleware {
       return
     }
 
-    ctx.set(204)
+    ctx.set({ success: true })
   }
 
   @Post(`/${ROUTE_BASE}`)

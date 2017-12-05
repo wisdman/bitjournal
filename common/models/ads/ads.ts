@@ -34,7 +34,8 @@ export class Ads implements IAds {
   readonly startDate: Timestamp
   readonly endDate: Timestamp
 
-  readonly data: number
+  readonly content: string
+  readonly files: Array<number>
 
   readonly limits: ILimits
   readonly stats: IStats
@@ -62,16 +63,21 @@ export class Ads implements IAds {
     this.startDate = new Timestamp(value.startDate)
     this.endDate = new Timestamp(value.endDate)
 
-    this.data = Math.max(~~value.data, 0)
+    this.content = String(value.content || '').trim()
+
+    this.files = Array.isArray(value.files) ? value.files
+                                                   .map( (item:any) => Math.max(~~value.collected, 0) )
+                                                   .filter( (item: number) => item > 0 )
+                                            : new Array<number>()
 
     this.limits =
       typeof value.limits === 'object' ? {
-        show:         Math.max(~~value.show,         0),
-        showPerDay:   Math.max(~~value.showPerDay,   0),
-        showPerUser:  Math.max(~~value.showPerUser,  0),
-        click:        Math.max(~~value.click,        0),
-        clickPerDay:  Math.max(~~value.clickPerDay,  0),
-        clickPerUser: Math.max(~~value.clickPerUser, 0),
+        show:         Math.max(~~value.limits.show,         0),
+        showPerDay:   Math.max(~~value.limits.showPerDay,   0),
+        showPerUser:  Math.max(~~value.limits.showPerUser,  0),
+        click:        Math.max(~~value.limits.click,        0),
+        clickPerDay:  Math.max(~~value.limits.clickPerDay,  0),
+        clickPerUser: Math.max(~~value.limits.clickPerUser, 0),
       } : {
         show:         0,
         showPerDay:   0,
@@ -88,8 +94,8 @@ export class Ads implements IAds {
         key = String(key).trim()
         if (DATE_REGEXP.test(key))
           this.stats[key] = {
-            show:  Math.max(~~value.value.stats[key].show,  0),
-            click: Math.max(~~value.value.stats[key].click, 0),
+            show:  Math.max(~~value.stats[key].show,  0),
+            click: Math.max(~~value.stats[key].click, 0),
           }
       }
   }
@@ -98,7 +104,7 @@ export class Ads implements IAds {
     return {
       enable: this.enable,
 
-      blocks: this.blocks,
+      blocks: this.blocks.map( item => item.valueOf() ),
 
       title: this.title,
       description: this.description,
@@ -108,7 +114,10 @@ export class Ads implements IAds {
       startDate: this.startDate,
       endDate: this.startDate,
 
-      data: this.data,
+      content: this.content,
+      files: this.files,
+
+      limits: this.limits,
     }
   }
 
@@ -128,7 +137,8 @@ export class Ads implements IAds {
       startDate: this.startDate,
       endDate: this.startDate,
 
-      data: this.data,
+      content: this.content,
+      files: this.files,
 
       limits: this.limits,
       stats: this.stats,

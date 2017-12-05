@@ -8,7 +8,7 @@ CREATE TABLE sections (
 
   "enable"        boolean      NOT NULL DEFAULT TRUE,
 
-  "extUrl"        varchar(256) NOT NULL DEFAULT '',
+  "url"           varchar(256) NOT NULL DEFAULT '',
 
   "title"         varchar(160) NOT NULL DEFAULT '',
   "ogTitle"       varchar(160) NOT NULL DEFAULT '',

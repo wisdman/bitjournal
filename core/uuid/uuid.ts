@@ -10,6 +10,19 @@ import {
 
 export class UUID {
 
+  static getArray(value: any): Array<UUID> {
+    return new Array<any>().concat(value)
+                           .map( item => {
+                             try {
+                               const uuid = new UUID(item && item.id || item)
+                               return uuid.version === null ? null : uuid
+                             } catch(_) {
+                               return null
+                             }
+                           })
+                           .filter( item => item !== null ) as Array<UUID>
+  }
+
   readonly version: null | 1 | 4
   readonly uuid: string
 

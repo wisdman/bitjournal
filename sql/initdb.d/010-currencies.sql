@@ -52,4 +52,5 @@ CREATE TABLE currencies (
 
 -- Scann indexes
 CREATE INDEX currencies__idx__enable ON currencies USING btree ("enable");
+CREATE INDEX currencies__idx__rating ON currencies USING gin   ("rating");
 CREATE INDEX currencies__idx__bjr    ON currencies USING btree ("bjr");

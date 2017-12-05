@@ -22,6 +22,14 @@
         <div class="row">
           <div class="col-max">
             <div class="row">
+
+              <mat-form-field class="col">
+                <mat-select placeholder="Доступность" formControlName="enable">
+                  <mat-option [value]="true">Доступен</mat-option>
+                  <mat-option [value]="false">Скрыт</mat-option>
+                </mat-select>
+              </mat-form-field>
+
               <mat-form-field class="col-max">
                 <input matInput type="text" maxlength="256" placeholder="Ссылка" formControlName="url">
                 <mat-hint>При изменении ссылки може пострадать SEO</mat-hint>
@@ -29,6 +37,7 @@
                 <mat-error *ngIf="itemForm.controls.url.hasError('required')">Ссылка должена быть заполнена</mat-error>
                 <mat-error *ngIf="itemForm.controls.url.hasError('pattern')">Ссылка содержит недопустимые символы</mat-error>
               </mat-form-field>
+
             </div>
             <div class="row">
               <mat-form-field class="col-max">
@@ -48,7 +57,7 @@
             <div class="row">
               <div class="col">
                 <h3>Картинка</h3>
-                <imup formControlName="image"></imup>
+                <imup width="380" height="200" formControlName="image"></imup>
               </div>
             </div>
           </div>
@@ -76,7 +85,7 @@
             <div class="row">
               <div class="col">
                 <h3>Картинка для шаринга</h3>
-                <imup formControlName="ogImage"></imup>
+                <imup width="380" height="200" formControlName="ogImage"></imup>
               </div>
             </div>
           </div>

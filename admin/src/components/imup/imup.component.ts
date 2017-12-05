@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core'
+import { Component, forwardRef, Input } from '@angular/core'
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms'
 
 import {
@@ -17,6 +17,13 @@ import {
   }]
 })
 export class ImupComponent implements ControlValueAccessor {
+
+  @Input() width: number = 380
+  @Input() height: number = 200
+
+  @Input() accept: string = 'image/*'
+
+  @Input() editor: boolean = false
 
   oid: number | null = null
 
@@ -60,7 +67,9 @@ export class ImupComponent implements ControlValueAccessor {
 
   add() {
     this._fileService
-        .upload()
+        .upload({
+          accept: this.accept
+        })
         .subscribe( result => this.value = result.oid )
   }
 

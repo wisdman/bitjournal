@@ -8,7 +8,7 @@ CREATE TABLE ico (
 
   "enable"        boolean      NOT NULL DEFAULT TRUE,
 
-  "url"           varchar(256) DEFAULT NULL,
+  "url"           varchar(256) NOT NULL,
 
   "extUrl"        varchar(256) NOT NULL DEFAULT '',
 
@@ -56,7 +56,8 @@ CREATE UNIQUE INDEX ico__idx__unique_url ON ico USING btree ("url");
 
 -- Scann indexes
 CREATE INDEX ico__idx__enable ON ico USING btree ("enable");
-CREATE INDEX ico__idx__bjr ON ico USING btree ("bjr");
+CREATE INDEX ico__idx__rating ON ico USING gin   ("rating");
+CREATE INDEX ico__idx__bjr    ON ico USING btree ("bjr");
 
 -- Prevent change ico id
 CREATE TRIGGER ico__prevent_change_id__trigger

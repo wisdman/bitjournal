@@ -8,7 +8,7 @@ CREATE TABLE exchanges (
 
   "enable"        boolean      NOT NULL DEFAULT TRUE,
 
-  "url"           varchar(256) DEFAULT NULL,
+  "url"           varchar(256) NOT NULL,
 
   "extUrl"        varchar(256) NOT NULL DEFAULT '',
 
@@ -49,6 +49,7 @@ CREATE UNIQUE INDEX exchanges__idx__unique_url ON exchanges USING btree ("url");
 
 -- Scann indexes
 CREATE INDEX exchanges__idx__enable ON exchanges USING btree ("enable");
+CREATE INDEX exchanges__idx__rating ON exchanges USING gin   ("rating");
 CREATE INDEX exchanges__idx__bjr    ON exchanges USING btree ("bjr");
 
 -- Prevent change exchanges id

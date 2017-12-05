@@ -25,9 +25,13 @@ CREATE TABLE users (
 
   "image"       oid          DEFAULT NULL,
 
-  "card"        jsonb        NOT NULL DEFAULT '{}'::jsonb,
-
   "statuses"    uuid[]       NOT NULL DEFAULT '{}'::uuid[],
+
+  "rating"      jsonb        NOT NULL DEFAULT '{}'::jsonb,
+
+  "bjr"         smallint     NOT NULL DEFAULT 0,
+
+  "card"        jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
   CONSTRAINT users__idx_pkey PRIMARY KEY ("id"),
 
@@ -41,6 +45,10 @@ CREATE TABLE users (
 
   CONSTRAINT users__check__oauth    CHECK ("oauth"::text ~ '^{'),
 
+  CONSTRAINT currencies__check__rating CHECK ("rating"::text  ~ '^{'),
+
+  CONSTRAINT currencies__check__bjr CHECK ("bjr" >= 0 AND "bjr" <= 5),
+
   CONSTRAINT users__check__card     CHECK ("card"::text  ~ '^{')
 ) WITH (OIDS = FALSE);
 
@@ -52,6 +60,8 @@ CREATE UNIQUE INDEX users__idx__unique_phone ON users USING btree ("phone");
 -- Scann indexes
 CREATE INDEX users__idx__enable   ON users USING btree ("enable");
 CREATE INDEX users__idx__statuses ON users USING gin   ("statuses");
+CREATE INDEX users__idx__rating   ON users USING gin   ("rating");
+CREATE INDEX users__idx__bjr      ON users USING btree ("bjr");
 
 -- Prevent change user id
 CREATE TRIGGER users__prevent_change_id__trigger

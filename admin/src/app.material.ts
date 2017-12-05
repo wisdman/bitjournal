@@ -2,6 +2,7 @@
 import {
   MatButtonModule,
   MatCheckboxModule,
+  MatChipsModule,
   MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,
@@ -27,6 +28,7 @@ import {
 export const MATERIAL: any[] = [
   MatButtonModule,
   MatCheckboxModule,
+  MatChipsModule,
   MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,

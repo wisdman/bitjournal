@@ -1,0 +1,13 @@
+<mat-form-field class="tag-list">
+  <mat-chip-list #chipList>
+    <mat-chip *ngFor="let tag of tags" [selectable]="true" [removable]="true" (remove)="remove(tag)">
+      {{ tag }}
+      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    </mat-chip>
+    <input placeholder="Теги"
+           [matChipInputFor]="chipList"
+           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+           [matChipInputAddOnBlur]="true"
+           (matChipInputTokenEnd)="add($event)" />
+  </mat-chip-list>
+</mat-form-field>

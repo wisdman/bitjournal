@@ -20,7 +20,8 @@ export interface IAds {
   startDate: Timestamp
   endDate: Timestamp
 
-  data: number
+  content: string
+  files: Array<number>
 
   limits: ILimits
   stats: IStats

@@ -4,13 +4,13 @@ SET search_path = public;
 
 -- User roles
 CREATE TYPE blocks AS ENUM (
-  'A1', -- Top banner
-  'A2', -- After video
-  'A3', -- After article
-  'B1', -- tower 1
-  'B2', -- tower 2
-  'B3', -- tower 3
-  'M1', -- mobile 1
-  'M2', -- mobile 2
-  'M3'  -- mobile 3
+  'a1', -- Top banner
+  'a2', -- After video
+  'a3', -- After article
+  'b1', -- tower 1
+  'b2', -- tower 2
+  'b3', -- tower 3
+  'm1', -- mobile 1
+  'm2', -- mobile 2
+  'm3'  -- mobile 3
 );
