@@ -46,7 +46,8 @@
     "raw:clean": "rm -rf ./raw/dist/*",
     "raw:build": "npm run raw:clean && webpack --config ./raw/webpack.config.js",
     "raw:build:prod": "NODE_ENV=production npm run raw:build",
-    "build:prod": "npm run admin:build:prod && npm run api:build:prod && portal:build:prod && npm run raw:build:prod",
+    "build:prod": "npm run admin:build && npm run api:build && npm run portal:build && npm run raw:build",
+    "build:prod": "npm run admin:build:prod && npm run api:build:prod && npm run portal:build:prod && npm run raw:build:prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
