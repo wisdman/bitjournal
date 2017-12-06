@@ -41,6 +41,7 @@ export const OPTIONS = {
    ],
 
   shortcutsEnabled: ['bold', 'italic', 'underline', 'strikeThrough', 'indent', 'outdent', 'undo', 'redo', 'createLink'],
+  shortcutsHint: true,
 
   tabSpaces: 2,
 
