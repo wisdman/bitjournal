@@ -10,7 +10,7 @@ import {
 } from '@common/middleware'
 
 import {
-  rawAPI
+  RawAPI
 } from './api'
 
 // Set global timezone
@@ -23,5 +23,5 @@ new Service(
 
   new SessionMiddleware(), // Add session to context
 
-  new rawAPI(),
+  new RawAPI(),
 )

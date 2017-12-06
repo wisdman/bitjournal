@@ -23,11 +23,36 @@ const {
 } = require('webpack').optimize
 
 // === Angular webpack plugins ===
-const { AotPlugin } = require('@ngtools/webpack')
+const { AngularCompilerPlugin } = require('@ngtools/webpack')
 const { NamedLazyChunksWebpackPlugin } = require('@angular/cli/plugins/webpack')
 
 // === Webpack expernal plugins ===
 const MinifyPlugin = require('babel-minify-webpack-plugin')
+
+// === Post css plugin modules ===
+const PostcssAutoprefixer     = require('autoprefixer')
+const PostcssCSSO             = require('postcss-csso')
+const PostcssDiscardComments  = require('postcss-discard-comments')
+const PostcssDiscardFontFace  = require('postcss-discard-font-face')
+const PostcssSelectorMatches  = require('postcss-selector-matches')
+const PostcssSelectorNot      = require('postcss-selector-not')
+
+// === Loader plugins ===
+const postcssPlugins = [
+  PostcssSelectorNot(),
+  PostcssSelectorMatches(),
+  PostcssDiscardComments({
+    removeAll: isProduction
+  }),
+  PostcssDiscardFontFace(['woff2']),
+  PostcssAutoprefixer({
+    browsers: package.browserslist
+  }),
+  PostcssCSSO({
+    comments: false,
+    sourceMap: !isProduction
+  })
+]
 
 // === Webpack config ===
 module.exports = {
@@ -49,7 +74,8 @@ module.exports = {
     mainFields: ['module', 'main'],
     symlinks: true,
     alias: {
-      '@core': PATH('../core')
+      '@core': PATH('../core'),
+      '@common': PATH('../common'),
     }
   },
 
@@ -59,13 +85,47 @@ module.exports = {
       test: /\/node_modules\/(chartist)\/.*\.(js|ts)/,
       loader: 'null-loader'
     },{
-      // === Load html and tpl files ===
-      test: /\.(html|tpl)$/i,
+      // === Load html files ===
+      test: /\.html$/i,
       loader: 'raw-loader'
     },{
+      // === Modules css styles ===
+      test: /\.(css|scss)$/i,
+      exclude: [
+        PATH('./src/styles'),
+        PATH('../common/styles'),
+        PATH('../node_modules/@angular/material/theming'),
+      ],
+      use: [{
+        loader: 'exports-loader',
+        options: 'module.exports.toString()'
+      },{
+        loader: 'css-loader',
+        options: {
+          importLoaders: 2
+        }
+      },{
+        loader: 'postcss-loader',
+        options: {
+          ident: 'postcss',
+          plugins: postcssPlugins
+        }
+      },{
+          loader: 'sass-loader'
+        }]
+    },{
+      test: /\.js$/,
+      use: [{
+        loader: '@angular-devkit/build-optimizer/webpack-loader'
+      }]
+    },{
       // === Typescript loader ===
-      test: /\.ts$/,
-      loader: '@ngtools/webpack'
+      test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+      use: [{
+        loader: '@angular-devkit/build-optimizer/webpack-loader'
+      },{
+        loader: '@ngtools/webpack'
+      }]
     }]
   },
 
@@ -89,9 +149,10 @@ module.exports = {
     new ModuleConcatenationPlugin(),
     new NamedLazyChunksWebpackPlugin(),
 
-    new AotPlugin({
+    new AngularCompilerPlugin({
       mainPath: 'main.back.ts',
-      tsConfigPath: PATH('./tsconfig.back.json')
+      tsConfigPath: PATH('./tsconfig.back.json'),
+      platform: 1
     }),
 
     new BannerPlugin({

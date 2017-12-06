@@ -21,10 +21,28 @@ export class UsersAPI extends RouteMiddleware {
   @ACL([
     RoleEnum.Su,
   ])
-  async getAll(ctx: Context, next: INext) {
+  async getAllForSU(ctx: Context, next: INext) {
     const db = ctx.db as Client
 
     const query = new Query(DATATABLE).select(User.MainFields)
+
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}] ===\n%s`, query)
+
+    const result = await db.query(query.valueOf())
+
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}] ===\n%s`, result.rows)
+
+    const resultItems = result.rows.map( item => new User(item) )
+
+    ctx.set(resultItems)
+  }
+
+  @Get(`/${ROUTE_BASE}`)
+  async getAll(ctx: Context, next: INext) {
+    const db = ctx.db as Client
+
+    const query = new Query(DATATABLE).select(User.AnonymousFields)
+                                      .where('enabled')
 
     ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}] ===\n%s`, query)
 
@@ -71,7 +89,7 @@ export class UsersAPI extends RouteMiddleware {
   @ACL([
     RoleEnum.Su,
   ])
-  async getOne(ctx: Context, next: INext) {
+  async getOneForSU(ctx: Context, next: INext) {
     const route = ctx.route as Route
     const db = ctx.db as Client
 
@@ -86,6 +104,39 @@ export class UsersAPI extends RouteMiddleware {
 
     const query = new Query(DATATABLE).select()
                                       .where('id = $1', String(id))
+
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/:id] ===\n%s`, query)
+
+    const result = await db.query(query.valueOf())
+
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}/:id] ===\n%s`, result.rows)
+
+    if (result.rowCount !== 1) {
+      ctx.set(404)
+      return
+    }
+
+    const resultItem = new User(result.rows[0])
+
+    ctx.set(resultItem)
+  }
+
+  @Get(`/${ROUTE_BASE}/:id`)
+  async getOne(ctx: Context, next: INext) {
+    const route = ctx.route as Route
+    const db = ctx.db as Client
+
+    let id: UUID
+
+    try {
+      id = new UUID(route.data.id)
+    } catch (error) {
+      ctx.set(400, error.message)
+      return
+    }
+
+    const query = new Query(DATATABLE).select(User.AnonymousFields)
+                                      .where('id = $1 AND enable', String(id))
 
     ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/:id] ===\n%s`, query)
 

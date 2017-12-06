@@ -12,6 +12,16 @@ import { Rating } from '../rating'
 const ENUM_PG_ARRAY_PATTERN = /^\{([a-z0-9,]+)\}$/
 
 export class User implements IUser {
+  static AnonymousFields = [
+    'id',
+    'title',
+    'url',
+    'image',
+    'statuses',
+    'rating',
+    'bjr',
+  ]
+
   static MainFields = [
     'id',
     'enable',
@@ -21,6 +31,7 @@ export class User implements IUser {
     'url',
     'roles',
     'image',
+    'statuses',
     'rating',
     'bjr',
   ]

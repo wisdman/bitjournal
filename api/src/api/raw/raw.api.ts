@@ -16,7 +16,7 @@ const DATATABLE = 'raw'
 
 const BUFFER_SIZE = 16384
 
-export class rawAPI extends RouteMiddleware {
+export class RawAPI extends RouteMiddleware {
 
   @Get(`/${ROUTE_BASE}/:id`)
   @ACL([

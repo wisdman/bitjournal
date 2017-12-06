@@ -1,0 +1,55 @@
+
+main {
+  box-sizing: border-box;
+  position: relative;
+
+  max-width: 1200px;
+
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.row {
+  margin-top: 1rem;
+  display: flex;
+}
+
+.col {
+  flex: 0 0 auto;
+}
+
+.col-max {
+  flex: 1 1 auto;
+}
+
+.col + .col,
+.col + .col-max,
+.col-max + .col,
+.col-max + .col-max {
+  margin-left: 1rem;
+}
+
+.col-100 {
+  width: 100%;
+  flex: 0 0 100%;
+}
+
+i.fa {
+  margin-right: .5em
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+h3, h4 {
+  color: #757575;
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: .5em;
+  font-weight: 400;
+}
+
+h4 {
+  font-size: .8rem;
+}

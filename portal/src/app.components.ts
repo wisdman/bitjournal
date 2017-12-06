@@ -1,25 +1,16 @@
 
 import {
-  CurrencyCardComponent,
-  CurrencyChartComponent,
-  FooterComponent,
-  HeaderComponent,
-  Page404Component,
-  PageArticleComponent,
-  PageCurrencyComponent,
-  PageCurrencyListComponent,
-  PageMainComponent,
+  AuthDialogComponent,
+  NoContentComponent,
+  MainPageComponent,
 } from './components'
 
-
 export const COMPONENTS: any[] = [
-  CurrencyCardComponent,
-  CurrencyChartComponent,
-  FooterComponent,
-  HeaderComponent,
-  Page404Component,
-  PageArticleComponent,
-  PageCurrencyComponent,
-  PageCurrencyListComponent,
-  PageMainComponent,
+  AuthDialogComponent,
+  NoContentComponent,
+  MainPageComponent,
+]
+
+export const ENTRY_COMPONENTS: any[] = [
+  AuthDialogComponent,
 ]

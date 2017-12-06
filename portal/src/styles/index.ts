@@ -1,17 +1,11 @@
-// === Micro normalization and defaults ===
-import './normalize.css'
-
-// === Fonts ===
+// === System font ===
 import './system-font.css'
 
-// === Global variables ===
-import './variables.css'
+// === Material theme ===
+import './theme.scss'
 
-// === html and body ===
-import './root.css'
+// === Material fix ===
+import './mat-fix.css'
 
-// === Components styles ===
-import './components'
-
-// === Vendor styles ===
-import 'chartist/dist/chartist.css'
+// === Common styles ===
+import './common.css'

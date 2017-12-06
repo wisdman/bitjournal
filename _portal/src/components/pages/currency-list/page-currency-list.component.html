@@ -1,0 +1,11 @@
+<table>
+  <tr *ngFor="let item of data" (click)="redirect()">
+    <td>{{ item.symbol }}</td>
+    <td>{{ item.name }}</td>
+    <td>$ {{ item.market_cap_usd }}</td>
+    <td>₽ {{ item.market_cap_rub }}</td>
+    <td>$ {{ item.price_usd }}</td>
+    <td>Ƀ {{ item.price_btc }}</td>
+    <td>₽ {{ item.price_rub }}</td>
+  </tr>
+</table>

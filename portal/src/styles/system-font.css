@@ -55,3 +55,8 @@
   font-weight: 700;
   src: local(".SFNSText-BoldItalic"), local(".HelveticaNeueDeskInterface-BoldItalic"), local(".LucidaGrandeUI"), local("Segoe UI Bold Italic"), local("Ubuntu Bold Italic"), local("Roboto-BoldItalic"), local("DroidSans-Bold"), local("Tahoma Bold");
 }
+
+body {
+  font-family: system-ui, sans-serif;
+  font-display: swap;
+}

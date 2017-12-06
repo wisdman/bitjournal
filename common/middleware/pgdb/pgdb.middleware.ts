@@ -3,24 +3,21 @@
  */
 
 import { Middleware, Context, INext } from '@core/service'
-import { Pool, PoolConfig, Client } from 'pg'
+import { Pool } from 'pg'
 
-import { POSTGRES_POOL_CONFIG } from './environments'
-
-// Postgres Pool
-const pool = new Pool(POSTGRES_POOL_CONFIG)
+import { pgPool } from '../../pg-pool'
 
 export class PgDBMiddleware extends Middleware {
 
   private pool: Pool
 
-  constructor(config: PoolConfig = POSTGRES_POOL_CONFIG) {
+  constructor() {
     super()
-    this.pool = new Pool(config)
+    this.pool = pgPool
   }
 
   async main(ctx: Context, next: INext): Promise<void> {
-    ctx.db = await pool.connect()
+    ctx.db = await this.pool.connect()
     await next()
     ctx.db.release()
   }

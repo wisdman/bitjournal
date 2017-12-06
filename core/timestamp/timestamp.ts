@@ -3,8 +3,12 @@
  */
 
 export class Timestamp extends Date {
+  static fromUnux(value: any): Timestamp {
+    const uts = ~~value
+    return new Timestamp(uts*1000)
+  }
 
-  constructor(value: any){
+  constructor(value?: any){
     super(value)
   }
 

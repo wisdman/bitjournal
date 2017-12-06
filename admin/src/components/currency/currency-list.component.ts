@@ -19,7 +19,7 @@ const ROUTE_BASE = 'currencies'
 })
 export class CurrencyListComponent implements OnInit {
 
-constructor(
+  constructor(
     private readonly _router: Router,
     private readonly _apiService: APIService
   ) {}

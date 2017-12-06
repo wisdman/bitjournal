@@ -39,7 +39,7 @@ CREATE TABLE currencies (
 
   CONSTRAINT currencies__idx_pkey PRIMARY KEY ("symbol"),
 
-  CONSTRAINT currencies__check__symbol CHECK ("symbol" ~ '^[A-Z]+$'),
+  CONSTRAINT currencies__check__symbol CHECK ("symbol" ~ '^[A-Z0-9]+$'),
 
   CONSTRAINT currencies__check__maxCoin CHECK ("maxCoin" >= 0),
 

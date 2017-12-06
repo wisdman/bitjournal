@@ -1,0 +1,23 @@
+<h1>Main</h1>
+
+
+<div>
+  <div *ngFor="let item of currencies">
+    <img [src]="item.image | image">
+    <span>{{ item.symbol }}</span>
+  </div>
+</div>
+
+
+<div>
+  <div *ngFor="let item of videos">
+    {{item}}
+  </div>
+</div>
+
+<a *ngFor="let item of publications">
+  <img [src]="item.image | image">
+  <h3>{{ item.title }}</h3>
+</a>
+
+

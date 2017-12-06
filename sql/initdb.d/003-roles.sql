@@ -7,7 +7,6 @@ CREATE TYPE roles AS ENUM (
   'user',          -- user
   'author',        -- author
   'publisher',     -- publisher
-  'сhief',         -- chief editor
   'administrator', -- full futured admin
   'su'             -- super user
 );

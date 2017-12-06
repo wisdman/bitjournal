@@ -40,12 +40,13 @@
     "api:clean": "rm -rf ./api/dist/*",
     "api:build": "webpack --config ./api/webpack.config.js",
     "api:build:prod": "npm run api:clean && NODE_ENV=production npm run api:build",
-    "portal:build": "webpack --config ./portal/webpack.config.js",
+    "portal:clean": "rm -rf ./portal/dist/back/* && rm -rf ./portal/dist/front/*",
+    "portal:build": "npm run portal:clean && webpack --config ./portal/webpack.config.js",
     "portal:build:prod": "NODE_ENV=production npm run portal:build",
     "raw:clean": "rm -rf ./raw/dist/*",
     "raw:build": "npm run raw:clean && webpack --config ./raw/webpack.config.js",
     "raw:build:prod": "NODE_ENV=production npm run raw:build",
-    "build:prod": "npm run admin:build:prod && npm run api:build:prod && npm run raw:build:prod",
+    "build:prod": "npm run admin:build:prod && npm run api:build:prod && portal:build:prod && npm run raw:build:prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -53,7 +54,7 @@
     "@angular/compiler-cli": "^5.0.3",
     "@angular/language-service": "^5.0.3",
     "@types/jquery": "^3.2.16",
-    "@types/node": "^8.0.54",
+    "@types/node": "^8.0.55",
     "@types/pg": "^7.4.1",
     "autoprefixer": "^7.2.1",
     "awesome-typescript-loader": "^3.4.1",
@@ -77,7 +78,7 @@
     "svgo": "^1.0.3",
     "svgo-loader": "^2.1.0",
     "typescript": "^2.6.2",
-    "webpack": "^3.9.1",
+    "webpack": "^3.10.0",
     "webpack-sources": "^1.1.0"
   },
   "dependencies": {

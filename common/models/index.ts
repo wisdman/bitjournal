@@ -1,4 +1,5 @@
 export * from './ads'
+export * from './coin'
 export * from './currency'
 export * from './exchange'
 export * from './ico'

@@ -40,7 +40,7 @@ export const OPTIONS = {
     'codeBeautifier', 'codeView', 'fullscreen', 'lineBreaker', 'link', 'lists', 'paragraphFormat', 'table', 'url'
    ],
 
-  shortcutsEnabled: [],
+  shortcutsEnabled: ['bold', 'italic', 'underline', 'strikeThrough', 'indent', 'outdent', 'undo', 'redo', 'createLink'],
 
   tabSpaces: 2,
 

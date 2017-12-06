@@ -1,3 +1,0 @@
-# bitjournal.io
-User-agent: *
- Host: bitjournal.io

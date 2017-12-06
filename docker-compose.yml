@@ -19,43 +19,45 @@ services:
 
   api-main:
     restart: unless-stopped
-    build: ./api
-    networks:
-      default:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.main
     links:
       - db
     depends_on:
       - db
-    volumes:
-      - ./api/dist/main.bundle.js:/app/main.js:ro
-    environment:
-      POSTGRES_HOST: db
-      POSTGRES_DB: bitjournal
-      POSTGRES_USER: bitjournal
-      POSTGRES_PASSWORD: bitjournal
-      POSTGRES_IDLE_TIMEOUT: 30
-      POSTGRES_POOL_SIZE: 128
+    env_file:
+      - ./api/environment
+    networks:
+      default:
     networks:
       default:
 
   api-raw:
     restart: unless-stopped
-    build: ./api
-    networks:
-      default:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.raw
     links:
       - db
     depends_on:
       - db
-    volumes:
-      - ./api/dist/raw.bundle.js:/app/main.js:ro
-    environment:
-      POSTGRES_HOST: db
-      POSTGRES_DB: bitjournal
-      POSTGRES_USER: bitjournal
-      POSTGRES_PASSWORD: bitjournal
-      POSTGRES_IDLE_TIMEOUT: 30
-      POSTGRES_POOL_SIZE: 128
+    env_file:
+      - ./api/environment
+    networks:
+      default:
+
+  api-ticker:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.ticker
+    links:
+      - db
+    depends_on:
+      - db
+    env_file:
+      - ./api/environment
     networks:
       default:
 
@@ -65,9 +67,11 @@ services:
     links:
       - api-main
       - api-raw
+      - api-ticker
     depends_on:
       - api-main
       - api-raw
+      - api-ticker
     volumes:
       - ./api/assets:/www:ro
       - ./api/server.conf.d:/etc/nginx/server.conf.d:ro
@@ -81,22 +85,15 @@ services:
 
   raw:
     restart: unless-stopped
-    build: ./raw
-    networks:
-      default:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.main
     links:
       - db
     depends_on:
       - db
-    volumes:
-      - ./raw/dist/main.bundle.js:/app/main.js:ro
-    environment:
-      POSTGRES_HOST: db
-      POSTGRES_DB: bitjournal
-      POSTGRES_USER: bitjournal
-      POSTGRES_PASSWORD: bitjournal
-      POSTGRES_IDLE_TIMEOUT: 30
-      POSTGRES_POOL_SIZE: 128
+    env_file:
+      - ./raw/environment
     networks:
       default:
 
@@ -118,7 +115,7 @@ services:
     ports:
       - 145.239.188.66:443:443
 
-  admin:
+   admin:
     restart: unless-stopped
     build: ./nginx
     volumes:
@@ -131,6 +128,31 @@ services:
         ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:67
     ports:
       - 145.239.188.67:443:443
+
+  portal-back:
+    restart: unless-stopped
+    build:
+      context: ./portal
+      dockerfile: Dockerfile.back
+    networks:
+      default:
+
+  portal-front:
+    restart: unless-stopped
+    build: ./nginx
+    links:
+      - portal-back
+    depends_on:
+      - portal-back
+    volumes:
+      - ./portal/dist/front:/www:ro
+      - ./portal/server.conf:/etc/nginx/server.conf:ro
+    networks:
+      default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:64
+    ports:
+      - 145.239.188.64:444:443
 
   land:
     restart: unless-stopped

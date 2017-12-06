@@ -10,10 +10,10 @@ const package = require('../package.json')
 
 // === Webpack plugins ===
 const {
+  EnvironmentPlugin,
   LoaderOptionsPlugin,
   NoEmitOnErrorsPlugin,
   ProgressPlugin,
-  EnvironmentPlugin,
 } = require('webpack')
 
 // === Webpack optimization plugins ===
@@ -23,21 +23,19 @@ const {
 } = require('webpack').optimize
 
 // === Angular webpack plugins ===
-const { AotPlugin }             = require('@ngtools/webpack')
+const { AngularCompilerPlugin } = require('@ngtools/webpack')
 const { NamedLazyChunksWebpackPlugin } = require('@angular/cli/plugins/webpack')
 
 // === Webpack expernal plugins ===
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const MinifyPlugin      = require('babel-minify-webpack-plugin')
 
 // === Custom webpack plugins ===
-const WebpackCleanPlugin     = require('../webpack/clean')
 const WebpackIndexHTMLPlugin = require('../webpack/indexhtml')
 const WebpackManifestPlugin  = require('../webpack/manifest')
 const WebpackPostCSSPlugin   = require('../webpack/postcss')
-const WebpackRobotsTXTPlugin = require('../webpack/robots')
 const WebpackSupressPlugin   = require('../webpack/suppress')
-const WebpackZopfliPlugin    = require('../webpack/zopfli')
 
 // === Post css plugin modules ===
 const PostcssAutoprefixer     = require('autoprefixer')
@@ -54,7 +52,7 @@ const postcssLoaderPlugins = [
   PostcssDiscardComments({
     removeAll: isProduction
   }),
-  PostcssDiscardFontFace(['woff', 'woff2']),
+  PostcssDiscardFontFace(['woff2']),
 ]
 
 // === Final plugins ===
@@ -69,8 +67,7 @@ const postcssFinalPlugins = [
 ]
 
 // === Extract css chunks plugins
-const ExtractStylesCSS = new ExtractTextPlugin('css/[name].[hash].css')
-const ExtractVendorCSS = new ExtractTextPlugin('css/vendor.[hash].css')
+const ExtractStylesCSS = new ExtractTextPlugin('css/[name].[hash:10].bundle.css')
 
 // === Webpack config ===
 module.exports = {
@@ -80,14 +77,14 @@ module.exports = {
   entry: {
     main:   [ PATH('./src/main.front.ts') ],
     styles: [ PATH('./src/styles/index.ts') ],
-    svg:    [ PATH('./src/svg/index.ts') ]
   },
 
   output: {
     path: PATH('./dist/front'),
     publicPath: '/',
-    filename: 'js/[name].[hash].js',
-    chunkFilename: 'js/[id].[hash].chunk.js',
+    filename: 'js/[name].[hash:10].bundle.js',
+    chunkFilename: 'js/[id].[hash:10].chunk.js',
+    crossOriginLoading: false,
   },
 
   resolve: {
@@ -95,14 +92,15 @@ module.exports = {
     mainFields: ['browser', 'module', 'main'],
     symlinks: true,
     alias: {
-      '@core': PATH('../core')
+      '@core': PATH('../core'),
+      '@common': PATH('../common'),
     }
   },
 
   module: {
     rules: [{
-      // === Load html and tpl files ===
-      test: /\.(html|tpl)$/i,
+      // === Load html files ===
+      test: /\.html$/i,
       loader: 'raw-loader'
     },{
       // === Load fonts files ===
@@ -114,7 +112,7 @@ module.exports = {
       }
     },{
       // === Load images files ===
-      test: /\.(gif|png|jpg)$/i,
+      test: /\.(png|jpg)$/i,
       loader: 'file-loader',
       options: {
         outputPath: 'img/',
@@ -142,49 +140,74 @@ module.exports = {
       }]
     },{
       // === Global css styles ===
-      test: /\.css$/i,
+      test: /\.(css|scss)$/i,
       include: [
-        PATH('./src/styles')
+        PATH('./src/styles'),
+        PATH('../common/styles'),
+        PATH('../node_modules/@angular/material/theming'),
       ],
       loader: ExtractStylesCSS.extract({
         use: [{
-          loader: 'css-loader'
+          loader: 'css-loader',
+          options: {
+            importLoaders: 2
+          }
         },{
           loader: 'postcss-loader',
           options: {
             ident: 'postcss',
             plugins: postcssLoaderPlugins
           }
+        },{
+          loader: 'sass-loader'
         }]
       })
     },{
-      // === Vendor css styles ===
-      test: /\.css$/i,
-      include: [
-        PATH('../node_modules')
+      // === Modules css styles ===
+      test: /\.(css|scss)$/i,
+      exclude: [
+        PATH('./src/styles'),
+        PATH('../common/styles'),
+        PATH('../node_modules/@angular/material/theming'),
       ],
-      loader: ExtractVendorCSS.extract({
-        use: [{
-          loader: 'css-loader'
-        },{
-          loader: 'postcss-loader',
-          options: {
-            ident: 'postcss',
-            plugins: postcssLoaderPlugins
-          }
+      use: [{
+        loader: 'exports-loader',
+        options: 'module.exports.toString()'
+      },{
+        loader: 'css-loader',
+        options: {
+          importLoaders: 2
+        }
+      },{
+        loader: 'postcss-loader',
+        options: {
+          ident: 'postcss',
+          plugins: [
+            ...postcssLoaderPlugins,
+            ...postcssFinalPlugins,
+          ]
+        }
+      },{
+          loader: 'sass-loader'
         }]
-      })
+    },{
+      test: /\.js$/,
+      use: [{
+        loader: '@angular-devkit/build-optimizer/webpack-loader'
+      }]
     },{
       // === Typescript loader ===
-      test: /\.ts$/,
-      loader: '@ngtools/webpack'
+      test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+      use: [{
+        loader: '@angular-devkit/build-optimizer/webpack-loader'
+      },{
+        loader: '@ngtools/webpack'
+      }]
     }]
   },
 
   plugins: [
     new ProgressPlugin(),
-
-    new WebpackCleanPlugin(),
 
     new LoaderOptionsPlugin({
       debug: !isProduction,
@@ -209,18 +232,16 @@ module.exports = {
       minChunks: module => /node_modules/.test(module.resource)
     }),
 
-    ExtractVendorCSS,
     ExtractStylesCSS,
     new WebpackPostCSSPlugin({
       plugins: postcssFinalPlugins
     }),
 
     new WebpackSupressPlugin({
-      pattern: /(styles|svg)\.([a-z0-9]+\.)?js$/
+      pattern: /(styles|material|svg)\.([a-z0-9\.]+)?js$/
     }),
 
     new WebpackManifestPlugin(),
-    new WebpackRobotsTXTPlugin(),
 
     new WebpackIndexHTMLPlugin({
       output: PATH('./dist/back/index.html'),
@@ -232,10 +253,18 @@ module.exports = {
       } : {}
     }),
 
-    new AotPlugin({
+    new AngularCompilerPlugin({
       mainPath: 'main.front.ts',
-      tsConfigPath: PATH('./tsconfig.front.json')
+      tsConfigPath: PATH('./tsconfig.front.json'),
+      platform: 0
     }),
+
+    new CopyWebpackPlugin([{
+      from: PATH('./assets')
+    }],{
+      debug: 'warning'
+    }),
+
   ].concat( isProduction ? [
     // === Minify js ===
     new MinifyPlugin({
@@ -248,11 +277,6 @@ module.exports = {
     },{
       comments: false,
       sourceMap: false
-    }),
-
-    // === Gzip files ===
-    new WebpackZopfliPlugin({
-      pattern: /\.(js|css|svg)$/
     })
   ] : []),
 

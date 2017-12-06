@@ -1,6 +1,6 @@
 import { Component, forwardRef, Input } from '@angular/core'
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms'
-import { ENTER, COMMA } from '@angular/cdk/keycodes'
+import { ENTER } from '@angular/cdk/keycodes'
 
 import {MatChipInputEvent} from '@angular/material'
 
@@ -23,7 +23,7 @@ export class TagsComponent implements ControlValueAccessor {
   addOnBlur: boolean = true;
 
   // Enter, comma
-  separatorKeysCodes = [ENTER, COMMA];
+  separatorKeysCodes = [ENTER];
 
   tags: Array<string> = new Array<string>()
 

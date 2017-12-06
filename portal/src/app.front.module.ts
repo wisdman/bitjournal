@@ -3,32 +3,41 @@
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { HttpModule } from '@angular/http'
+import { HttpClientModule } from '@angular/common/http'
 
 import { RouterModule, PreloadAllModules } from '@angular/router'
 
-import { COMPONENTS } from './app.components'
-import { ROUTES } from './app.routes'
+import { COMPONENTS, ENTRY_COMPONENTS } from './app.components'
+import { MATERIAL } from './app.material'
+import { PIPES } from './app.pipes'
+import { ROUTES }   from './app.routes'
 import { SERVICES } from './app.services'
 
-import { BodyComponent } from './components'
+import { LayoutComponent } from './components'
 
 import { APP_ID } from './app.id'
 
 @NgModule({
-  bootstrap: [ BodyComponent ],
+  bootstrap: [ LayoutComponent ],
   declarations: [
-    BodyComponent,
-    ...COMPONENTS
+    LayoutComponent,
+    ...COMPONENTS,
+    ...PIPES
   ],
 
   imports: [
     BrowserModule.withServerTransition({ appId: APP_ID }),
+    BrowserAnimationsModule,
 
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
+
+    HttpClientModule,
+
+    ...MATERIAL,
 
     RouterModule.forRoot(ROUTES, {
       useHash: false,
@@ -38,6 +47,10 @@ import { APP_ID } from './app.id'
 
   providers: [
     ...SERVICES
+  ],
+
+  entryComponents: [
+    ...ENTRY_COMPONENTS
   ]
 })
 export class AppModule {}

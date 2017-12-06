@@ -18,8 +18,6 @@ import { SERVICES } from './app.services'
 
 import { LayoutComponent } from './components'
 
-import { AuthDialogComponent } from './components'
-
 @NgModule({
   bootstrap: [ LayoutComponent ],
 
@@ -32,8 +30,10 @@ import { AuthDialogComponent } from './components'
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+
     FormsModule,
     ReactiveFormsModule,
+
     HttpClientModule,
 
     ...MATERIAL,
