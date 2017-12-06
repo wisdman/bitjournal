@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core'
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core'
+import { isPlatformServer } from '@angular/common'
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http'
 
 import { Observable } from 'rxjs/Observable'
@@ -22,21 +23,27 @@ const AUTH_TOKEN_LS_ID = 'auth-token'
 @Injectable()
 export class UserService {
 
+  private isServer: boolean
+
   constructor(
+    @Inject(PLATFORM_ID) platformId: Object,
     private readonly _http: HttpClient,
     private readonly _matDialog: MatDialog,
     private readonly _message: MessageService,
-    private readonly _snackBar: MatSnackBar) {}
+    private readonly _snackBar: MatSnackBar
+  ) {
+    this.isServer = isPlatformServer(platformId)
+  }
 
   private get _authToken(): string | null {
-    if (!window || !window.localStorage)
+    if (this.isServer)
       return null
 
     return window.localStorage.getItem(AUTH_TOKEN_LS_ID) || null
   }
 
   private set _authToken(value: string | null) {
-    if (!window || !window.localStorage)
+    if (this.isServer)
       return
 
     value = value && value.trim() || null

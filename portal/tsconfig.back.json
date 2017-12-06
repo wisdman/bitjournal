@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "angularCompilerOptions": {
-    "entryModule": "src/app.back.module#AppModule",
+    "entryModule": "src/app.back.module#AppBackModule",
     "preserveWhitespaces": false
   },
   "include": [
@@ -10,7 +10,6 @@
     "../common/**/*.ts"
   ],
   "exclude": [
-    "./src/main.front.ts",
-    "./src/app.front.module.ts"
+    "./src/main.front.ts"
   ]
 }

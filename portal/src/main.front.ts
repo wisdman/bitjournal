@@ -8,7 +8,7 @@ import 'zone.js/dist/zone'
 import { ApplicationRef, enableProdMode } from '@angular/core'
 import { platformBrowser, enableDebugTools, disableDebugTools } from '@angular/platform-browser'
 
-import { AppModuleNgFactory } from './app.front.module.ngfactory'
+import { AppModuleNgFactory } from './app.module.ngfactory'
 
 console.log(`${process.env.APP_NAME} v${process.env.APP_VERSION}`)
 

@@ -1,46 +1,57 @@
 /*
- * Bakend service
+ * Bakend SSR server
  */
-
-import { promisify } from 'util'
-import fs from 'fs'
-const fs_readFile = promisify(fs.readFile)
-
-import path from 'path'
-
-import { Service, Context, INext } from '@core/service'
 
 // === Polyfills ===
 import 'zone.js/dist/zone-node'
 
+import { Socket } from 'net'
+import { createServer, IncomingMessage, ServerResponse } from 'http'
+
 import { enableProdMode, InjectionToken } from '@angular/core'
 import { renderModuleFactory, INITIAL_CONFIG } from '@angular/platform-server'
 
-import { AppModuleNgFactory } from './app.back.module.ngfactory'
-// import { CONTEXT } from './app.tokens'
+import { AppBackModuleNgFactory } from './app.back.module.ngfactory'
 
-// Global date timezone
+import fs from 'fs'
+import path from 'path'
+
+// Set global timezone
 process.env.TZ = 'UTC'
 
-// Enable production mode
 enableProdMode()
 
 const INDEX_HTML = fs.readFileSync( path.resolve(__dirname, 'index.html'), 'utf8' )
 
-// HTTP service
-new Service(
+const server = createServer( ( req: IncomingMessage, res: ServerResponse ) => {
 
-  async (ctx: Context, next: INext) => {
-    let html = await renderModuleFactory(AppModuleNgFactory, {
-      document: INDEX_HTML,
-      url: ctx.request.path,
+  renderModuleFactory(AppBackModuleNgFactory, {
+    document: INDEX_HTML,
+    url: req.url || '',
       // extraProviders: [{
         // provide: CONTEXT,
         // useValue: ctx
       // }]
-    })
+  }).then( html => {
+    res.writeHead(200, { 'Content-Type': 'text/html' })
+    res.end(html)
+  }).catch( error => {
+    res.writeHead(500, { 'Content-Type': 'text/plain' })
+    res.end('Internal server error')
+    console.error('Render error', error)
+  })
+})
 
-    ctx.set(html)
-    await next()
-  }
-)
+server.on('clientError', (error: Error , socket: Socket ) => {
+  socket.end('HTTP/1.1 400 Bad Request\r\n\r\n')
+})
+
+// HTTP Server port, default '0.0.0.0'
+const SERVICE_HOSTNAME = process.env.SERVICE_HOSTNAME || '0.0.0.0'
+// HTTP Server port, default 80
+const SERVICE_PORT = Math.max(~~(process.env.SERVICE_PORT || '') || 0, 0) || 80
+
+server.listen(SERVICE_PORT, SERVICE_HOSTNAME, () => {
+  const address = server.address()
+  console.log(`Opened HTTP server on ${address.address}:${address.port}`)
+})

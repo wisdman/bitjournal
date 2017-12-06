@@ -1,9 +1,12 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
 
 import { APIService } from '../../services'
 
 import { IPublication, ICurrency } from '@common/models'
+
+import { Observable } from 'rxjs/Observable'
+
+import { HttpClient } from '@angular/common/http'
 
 @Component({
   selector: 'main-page',
@@ -13,31 +16,51 @@ import { IPublication, ICurrency } from '@common/models'
 })
 export class MainPageComponent implements OnInit {
 
-  publications: Array<IPublication> = new Array<IPublication>()
+  // publications: Array<IPublication> = new Array<IPublication>()
 
-  currencies: Array<ICurrency> = new Array<ICurrency>()
+  // currencies: Observable<Array<ICurrency>>
 
-  videos: Array<string> = []
+  // data: any
+
+  req: Observable<any>
 
   constructor(
-    private readonly _router: Router,
+              // private _client: HttpClient
     private readonly _apiService: APIService
-  ) {}
+  ) {
 
-  ngOnInit() {
-    this._apiService
-        .get< Array<IPublication> >('/publications')
-        .subscribe( items => {
-          this.publications = items
-          // this.updateStatistic()
-        })
+    // this.currencies = this._apiService
+                          // .get< Array<ICurrency> >('/currencies')
 
-    this._apiService
-        .get< Array<ICurrency> >('/currencies')
-        .subscribe( items => {
-          this.currencies = items
-        })
+  }
 
-    this.videos = ['1','2','3']
+  // ngOnInit() {
+  //   this._apiService
+  //       .get< Array<IPublication> >('/publications')
+  //       .subscribe( items => {
+  //         this.publications = items
+  //         // this.updateStatistic()
+  //       })
+
+
+
+
+  //   this.videos = ['1','2','3']
+  // }
+
+  ngOnInit(){
+    // this.req = Observable.create((obs:any) => {
+    //   setTimeout(() => {
+    //     obs.next([1, 2, 3]);
+    //     obs.complete();
+    //   }, 1000);
+    // });
+
+
+    // this.req = this._client.get('https://api.coinmarketcap.com/v1/ticker/')
+                // .subscribe( item => this.data = item )
+
+    this.req = this._apiService
+                          .get< Array<ICurrency> >('/currencies')
   }
 }

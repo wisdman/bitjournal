@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "angularCompilerOptions": {
-    "entryModule": "src/app.front.module#AppModule",
+    "entryModule": "src/app.module#AppModule",
     "preserveWhitespaces": false
   },
   "include": [

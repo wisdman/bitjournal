@@ -1,14 +1,16 @@
 <h1>Main</h1>
 
+<p>{{ req | async | json }}</p>
 
-<div>
-  <div *ngFor="let item of currencies">
+
+<!-- <div>
+  <div *ngFor="let item of currencies | async">
     <img [src]="item.image | image">
     <span>{{ item.symbol }}</span>
   </div>
 </div>
-
-
+ -->
+<!--
 <div>
   <div *ngFor="let item of videos">
     {{item}}
@@ -20,4 +22,5 @@
   <h3>{{ item.title }}</h3>
 </a>
 
+ -->
 

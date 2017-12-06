@@ -46,7 +46,6 @@
     "raw:clean": "rm -rf ./raw/dist/*",
     "raw:build": "npm run raw:clean && webpack --config ./raw/webpack.config.js",
     "raw:build:prod": "NODE_ENV=production npm run raw:build",
-    "build:prod": "npm run admin:build && npm run api:build && npm run portal:build && npm run raw:build",
     "build:prod": "npm run admin:build:prod && npm run api:build:prod && npm run portal:build:prod && npm run raw:build:prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -54,6 +53,7 @@
     "@angular/cli": "^1.5.5",
     "@angular/compiler-cli": "^5.0.3",
     "@angular/language-service": "^5.0.3",
+    "@types/core-js": "^0.9.43",
     "@types/jquery": "^3.2.16",
     "@types/node": "^8.0.55",
     "@types/pg": "^7.4.1",
@@ -95,13 +95,14 @@
     "@angular/platform-browser-dynamic": "^5.0.3",
     "@angular/platform-server": "^5.0.3",
     "@angular/router": "^5.0.3",
+    "core-js": "^2.5.1",
     "font-awesome": "^4.7.0",
     "froala-editor": "^2.7.2",
     "jquery": "^3.2.1",
     "pg": "^7.4.0",
     "pg-large-object": "^2.0.0",
     "qrious": "^4.0.2",
-    "rxjs": "5.5.2",
+    "rxjs": "^5.5.5",
     "zone.js": "^0.8.18"
   }
 }

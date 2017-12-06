@@ -15,6 +15,7 @@ const {
   NoEmitOnErrorsPlugin,
   ProgressPlugin,
   EnvironmentPlugin,
+  ContextReplacementPlugin
 } = require('webpack')
 
 // === Webpack optimization plugins ===
@@ -152,6 +153,7 @@ module.exports = {
     new AngularCompilerPlugin({
       mainPath: 'main.back.ts',
       tsConfigPath: PATH('./tsconfig.back.json'),
+      skipCodeGeneration: false,
       platform: 1
     }),
 
@@ -160,7 +162,13 @@ module.exports = {
       raw: true,
       entryOnly: true,
       test: 'main.js'
-    })
+    }),
+
+    new ContextReplacementPlugin(
+      /(.+)?angular(\\|\/)core(.+)?/,
+      PATH('./src'), // location of your src
+      {} // a map of your routes
+    ),
   ].concat( isProduction ? [
     // === Minify js ===
     new MinifyPlugin({
