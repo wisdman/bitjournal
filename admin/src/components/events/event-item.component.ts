@@ -25,28 +25,28 @@ const URL_PATTERN = /^[a-z0-9]([a-z0-9_-]*[a-z0-9])?$/
 })
 export class EventItemComponent {
 
-  // get DEBUG(): boolean {
-  //   return isDevMode()
-  // }
+  get DEBUG(): boolean {
+    return isDevMode()
+  }
 
-  // private _id: UUID = new UUID(null)
+  private _id: UUID = new UUID(null)
 
-  // get isNew() {
-  //   return this._id.version === null
-  // }
+  get isNew() {
+    return this._id.version === null
+  }
 
-  // itemForm: FormGroup
-  // rating: IRating
+  itemForm: FormGroup
+  rating: IRating
 
-  // constructor(
-  //   private readonly _fb: FormBuilder,
-  //   private readonly _route: ActivatedRoute,
-  //   private readonly _apiService: APIService,
-  //   private readonly _dialog: DialogService,
-  //   private readonly _location: Location,
-  //   private readonly _fileService: FileService
-  // ) {
-  //   this.itemForm = this._fb.group({
+  constructor(
+    private readonly _fb: FormBuilder,
+    private readonly _route: ActivatedRoute,
+    private readonly _apiService: APIService,
+    private readonly _dialog: DialogService,
+    private readonly _location: Location,
+    private readonly _fileService: FileService
+  ) {
+    this.itemForm = this._fb.group({});
   //     enable:        [ true, [
   //                      Validators.required
   //                    ] ],
@@ -97,7 +97,7 @@ export class EventItemComponent {
 
   //     content:       [ '' ],
   //   })
-  // }
+  }
 
   // ngOnInit() {
   //   this._route.params.subscribe(params => {
@@ -120,24 +120,24 @@ export class EventItemComponent {
   //   })
   // }
 
-  // back() {
-  //   if (this.itemForm.pristine) {
-  //     this._location.back()
-  //     return
-  //   }
+  back() {
+    if (this.itemForm.pristine) {
+      this._location.back()
+      return
+    }
 
-  //   this._dialog.open({
-  //     title: 'Форма была изменена',
-  //     message: `Возможна потеря данных. Покинуть раздел?`,
-  //     buttons: {
-  //       'Отмена': false,
-  //       'Да': true
-  //     }
-  //   }).subscribe( result => {
-  //     if (result === true)
-  //       this._location.back()
-  //   })
-  // }
+    this._dialog.open({
+      title: 'Форма была изменена',
+      message: `Возможна потеря данных. Покинуть раздел?`,
+      buttons: {
+        'Отмена': false,
+        'Да': true
+      }
+    }).subscribe( result => {
+      if (result === true)
+        this._location.back()
+    })
+  }
 
   // replaceImage() {
   //   this._fileService
@@ -158,20 +158,20 @@ export class EventItemComponent {
   //       })
   // }
 
-  // save() {
-  //   if (this.itemForm.invalid)
-  //     return
+  save() {
+    if (this.itemForm.invalid)
+      return
 
   //   const postURL = this.isNew ? `/${API_BASE}` : `/${API_BASE}/${this._id}`
 
   //   this._apiService
   //       .post<IICO>(postURL, this.itemForm.value)
   //       .subscribe( _ => this._location.back() )
-  // }
+  }
 
-  // delete() {
-  //   if (this.isNew)
-  //     return
+  delete() {
+    if (this.isNew)
+      return
 
   //   this._dialog.open({
   //     title: 'Удалить ICO?',
@@ -185,5 +185,5 @@ export class EventItemComponent {
   //       this._apiService.delete<IICO>(`/${API_BASE}/${this._id}`)
   //                       .subscribe( _ => this._location.back() )
   //   })
-  // }
+  }
 }

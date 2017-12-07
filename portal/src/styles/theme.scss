@@ -1,7 +1,7 @@
 @import '~@angular/material/theming';
 
 $typography: mat-typography-config(
-  $font-family: 'system-ui'
+  $font-family: 'bj-d'
 );
 
 @include mat-core($typography);

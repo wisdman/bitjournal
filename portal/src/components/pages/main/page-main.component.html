@@ -1,13 +1,17 @@
 
-<a *ngFor="let item of items | async" [href]="item.url">
-  <img [src]="item.image | image">
-  {{ item. title }}
-</a>
+<main class="bj-main">
+  <a *ngFor="let publication of publications | async" class="bj-pub-card"
+    [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
+<main>
 
 
-<aside class="bj-aside">
+
+
+
+
+<!-- <aside class="bj-aside">
   <h2>Новости</h2>
-</aside>
+</aside> -->
 
-<h2>Video</h2>
-<video-ribbon></video-ribbon>
+<!-- <h2>Video</h2> -->
+<!-- <video-ribbon></video-ribbon> -->

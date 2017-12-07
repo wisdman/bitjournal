@@ -2,14 +2,11 @@ import { Component, ViewEncapsulation, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 
 import { Observable } from 'rxjs/Observable'
+import { IPublication } from '@common/models'
 
 import {
   PublicationService,
-  IPublicationItem,
 } from '../../../services'
-
-// import { IPublication } from '@common/models'
-// import { IVideoRibbonItem } from './video-ribbon-item.interface'
 
 @Component({
   selector: 'page-main',
@@ -19,7 +16,7 @@ import {
 })
 export class PageMainComponent implements OnInit {
 
-  items: Observable < Array<IPublicationItem> >
+  publications: Observable < Array<IPublication> >
 
   constructor(
     private readonly _router: Router,
@@ -27,7 +24,7 @@ export class PageMainComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.items = this._publicationService
-                     .get()
+    this.publications = this._publicationService
+                            .get()
   }
 }

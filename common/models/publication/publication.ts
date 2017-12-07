@@ -109,7 +109,7 @@ export class Publication implements IPublication {
     this.ico = UUID.getArray(value.ico)
     this.markets = UUID.getArray(value.markets)
 
-    this.weight = Math.min(Math.max(~~value.weight, 0), 3)
+    this.weight = value.weight === undefined ? 1 : Math.min(Math.max(~~value.weight, 0), 3)
 
     this.bigTitle = String(value.bigTitle || '').trim()
     this.title = String(value.title || '').trim()

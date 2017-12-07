@@ -5,7 +5,6 @@ import { Observable } from 'rxjs/Observable'
 import { APIService } from '../api'
 
 import { IPublication } from '@common/models'
-import { IPublicationItem } from './publication-item.interface'
 
 const API_BASE = 'publications'
 
@@ -18,7 +17,7 @@ export class PublicationService {
     private readonly _api: APIService
   ) {}
 
-  get(): Observable< Array <IPublicationItem> > {
+  get(): Observable< Array <IPublication> > {
     return this._api
                .get< Array<IPublication> >(`/${API_BASE}`)
                .map( items => items.filter( item => item.enable) )

@@ -1,0 +1,16 @@
+:root {
+/*
+ * Indents
+ */
+
+  --indent-base: 20px;
+  --indent-half: calc( var(--indent-base) / 2 );
+  --indent-double: calc( var(--indent-base) * 2 );
+
+/*
+ * Colors
+ */
+
+  --color-main: #24292e;
+
+}
