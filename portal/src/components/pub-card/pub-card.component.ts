@@ -5,10 +5,10 @@ import { IPublication } from '@common/models'
 @Component({
   selector: '.bj-pub-card',
   templateUrl: './pub-card.component.html',
-  styleUrls: [ './pub-card.component.css' ],
+  styleUrls: [ './pub-card.component.css', './pub-card.component.grid.css' ],
   encapsulation: ViewEncapsulation.None,
   host: {
-    '[routerLink]': "['/Matches', 'MatchesDetail']"
+    'routerLink': "['/Matches', 'MatchesDetail']"
   }
 })
 export class PubCardComponent {

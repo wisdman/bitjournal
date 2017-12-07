@@ -10,11 +10,11 @@ const EMPTY_PNG = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAA
   name: 'image'
 })
 export class ImagePipe implements PipeTransform {
-  transform(value: number | string | null): string {
-    if (!value)
+  transform(input: number | string | null): string {
+    if (!input)
       return EMPTY_PNG
 
-    const match = PATH_REGEXP.exec( String(value).trim())
+    const match = PATH_REGEXP.exec( String(input).trim())
 
     if (!match)
       return EMPTY_PNG

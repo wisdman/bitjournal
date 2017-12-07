@@ -1,9 +1,16 @@
 .bj-pub-card {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
 
   max-width: 100%;
   margin-top: var(--indent-double);
+
+  text-decoration: none;
+  text-transform: none;
+  color: var(--color-main);
 }
 
 .bj-pub-card__figure {
@@ -21,6 +28,9 @@
 }
 
 .bj-pub-card__picture {
+  display: block;
+  box-sizing: border-box;
+
   position: absolute;
   left: 0;
   top: 0;
@@ -32,6 +42,9 @@
 }
 
 .bj-pub-card__picture img {
+  display: block;
+  box-sizing: border-box;
+
   position: absolute;
   min-width: 100%;
   min-height: 100%;
@@ -46,8 +59,9 @@
 }
 
 .bj-pub-card__row {
-  position: relative;
   display: block;
+  box-sizing: border-box;
+  position: relative;
 
   width: 100%;
 
@@ -95,7 +109,9 @@
 }
 
 .bj-video-ribbon__datetime {
-  padding: 0 var(--indent-base);
+  display: block;
+  box-sizing: border-box;
 
+  padding: 0 var(--indent-base);
   margin-top: var(--indent-base);
 }

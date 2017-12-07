@@ -25,7 +25,7 @@ export class PublicationsAPI extends RouteMiddleware {
     const db = ctx.db as Client
 
     const query = new Query(DATATABLE).select(Publication.MainFields)
-                                      .order('ts')
+                                      .order({'ts': 'DESC'})
 
     ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}] ===\n%s`, query)
 
@@ -44,7 +44,7 @@ export class PublicationsAPI extends RouteMiddleware {
 
     const query = new Query(DATATABLE).select(Publication.MainFields)
                                       .where("enable AND ts <= timezone('UTC', now())")
-                                      .order('ts')
+                                      .order({'ts': 'DESC'})
 
     ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}] ===\n%s`, query)
 

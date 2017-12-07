@@ -6,9 +6,9 @@ import { Timestamp } from '@core/timestamp'
   name: 'timestamp'
 })
 export class TimestampPipe implements PipeTransform {
-  transform(value: any, type: 'ISO' | 'HR' | 'URL' = 'ISO'): string {
+  transform(input: any, type: 'ISO' | 'HR' | 'URL' = 'ISO'): string {
 
-    const ts = new Timestamp(value)
+    const ts = new Timestamp(input)
     if (ts.isInvalid)
       return ''
 
