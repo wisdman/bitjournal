@@ -76,7 +76,7 @@ export class TickerAPI extends RouteMiddleware {
       result.forEach( item => this.updateItem(item) )
     }
 
-    setTimeout( () => this.updateSymbolsLoop(), this._updateSymbolsInterval )
+    setTimeout( () => this.updateLoop(), this._updateSymbolsInterval )
 
     // Debuglog
     console.log('UpdateLoop complite')
