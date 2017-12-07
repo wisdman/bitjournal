@@ -59,7 +59,7 @@ export class Coin implements ICoin {
     if (historical.length === 0)
       return undefined
 
-    return historical[historical.length].ts
+    return historical[historical.length - 1].ts
   }
 
   updatePrice(value: Partial<IPrice> = {}) {

@@ -20,25 +20,20 @@ export class TickerAPI extends RouteMiddleware {
 
   private readonly _sources: Array< ISource > = new Array< ISource >()
 
-  private readonly _updateSymbolsInterval: number = 30000
-  private readonly _updateTickerInterval: number = 30000
+  private readonly _updateInterval: number = 60000
 
   constructor({
-    updateSymbolsInterval =  600000,
-    updateTickerInterval = 600000,
+    updateInterval =  60000,
   }: {
-    updateSymbolsInterval?: number
-    updateTickerInterval?: number
+    updateInterval?: number
   } = {}) {
     super()
 
-    this._updateSymbolsInterval = updateSymbolsInterval
-    this._updateTickerInterval  = updateTickerInterval
+    this._updateInterval = updateInterval
 
     this._sources.push( new CoinMarketCapSource() )
 
-    this.updateSymbolsLoop()
-        .then( () => this.updateLoop())
+    this.updateLoop()
   }
 
   private updateItem(value: ICoin): Coin {
@@ -54,21 +49,22 @@ export class TickerAPI extends RouteMiddleware {
     return currentItem
   }
 
-  private async updateSymbolsLoop(): Promise<void> {
+  private async updateLoop(): Promise<void> {
+
+    // Debuglog
+    console.log('=== Start UpdateLoop ===')
+
     const symbols = await getSymbols()
 
-    if (symbols.length > 0)
-      this._symbols = symbols
-
-    setTimeout( () => this.updateSymbolsLoop(), this._updateSymbolsInterval )
-  }
-
-  private async updateLoop(): Promise<void> {
+    if (symbols.length <= 0) {
+      setTimeout( () => this.updateLoop(), this._updateInterval )
+      return
+    }
 
     for (let source of this._sources) {
       let result: Array<ICoin> = new Array<ICoin>()
       try {
-        result = await source.update(this._symbols)
+        result = await source.update(symbols)
       } catch (error) {
         console.error('Update error', error)
       }
@@ -76,10 +72,10 @@ export class TickerAPI extends RouteMiddleware {
       result.forEach( item => this.updateItem(item) )
     }
 
-    setTimeout( () => this.updateLoop(), this._updateSymbolsInterval )
+    setTimeout( () => this.updateLoop(), this._updateInterval )
 
     // Debuglog
-    console.log('UpdateLoop complite')
+    console.log('=== UpdateLoop complite ===')
   }
 
   @Get(`/${ROUTE_BASE}`)
