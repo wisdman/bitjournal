@@ -1,0 +1,13 @@
+
+@supports (display: grid) {
+
+  @media (min-width: 700px) {
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-rows: auto;
+    }
+
+
+  }
+}

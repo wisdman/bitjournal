@@ -1,7 +1,6 @@
 
 <main class="bj-main">
-  <a *ngFor="let publication of publications | async" class="bj-pub-card"
-    [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
+  <a *ngFor="let publication of publications | async" class="bj-pub-card" [value]="publication"></a>
 <main>
 
 

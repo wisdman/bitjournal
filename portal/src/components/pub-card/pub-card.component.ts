@@ -21,3 +21,5 @@ export class PubCardComponent {
 
   constructor() {}
 }
+
+// [routerLink]="[publication.ts | timestamp:'URL', publication.url]"
