@@ -1,0 +1,13 @@
+
+<a *ngFor="let item of items | async" [href]="item.url">
+  <img [src]="item.image | image">
+  {{ item. title }}
+</a>
+
+
+<aside class="bj-aside">
+  <h2>Новости</h2>
+</aside>
+
+<h2>Video</h2>
+<video-ribbon></video-ribbon>

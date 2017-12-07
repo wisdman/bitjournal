@@ -1,0 +1,12 @@
+<div class="bj-video-ribbon__wrapper">
+  <a *ngFor="let item of items | async" [href]="item.href" target="_blank" class="bj-video-ribbon__item">
+    <figure class="bj-video-ribbon__figure">
+      <img class="bj-video-ribbon__thumb" [src]="item.thumb">
+      <figcaption class="bj-video-ribbon__caption bj-video-ribbon__caption--left">{{ item.duration }}</figcaption>
+      <figcaption class="bj-video-ribbon__caption bj-video-ribbon__caption--right">{{ item.like }}</figcaption>
+    </figure>
+    <time class="bj-video-ribbon__datetime" [attr.datetime]="item.date">{{ item.date }}</time>
+    <h3 class="bj-video-ribbon__title">{{ item.title }}</h3>
+  </a>
+</div>
+

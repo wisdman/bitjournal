@@ -6,6 +6,8 @@ import {
   CurrencyItemComponent,
   CurrencyListComponent,
   DashboardBlockComponent,
+  EventItemComponent,
+  EventListComponent,
   ExchangeItemComponent,
   ExchangeListComponent,
   ICOItemComponent,
@@ -32,6 +34,9 @@ export const ROUTES: Routes = [
 
   { path: 'currencies/:symbol' , component: CurrencyItemComponent    },
   { path: 'currencies'         , component: CurrencyListComponent    },
+
+  { path: 'events/:id'         , component: EventItemComponent       },
+  { path: 'events'             , component: EventListComponent       },
 
   { path: 'exchanges/:id'      , component: ExchangeItemComponent    },
   { path: 'exchanges'          , component: ExchangeListComponent    },

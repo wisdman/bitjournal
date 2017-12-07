@@ -1,6 +1,9 @@
 // === System font ===
 import './system-font.css'
 
+// === Icont fonts ===
+import 'font-awesome/css/font-awesome.css'
+
 // === Material theme ===
 import './theme.scss'
 

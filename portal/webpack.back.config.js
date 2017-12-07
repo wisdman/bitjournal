@@ -95,6 +95,7 @@ module.exports = {
       exclude: [
         PATH('./src/styles'),
         PATH('../common/styles'),
+        PATH('../node_modules/font-awesome'),
         PATH('../node_modules/@angular/material/theming'),
       ],
       use: [{

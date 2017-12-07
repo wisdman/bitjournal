@@ -10,15 +10,40 @@ import { IPublication } from './publication.interface'
 export class Publication implements IPublication {
   static MainFields = [
     'id',
+
     'ts',
     'url',
+
     'enable',
+
+    'sections',
+    'currencies',
+    'exchanges',
+    'ico',
+    'markets',
+
     'weight',
+
+    'bigTitle',
     'title',
+
     'description',
+
+    'image',
+
+    'authors',
+    'tags',
+
+    'rss',
+
     'rating',
+
+    'branding',
+
     'lastModified',
   ]
+
+
 
   readonly id: UUID
 
