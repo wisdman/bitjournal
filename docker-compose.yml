@@ -86,7 +86,7 @@ services:
   raw:
     restart: unless-stopped
     build:
-      context: ./api
+      context: ./raw
       dockerfile: Dockerfile.main
     links:
       - db
@@ -94,8 +94,6 @@ services:
       - db
     env_file:
       - ./raw/environment
-    environment:
-      NODE_DEBUG: service
     networks:
       default:
 

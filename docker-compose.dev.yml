@@ -96,7 +96,7 @@ services:
   raw:
     restart: unless-stopped
     build:
-      context: ./api
+      context: ./raw
       dockerfile: Dockerfile.main
     links:
       - db
