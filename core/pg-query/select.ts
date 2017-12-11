@@ -33,7 +33,6 @@ export class Select extends AbstractQuery {
 
   order(value: IOrderValue) {
     this._order = new Order(value)
-    console.log('ORDER', this._order)
     return this
   }
 

@@ -5,8 +5,10 @@ import { Observable } from 'rxjs/Observable'
 import { IPublication } from '@common/models'
 
 import {
-  PublicationService,
+  APIService,
 } from '../../../services'
+
+const API_PUBLICATIONS = 'publications'
 
 @Component({
   selector: 'page-main',
@@ -20,11 +22,14 @@ export class PageMainComponent implements OnInit {
 
   constructor(
     private readonly _router: Router,
-    private readonly _publicationService: PublicationService,
+    private readonly _api: APIService,
   ) {}
 
   ngOnInit() {
-    this.publications = this._publicationService
-                            .get()
+    this.publications_weight_0 = this._api
+                                     .get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=0&limit`)
+
+    this.publications_weight_12 = this._api
+                                      .get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=1,2&`)
   }
 }

@@ -1,9 +1,17 @@
 
-<main class="bj-main">
-  <a *ngFor="let publication of publications | async" class="bj-pub-card"
-    [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
+<main class="bj-page__box bj-page__box--grid2">
+  <a *ngFor="let publication of publications | async" class="bj-pub-card" [class.bj-grid__item--wide]="publication.weight > 1" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
 <main>
+<aside class="bj-page__aside">
+  <h1 class="column-header">Новости</h1>
+  <a *ngFor="let publication of publications | async" class="a1">{{ publication.title }}</a>
+</aside>
 
+<video-ribbon></video-ribbon>
+
+<main class="bj-page__box bj-page__box--grid3">
+
+</main>
 
 
 

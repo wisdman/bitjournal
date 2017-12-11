@@ -21,6 +21,7 @@ import {
   PageMarketsItemComponent,
   PageSectionComponent,
   PubCardComponent,
+  FollowComponent,
   VideoRibbonComponent,
 } from './components'
 
@@ -46,6 +47,7 @@ export const COMPONENTS: any[] = [
   PageMarketsItemComponent,
   PageSectionComponent,
   PubCardComponent,
+  FollowComponent,
   VideoRibbonComponent,
 ]
 

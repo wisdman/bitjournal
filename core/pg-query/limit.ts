@@ -10,7 +10,7 @@ export class Limit {
       throw new TypeError('limit is less than or equal to zero')
 
     if (limit < Infinity)
-      this.text = ' LIMIT ${limit}'
+      this.text = ` LIMIT ${limit}`
     else
       this.text = ''
   }

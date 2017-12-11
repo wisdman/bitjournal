@@ -6,12 +6,24 @@
   align-items: flex-start;
 
   max-width: 100%;
-  margin-top: var(--indent-double);
 
   text-decoration: none;
   text-transform: none;
   color: var(--color-main);
 }
+
+.bj-pub-card + .bj-pub-card {
+  margin-top: var(--indent-double);
+}
+
+@supports (display: grid) {
+  @media (min-width: 700px) {
+    .bj-pub-card + .bj-pub-card {
+      margin-top: 0px;
+    }
+  }
+}
+
 
 .bj-pub-card__figure {
   flex: 0 0 100%;
@@ -22,9 +34,17 @@
   margin: 0;
   padding: 0;
 
+  background: #f6f6f6;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+@media (min-width: 600px) {
+  .bj-pub-card__figure {
+    min-height: 320px;
+  }
 }
 
 .bj-pub-card__picture {

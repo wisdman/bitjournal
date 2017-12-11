@@ -1,0 +1,47 @@
+
+/* === Header of column === */
+
+.column-header {
+  display: block;
+  position: relative;
+
+  margin: 0;
+  padding: 0 .5em;
+
+  font-family: inherit;
+  font-size: 18px;
+  font-style: normal;
+
+  line-height: 30px;
+
+  text-decoration: none;
+  text-transform: uppercase;
+
+  background: var(--color-main);
+  color: #fff;
+}
+
+.column-header::before,
+.column-header::after {
+  display: block;
+  content: "";
+
+  position: absolute;
+
+  width: 0;
+  height: 0;
+
+  top: 0px;
+}
+
+.column-header::before {
+  left: -8px;
+  border-bottom: 30px solid var(--color-main);
+  border-left: 8px solid transparent;
+}
+
+.column-header::after {
+  right: -8px;
+  border-top: 30px solid var(--color-main);
+  border-right: 8px solid transparent;
+}

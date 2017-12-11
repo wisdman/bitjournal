@@ -1,21 +1,11 @@
 
 
-let value = {'ts': 'DESC'}
-let text = ''
+const pr = Promise.resolve(1000)
 
-// === Object value ===
-    if (typeof value === 'object') {
-      let feelds = Object.keys(value)
+let a = pr.then( (i) => console.log('AAAA', i) )
 
-      if (feelds.length === 0) {
-        text = ''
-        console.log('AAAAAAAA')
-      }
 
-      text = ' ORDER BY '
-                + feelds.map( item => `"${item}" ${value[item]}`)
-                        .join(', ')
-      console.log(text)
-    } else {
-      console.log('else')
-    }
+
+setTimeout( () => {
+  pr.then( (i) => console.log('BBB', i) )
+}, 3000 )

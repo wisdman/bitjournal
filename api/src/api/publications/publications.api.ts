@@ -38,13 +38,55 @@ export class PublicationsAPI extends RouteMiddleware {
     ctx.set(resultItems)
   }
 
-  @Get(`/${ROUTE_BASE}`)
-  async getAllEnabled(ctx: Context, next: INext) {
+  @Get(`/${ROUTE_BASE}`, 'weight')
+  async getByWeigh(ctx: Context, next: INext) {
+    const route = ctx.route as Route
     const db = ctx.db as Client
 
-    const query = new Query(DATATABLE).select(Publication.MainFields)
-                                      .where("enable AND ts <= timezone('UTC', now())")
-                                      .order({'ts': 'DESC'})
+    const weight = route.query['weight']
+    const weightString = Array.isArray(weight) ? weight.join(',') : weight
+    const weightList = weightString.split(',')
+                                 .map( item => parseInt(item) )
+                                 .filter( item => !Number.isNaN(item) )
+
+    if (weightList.length === 0) {
+      ctx.set([])
+      return
+    }
+
+    let query = new Query(DATATABLE).select(Publication.MainFields)
+                                    .where(`enable AND ts <= timezone('UTC', now()) AND weight IN (${weightList.join(',')})`)
+                                    .order({'ts': 'DESC'})
+
+    const limit = Math.max( parseInt( new Array<string>().concat(route.query['limit']).join('') ) || 0, 0)
+
+    if (limit > 0)
+      query = query.limit(limit)
+
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}?weight] ===\n%s`, query)
+
+    const result = await db.query(query.valueOf())
+
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}?weight] ===\n%s`, result.rows)
+
+    const resultItems = result.rows.map( item => new Publication(item) )
+
+    ctx.set(resultItems)
+  }
+
+  @Get(`/${ROUTE_BASE}`)
+  async getAllEnabled(ctx: Context, next: INext) {
+    const route = ctx.route as Route
+    const db = ctx.db as Client
+
+    let query = new Query(DATATABLE).select(Publication.MainFields)
+                                    .where("enable AND ts <= timezone('UTC', now())")
+                                    .order({'ts': 'DESC'})
+
+    const limit = Math.max( parseInt( new Array<string>().concat(route.query['limit']).join('') ) || 0, 0)
+
+    if (limit > 0)
+      query = query.limit(limit)
 
     ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}] ===\n%s`, query)
 

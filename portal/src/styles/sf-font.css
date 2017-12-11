@@ -1,0 +1,29 @@
+/* === BJ Fonts === */
+
+@font-face {
+  font-family: 'sf';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../../fonts/sf-light.woff2');
+}
+
+@font-face {
+  font-family: 'sf';
+  font-style: italic;
+  font-weight: 300;
+  src: url('../../fonts/sf-light-italic.woff2');
+}
+
+@font-face {
+  font-family: 'sf';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../fonts/sf-regular.woff2');
+}
+
+@font-face {
+  font-family: 'sf';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../../fonts/sf-regular-italic.woff2');
+}

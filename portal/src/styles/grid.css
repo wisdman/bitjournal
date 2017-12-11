@@ -1,35 +1,79 @@
 
-.bj-main {
+.bj-grid {
   display: block;
-  box-sizing: border-box;
 
   max-width: var(--max-width);
   margin: 0 auto;
+
+  padding: var(--indent-base) 0;
+
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: var(--indent-base);
+  grid-row-gap: var(--indent-double);
+  grid-auto-flow: dense;
 }
 
-@supports (display: grid) {
+@media (min-width: 600px) {
+  .bj-grid {
+    padding: var(--indent-base);
+  }
+}
 
-  @media (min-width: 700px) {
-    .bj-main {
-      padding: 0 var(--indent-base);
-
+@media (min-width: 700px) {
+  @supports (display: grid) {
+    .bj-grid {
       display: grid;
-      grid-template-columns: 1fr 300px;
-      grid-column-gap: var(--indent-base);
-      grid-row-gap: var(--indent-double);
     }
   }
+}
 
-  @media (min-width: 1000px) {
-    .bj-main {
-      grid-template-columns: 1fr 1fr 300px;
-    }
+@media (min-width: 1000px) {
+  .bj-grid {
+    grid-template-columns: 1fr 1fr 1fr;
   }
+}
 
-  @media (min-width: 1200px) {
-    .bj-main {
-      grid-template-columns: 1fr 1fr 350px;
-      grid-column-gap: var(--indent-double);
-    }
+@media (min-width: 1200px) {
+  .bj-grid {
+    padding: var(--indent-base) var(--indent-double);
   }
+}
+
+
+/* === Aside === */
+
+.bj-grid__aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  grid-column: span 1 / -1;
+  grid-row: 1 / span 1;
+}
+
+@media (min-width: 700px) {
+  .bj-grid--aside {
+    grid-template-columns: 1fr 300px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .bj-grid--aside {
+    grid-template-columns: 1fr 1fr 300px;
+  }
+}
+
+
+.bj-grid__aside > * {
+  flex: 0 0 auto;
+}
+
+.bj-grid__aside > *:last-child {
+  flex: 1 1 auto;
+}
+
+/* === Wide publication === */
+.bj-grid__item--wide {
+  grid-column: span 2;
 }

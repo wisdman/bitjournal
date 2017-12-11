@@ -3,7 +3,7 @@ import {
   YouTubeService,
   MessageService,
   UserService,
-  PublicationService,
+  SocialService,
 } from './services'
 
 export const SERVICES: any[] = [
@@ -11,5 +11,5 @@ export const SERVICES: any[] = [
   YouTubeService,
   MessageService,
   UserService,
-  PublicationService,
+  SocialService,
 ]
