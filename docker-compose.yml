@@ -94,6 +94,8 @@ services:
       - db
     env_file:
       - ./raw/environment
+    environment:
+      NODE_DEBUG: service
     networks:
       default:
 
