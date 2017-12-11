@@ -10,6 +10,7 @@ const package = require('../package.json')
 
 // === Webpack plugins ===
 const {
+  BannerPlugin,
   EnvironmentPlugin,
   IgnorePlugin,
   LoaderOptionsPlugin,
@@ -84,6 +85,13 @@ module.exports = {
     new CheckerPlugin(),
     new IgnorePlugin(/pg\-native/),
     new ModuleConcatenationPlugin(),
+
+    new BannerPlugin({
+      banner: '#!/usr/bin/env node',
+      raw: true,
+      entryOnly: true,
+      test: /\.js$/,
+    })
   ].concat( isProduction ? [
     // === Minify js ===
     new MinifyPlugin({
