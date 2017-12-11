@@ -20,8 +20,6 @@ export class FooterComponent implements AfterViewInit {
   addVKWidget() {
     this._socialService.vk().then( VK => {
 
-      console.log('Resolve')
-
       if (!VK)
         return
 

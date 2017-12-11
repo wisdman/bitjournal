@@ -1,25 +1,25 @@
 
-<main class="bj-page__box bj-page__box--grid2">
-  <a *ngFor="let publication of publications | async" class="bj-pub-card" [class.bj-grid__item--wide]="publication.weight > 1" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
-<main>
-<aside class="bj-page__aside">
-  <h1 class="column-header">Новости</h1>
-  <a *ngFor="let publication of publications | async" class="a1">{{ publication.title }}</a>
-</aside>
+<main class="bj-grid">
 
-<video-ribbon></video-ribbon>
+  <div class="bj-grid__row">
 
-<main class="bj-page__box bj-page__box--grid3">
+    <div class="bj-grid__col bj-grid__col--grid">
+      <a *ngFor="let publication of publications_weight_12 | async" class="bj-pub-card" [class.bj-grid__col__item--wide]="publication.weight > 1" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
+    </div>
+
+    <aside class="bj-grid__aside">
+      <h1 class="column-header">Новости</h1>
+      <a *ngFor="let publication of publications_weight_0 | async" class="a1">{{ publication.title }}</a>
+    </aside>
+
+  </div>
+
+  <video-ribbon></video-ribbon>
+
+  <div class="bj-grid__row">
+    <div class="bj-grid__col bj-grid__col--grid">
+
+    </div>
+  </div>
 
 </main>
-
-
-
-
-
-<!-- <aside class="bj-aside">
-  <h2>Новости</h2>
-</aside> -->
-
-<!-- <h2>Video</h2> -->
-<!-- <video-ribbon></video-ribbon> -->

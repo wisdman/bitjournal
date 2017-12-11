@@ -1,4 +1,6 @@
 
+/* === Page wrapper === */
+
 .bj-grid {
   display: block;
 
@@ -6,30 +8,11 @@
   margin: 0 auto;
 
   padding: var(--indent-base) 0;
-
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: var(--indent-base);
-  grid-row-gap: var(--indent-double);
-  grid-auto-flow: dense;
 }
 
 @media (min-width: 600px) {
   .bj-grid {
     padding: var(--indent-base);
-  }
-}
-
-@media (min-width: 700px) {
-  @supports (display: grid) {
-    .bj-grid {
-      display: grid;
-    }
-  }
-}
-
-@media (min-width: 1000px) {
-  .bj-grid {
-    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
@@ -40,27 +23,35 @@
 }
 
 
-/* === Aside === */
+/* === Page row === */
+
+.bj-grid__row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+
+/* === Page col === */
+
+.bj-grid__col {
+  display: block;
+  flex: 1 1 auto;
+}
 
 .bj-grid__aside {
-  display: flex;
+  flex: 0 0 300px;
+  display: none;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
 
-  grid-column: span 1 / -1;
-  grid-row: 1 / span 1;
+  margin-left: var(--indent-base);
 }
 
 @media (min-width: 700px) {
-  .bj-grid--aside {
-    grid-template-columns: 1fr 300px;
-  }
-}
-
-@media (min-width: 1000px) {
-  .bj-grid--aside {
-    grid-template-columns: 1fr 1fr 300px;
+  .bj-grid__aside {
+   display: flex;
   }
 }
 
@@ -69,11 +60,44 @@
   flex: 0 0 auto;
 }
 
-.bj-grid__aside > *:last-child {
+.bj-grid__aside__item--wide {
   flex: 1 1 auto;
 }
 
-/* === Wide publication === */
-.bj-grid__item--wide {
-  grid-column: span 2;
+/* === Page grid === */
+
+.bj-grid__col--grid > * {
+  margin-top: var(--indent-double);
+}
+
+@supports (display: grid) {
+
+  .bj-grid__col--grid > * {
+    margin-top: 0;
+  }
+
+  .bj-grid__col--grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-column-gap: var(--indent-base);
+    grid-row-gap: var(--indent-double);
+    grid-auto-flow: dense;
+  }
+
+  @media (min-width: 1000px) {
+    .bj-grid__col--grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .bj-grid__col--grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  .bj-grid__col__item--wide {
+    grid-row-end: span 2;
+  }
+
 }

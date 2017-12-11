@@ -30,6 +30,8 @@ services:
       - db
     env_file:
       - ./api/environment
+    environment:
+      NODE_DEBUG: service
     networks:
       default:
     ports:
@@ -46,6 +48,8 @@ services:
       - db
     env_file:
       - ./api/environment
+    environment:
+      NODE_DEBUG: service
     networks:
       default:
     ports:
@@ -62,6 +66,8 @@ services:
       - db
     env_file:
       - ./api/environment
+    environment:
+      NODE_DEBUG: service
     networks:
       default:
     ports:
@@ -98,6 +104,8 @@ services:
       - db
     env_file:
       - ./raw/environment
+    environment:
+      NODE_DEBUG: service
     networks:
       default:
     ports:

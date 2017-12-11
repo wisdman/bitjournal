@@ -172,17 +172,17 @@ module.exports = {
     ),
   ].concat( isProduction ? [
     // === Minify js ===
-    new MinifyPlugin({
-      booleans: false,
-      infinity: false,
-      simplify: false,
-      simplifyComparisons: false,
-      typeConstructors: false,
-      undefinedToVoid: false
-    },{
-      comments: false,
-      sourceMap: false
-    })
+    // new MinifyPlugin({
+    //   booleans: false,
+    //   infinity: false,
+    //   simplify: false,
+    //   simplifyComparisons: false,
+    //   typeConstructors: false,
+    //   undefinedToVoid: false
+    // },{
+    //   comments: false,
+    //   sourceMap: false
+    // })
   ] : []),
 
   node: false,

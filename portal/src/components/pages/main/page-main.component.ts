@@ -18,7 +18,8 @@ const API_PUBLICATIONS = 'publications'
 })
 export class PageMainComponent implements OnInit {
 
-  publications: Observable < Array<IPublication> >
+  publications_weight_0: Observable < Array<IPublication> >
+  publications_weight_12: Observable < Array<IPublication> >
 
   constructor(
     private readonly _router: Router,
@@ -27,9 +28,11 @@ export class PageMainComponent implements OnInit {
 
   ngOnInit() {
     this.publications_weight_0 = this._api
-                                     .get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=0&limit`)
+                                     .get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=0&limit=10`)
 
     this.publications_weight_12 = this._api
-                                      .get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=1,2&`)
+                                      .get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=1,2&limit=9`)
   }
+
+
 }
