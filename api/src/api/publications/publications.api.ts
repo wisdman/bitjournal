@@ -170,6 +170,35 @@ export class PublicationsAPI extends RouteMiddleware {
   }
 
 
+  @Get(`/${ROUTE_BASE}/:date/:url`)
+  async getOneByUrl(ctx: Context, next: INext) {
+    const route = ctx.route as Route
+    const db = ctx.db as Client
+
+    const date = String(route.data.date)
+    const url = String(route.data.url)
+
+    const query = new Query(DATATABLE).select()
+                                      .where("ts::date = $1 AND url = $2 AND enable AND ts <= timezone('UTC', now())",
+                                             date, url)
+
+    ctx.debug(`=== SQL Query [GET /${ROUTE_BASE}/:date/:url] ===\n%s`, query)
+
+    const result = await db.query(query.valueOf())
+
+    ctx.debug(`=== SQL Result [GET /${ROUTE_BASE}/:date/:url] ===\n%s`, result.rows)
+
+    if (result.rowCount !== 1) {
+      ctx.set(404)
+      return
+    }
+
+    const resultItem = new Publication(result.rows[0])
+
+    ctx.set(resultItem)
+  }
+
+
   @Get(`/${ROUTE_BASE}/:id/toggle`)
   @ACL([
     RoleEnum.Administrator,
