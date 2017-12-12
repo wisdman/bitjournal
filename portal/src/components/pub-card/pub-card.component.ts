@@ -14,8 +14,4 @@ import { IPublication } from '@common/models'
 export class PubCardComponent {
 
   @Input() value: IPublication
-
-  get h1(): string {
-    return this.value.bigTitle
-  }
 }

@@ -155,19 +155,19 @@ services:
       - 145.239.188.64:443:443
       - 145.239.188.64:80:80
 
-  # land:
-  #   restart: unless-stopped
-  #   build: ./nginx
-  #   volumes:
-  #     - ./land/www:/www:ro
-  #     - ./land/server.conf:/etc/nginx/server.conf:ro
-  #   networks:
-  #     default:
-  #     outside:
-  #       ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:64
-  #   ports:
-  #     - 145.239.188.64:443:443
-  #     - 145.239.188.64:80:80
+  land:
+    restart: unless-stopped
+    build: ./nginx
+    volumes:
+      - ./land/www:/www:ro
+      - ./land/server.conf:/etc/nginx/server.conf:ro
+    networks:
+      default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:64
+    ports:
+      - 145.239.188.64:443:443
+      - 145.239.188.64:80:80
 
 networks:
   outside:

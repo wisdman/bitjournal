@@ -23,6 +23,7 @@ import {
   PubCardComponent,
   FollowComponent,
   VideoRibbonComponent,
+  PubLineComponent,
 } from './components'
 
 export const COMPONENTS: any[] = [
@@ -49,6 +50,7 @@ export const COMPONENTS: any[] = [
   PubCardComponent,
   FollowComponent,
   VideoRibbonComponent,
+  PubLineComponent,
 ]
 
 export const ENTRY_COMPONENTS: any[] = [

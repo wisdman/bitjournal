@@ -1,0 +1,7 @@
+<picture class="bj-pub-line__picture">
+  <img [src]="value.image | image">
+</picture>
+<div class="bj-pub-line__data">
+  <time class="bj-pub-line__datetime" [attr.datetime]="value.ts | timestamp">{{ value.ts | timestamp:'HR' }}</time>
+  <h1 class="bj-pub-line__h1">{{ value.title }}</h1>
+</div>
