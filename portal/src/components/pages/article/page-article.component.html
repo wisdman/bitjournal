@@ -2,14 +2,12 @@
 <main class="bj-grid">
 
   <div class="bj-grid__row">
-    <article class="bj-article">
-      {{ item | async | json }}
-    </article>
-  </div>
+    <article class="bj-grid__col bj-article" [value]="item | async"></article>
 
-  <aside class="bj-grid__aside">
-    <h1 class="column-header">Читайте также</h1>
-    <a *ngFor="let publication of publications | async" class="bj-pub-line" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
-  </aside>
+    <aside class="bj-grid__aside">
+      <h1 class="column-header">Читайте также</h1>
+      <a *ngFor="let publication of publications | async" class="bj-pub-line" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
+    </aside>
+  </div>
 
 </main>

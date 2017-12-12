@@ -27,3 +27,17 @@
   font-weight: 400;
   src: url('../../fonts/sf-regular-italic.woff2');
 }
+
+@font-face {
+  font-family: 'sf';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../../fonts/sf-medium.woff2');
+}
+
+@font-face {
+  font-family: 'sf';
+  font-style: italic;
+  font-weight: 500;
+  src: url('../../fonts/sf-medium-italic.woff2');
+}

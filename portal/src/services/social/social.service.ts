@@ -4,6 +4,7 @@ import { isPlatformServer } from '@angular/common'
 import { VKInit } from './vk-init'
 import { TwitterInit } from './twitter-init'
 import { GoogleInit } from './google-init'
+import { FBInit } from './fb-init'
 
 import { VK_SOCIAL_ID } from './enveroments'
 
@@ -16,6 +17,7 @@ export class SocialService {
   private _vk: Promise<any> | undefined = undefined
   private _twitter: Promise<any> | undefined = undefined
   private _google : Promise<any> | undefined = undefined
+  private _fb : Promise<any> | undefined = undefined
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
@@ -31,6 +33,7 @@ export class SocialService {
     this._vk = VKInit()
     this._twitter = TwitterInit()
     this._google = GoogleInit()
+    this._fb = FBInit()
   }
 
   vk(): Promise<any> {
@@ -43,5 +46,9 @@ export class SocialService {
 
   google(): Promise<any> {
     return this._google || Promise.resolve(undefined)
+  }
+
+  fb(): Promise<any> {
+    return this._fb || Promise.resolve(undefined)
   }
 }

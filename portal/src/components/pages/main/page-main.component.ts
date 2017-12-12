@@ -6,6 +6,7 @@ import { IPublication } from '@common/models'
 
 import {
   APIService,
+  MetaService
 } from '../../../services'
 
 const API_PUBLICATIONS = 'publications'
@@ -24,7 +25,10 @@ export class PageMainComponent implements OnInit {
   constructor(
     private readonly _route: ActivatedRoute,
     private readonly _api: APIService,
+    private readonly _meta: MetaService,
   ) {}
+
+  setMetaTags() {}
 
   ngOnInit() {
     this.publications_weight_0 = this._api
@@ -32,6 +36,8 @@ export class PageMainComponent implements OnInit {
 
     this.publications_weight_12 = this._api
                                       .get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=1,2&limit=30`)
+
+    this._meta.setMetaTags()
   }
 
 

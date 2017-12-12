@@ -1,25 +1,17 @@
 
-<main class="bj-grid">
+<main class="bj-page-main__wrapper">
 
-  <div class="bj-grid__row">
+  <div class="bj-page-main__row">
 
-    <div class="bj-grid__col bj-grid__col--grid">
-      <a *ngFor="let publication of publications_weight_12 | async" class="bj-pub-card" [class.bj-grid__col__item--wide]="publication.weight > 1" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
+    <div class="bj-page-main__col bj-page-main__col--grid">
+      <a *ngFor="let publication of publications_weight_12 | async" class="bj-pub-card bj-page-main__card" [class.bj-page-main__card--wide]="publication.weight > 1" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
     </div>
 
-    <aside class="bj-grid__aside">
+    <aside class="bj-page-main__aside">
       <h1 class="column-header">Новости</h1>
       <a *ngFor="let publication of publications_weight_0 | async" class="bj-pub-line" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
     </aside>
 
   </div>
-
-  <!-- <video-ribbon></video-ribbon>
-
-  <div class="bj-grid__row">
-    <div class="bj-grid__col bj-grid__col--grid">
-
-    </div>
-  </div> -->
 
 </main>

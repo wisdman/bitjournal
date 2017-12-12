@@ -32,17 +32,22 @@ export class FooterComponent implements AfterViewInit {
   }
 
   addTwitterWidget() {
-    this._socialService.twitter().then( TW => {})
+    this._socialService.twitter().then( tw => {})
   }
 
   addYouTubeWidget() {
     this._socialService.google().then( ga => {})
   }
 
+  addFBWidget() {
+    this._socialService.fb().then( fb => {})
+  }
+
   ngAfterViewInit() {
     this.addVKWidget()
     this.addTwitterWidget()
     this.addYouTubeWidget()
+    this.addFBWidget()
   }
 }
 

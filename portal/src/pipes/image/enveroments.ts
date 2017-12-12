@@ -1,6 +1,7 @@
 
 // API Server domain name
 let RAW_SERVER_VALUE = "https://raw.bitjournal.io"
+let PORTAL_SERVER_VALUE = "https://bitjournal.io"
 
 
 // if (process.env.DEBUG) {
@@ -8,3 +9,4 @@ let RAW_SERVER_VALUE = "https://raw.bitjournal.io"
 // }
 
 export const RAW_SERVER = RAW_SERVER_VALUE
+export const PORTAL_SERVER = PORTAL_SERVER_VALUE

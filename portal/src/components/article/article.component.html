@@ -1,0 +1,10 @@
+<div *ngFor="let item of items | async" class="bj-article__wrapper">
+  <div class="bj-article__header">
+    <picture class="bj-article__header__picture">
+      <img [src]="item.image | image">
+    </picture>
+    <h2 *ngIf="!!item.bigTitle" class="bj-article__header__h2">{{ item.bigTitle }}</h2>
+    <h1 class="bj-article__header__h1">{{ item.title }}</h1>
+  </div>
+  <div class="bj-article__content .article" [innerHTML]="item.content"></div>
+</div>

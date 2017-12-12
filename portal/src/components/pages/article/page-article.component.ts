@@ -18,7 +18,7 @@ const API_PUBLICATIONS = 'publications'
 })
 export class PageArticleComponent implements OnInit {
 
-  item: Observable < IPublication >
+  item: Observable < { date: string, url: string } >
 
   publications: Observable < Array<IPublication> >
 
@@ -35,9 +35,8 @@ export class PageArticleComponent implements OnInit {
                       const date = String( params['date'] ).trim()
                       const url  = String( params['url']  ).trim()
 
-                      return this._api
-                                 .get<IPublication>(`/${API_PUBLICATIONS}/${date}/${url}`)
-                    }).mergeAll()
+                      return { url, date }
+                    })
 
     this.publications = this._api
                             .get< Array<IPublication> >(`/${API_PUBLICATIONS}?limit=12`)

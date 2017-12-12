@@ -16,7 +16,7 @@ export function TwitterInit(): Promise<void> {
     const script = document.createElement('script')
     script.type  = 'text/javascript'
     script.async = true
-    script.id    = 'twitter-js'
+    script.id    = 'twitter-jssdk'
     script.src   = TW_API
 
     document.head.appendChild(script)

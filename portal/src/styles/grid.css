@@ -12,16 +12,9 @@
 
 @media (min-width: 600px) {
   .bj-grid {
-    padding: var(--indent-base);
+    padding: var(--indent-double) var(--indent-base);
   }
 }
-
-@media (min-width: 1200px) {
-  .bj-grid {
-    padding: var(--indent-base) var(--indent-double);
-  }
-}
-
 
 /* === Page row === */
 
@@ -49,7 +42,7 @@
   margin-left: var(--indent-double);
 }
 
-@media (min-width: 700px) {
+@media (min-width: 1000px) {
   .bj-grid__aside {
    display: flex;
   }
@@ -75,7 +68,7 @@
 }
 
 @supports (display: grid) {
-  @media (min-width: 1000px) {
+  @media (min-width: 700px) {
     .bj-grid__col--grid > * {
       margin-top: 0;
     }
@@ -90,7 +83,7 @@
     }
   }
 
-  @media (min-width: 1200px) {
+  @media (min-width: 900px) {
     .bj-grid__col--grid {
       grid-template-columns: 1fr 1fr 1fr;
     }

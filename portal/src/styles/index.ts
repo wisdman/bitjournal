@@ -24,7 +24,7 @@ import './variables.css'
 import './page.css'
 
 // === Grid system ===
-import './grid.css'
+// import './grid.css'
 
 // === Common styles ===
 import './common.css'

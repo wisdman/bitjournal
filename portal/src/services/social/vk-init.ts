@@ -15,7 +15,7 @@ export function VKInit(): Promise<void> {
     const script = document.createElement('script')
     script.type  = 'text/javascript'
     script.async = true
-    script.id    = 'vkontakte-js'
+    script.id    = 'vkontakte-jssdk'
     script.src   = VK_API
 
     document.head.appendChild(script)
