@@ -1,10 +1,32 @@
-<div *ngFor="let item of items | async" class="bj-article__wrapper">
-  <div class="bj-article__header">
-    <picture class="bj-article__header__picture">
-      <img [src]="item.image | image">
-    </picture>
-    <h2 *ngIf="!!item.bigTitle" class="bj-article__header__h2">{{ item.bigTitle }}</h2>
-    <h1 class="bj-article__header__h1">{{ item.title }}</h1>
-  </div>
-  <div class="bj-article__content .article" [innerHTML]="item.content"></div>
+<div *ngIf="value" class="bj-article__header">
+  <picture class="bj-article__header__picture">
+    <img [src]="value.image | image">
+  </picture>
+
+  <!-- <div *ngIf="value.tags.length > 0" class="bj-article__header__tags">
+    <a>Тег 1</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+    <a>Тег 2</a>
+  </div> -->
+
+  <time class="bj-article__header__datetime" [attr.datetime]="value.ts | timestamp">
+    <i class="fa fa-clock-o" aria-hidden="true"></i>
+    <span>{{ value.ts | timestamp:'HR' }}</span>
+  </time>
+
+  <h2 *ngIf="!!value.bigTitle" class="bj-article__header__h2">{{ value.bigTitle }}</h2>
+  <h1 class="bj-article__header__h1">{{ value.title }}</h1>
+
 </div>
+<div *ngIf="value" class="bj-article__content article" [innerHTML]="value.content"></div>
+<!-- <div *ngIf="value" class="bj-article__footer">
+  {{ value | json}}
+</div> -->

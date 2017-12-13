@@ -30,7 +30,7 @@ export class MetaService {
     ogImage?: number
   } = {}) {
     // Set title
-    this._title.setTitle(title)
+    this._title.setTitle(title || DEFAULT_TITLE)
     this._meta.addTag({ name: 'title', content: title || DEFAULT_TITLE })
 
     // Ser description

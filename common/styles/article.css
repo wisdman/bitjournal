@@ -1,3 +1,61 @@
 .article {
+  --max-text-width: 700px;
+  --padding-size: 20px;
+}
 
+
+.article p {
+  display: block;
+  position: relative;
+
+  width: 100%;
+  max-width: var(--max-text-width);
+
+  font-size: 1rem;
+  line-height: 1.618;
+
+  margin: 1em auto;
+  padding: 0 var(--padding-size);
+}
+
+.article h3 {
+  display: block;
+  position: relative;
+
+  width: 100%;
+  max-width: var(--max-text-width);
+
+  font-size: 1.17em;
+  line-height: 1.618;
+
+  margin: 1em auto;
+  padding: 0 var(--padding-size);
+}
+
+.article ol,
+.article ul {
+  display: block;
+  position: relative;
+
+  width: 100%;
+  max-width: var(--max-text-width);
+
+  font-size: 1rem;
+  line-height: 1.618;
+
+  margin: 1em auto;
+  padding: 0 var(--padding-size);
+}
+
+.article li {
+  font-size: 1rem;
+  line-height: 1.618;
+
+  margin: 0;
+  padding: 0;
+}
+
+.article img {
+  width: 100%;
+  max-width: 100%;
 }

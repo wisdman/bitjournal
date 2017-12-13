@@ -13,6 +13,12 @@
   }
 }
 
+@media (min-width: 1200px) {
+  .bj-page-main__wrapper {
+    padding: var(--indent-double);
+  }
+}
+
 .bj-page-main__row {
   width: 100%;
   display: flex;

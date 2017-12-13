@@ -2,6 +2,9 @@
   <img [src]="value.image | image">
 </picture>
 <div class="bj-pub-line__data">
-  <time class="bj-pub-line__datetime" [attr.datetime]="value.ts | timestamp">{{ value.ts | timestamp:'HR' }}</time>
+  <time class="bj-pub-line__datetime" [attr.datetime]="value.ts | timestamp">
+    <i class="fa fa-clock-o" aria-hidden="true"></i>
+    <span>{{ value.ts | timestamp:'HR' }}</span>
+  </time>
   <h1 class="bj-pub-line__h1">{{ value.title }}</h1>
 </div>

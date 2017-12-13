@@ -6,6 +6,7 @@ import { IPublication } from '@common/models'
 
 import {
   APIService,
+  MetaService,
 } from '../../../services'
 
 const API_PUBLICATIONS = 'publications'
@@ -18,14 +19,25 @@ const API_PUBLICATIONS = 'publications'
 })
 export class PageArticleComponent implements OnInit {
 
-  item: Observable < { date: string, url: string } >
+  item: Observable<IPublication>
 
   publications: Observable < Array<IPublication> >
 
   constructor(
     private readonly _route: ActivatedRoute,
     private readonly _api: APIService,
+    private readonly _meta: MetaService,
   ) {}
+
+  setMetaTags(item: IPublication) {
+    this._meta.setMetaTags({
+      title: item.title,
+      description: item.description,
+      ogTitle: item.ogTitle,
+      ogDescription: item.ogDescription,
+      ogImage: item.ogImage || undefined
+    })
+  }
 
   ngOnInit() {
 
@@ -35,7 +47,12 @@ export class PageArticleComponent implements OnInit {
                       const date = String( params['date'] ).trim()
                       const url  = String( params['url']  ).trim()
 
-                      return { url, date }
+                      return this._api.get< IPublication >(`/${API_PUBLICATIONS}/${date}/${url}`)
+                    })
+                    .mergeAll()
+                    .map( item => {
+                      this.setMetaTags(item)
+                      return item
                     })
 
     this.publications = this._api

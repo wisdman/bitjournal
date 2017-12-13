@@ -136,7 +136,7 @@ services:
     networks:
       default:
     ports:
-      - 8083:80
+      - 8080:80
 
   portal-back:
     restart: unless-stopped
@@ -159,11 +159,14 @@ services:
       - portal-back
     volumes:
       - ./portal/dist/front:/www:ro
-      - ./portal/server.dev.conf:/etc/nginx/server.conf:ro
+      - ./portal/server.conf:/etc/nginx/server.conf:ro
+      - ./portal/dev-ssl/fullchain.pem:/etc/nginx/fullchain.pem:ro
+      - ./portal/dev-ssl/privkey.pem:/etc/nginx/privkey.pem:ro
     networks:
       default:
     ports:
-      - 8080:80
+      - 80:80
+      - 443:443
 
 volumes:
   data-volume:

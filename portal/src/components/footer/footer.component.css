@@ -122,7 +122,7 @@
 
 @media (min-width: 1200px) {
   .bj-footer__row {
-    padding: 0 calc( var(--indent-base) + var(--indent-half) );
+    padding: 0 0 0 calc( var(--indent-double) + var(--indent-half) );
   }
 }
 
@@ -224,7 +224,7 @@
 
   white-space: nowrap;
 
-  margin-top: var(--indent-base);
+  margin: var(--indent-base) 0 0 0;
   flex: 0 0 100%;
   text-align: center;
 }

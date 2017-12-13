@@ -28,7 +28,9 @@ export class PageMainComponent implements OnInit {
     private readonly _meta: MetaService,
   ) {}
 
-  setMetaTags() {}
+  setMetaTags() {
+    this._meta.setMetaTags()
+  }
 
   ngOnInit() {
     this.publications_weight_0 = this._api
