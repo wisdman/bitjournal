@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core'
-import { ServerModule } from '@angular/platform-server'
+import { ServerModule, ServerTransferStateModule } from '@angular/platform-server'
 
 import { AppModule } from './app.module'
 import { LayoutComponent } from './components'
@@ -9,6 +9,7 @@ import { LayoutComponent } from './components'
   imports: [
     AppModule,
     ServerModule,
+    ServerTransferStateModule,
   ]
 })
 export class AppBackModule {}

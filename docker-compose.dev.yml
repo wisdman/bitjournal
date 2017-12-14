@@ -15,11 +15,9 @@ services:
       POSTGRES_PASSWORD: bitjournal
     networks:
       default:
-    ports:
-      - 5432:5432
     command: postgres -c config_file=/etc/postgresql.conf
 
-  api-main:
+  api-main-a:
     restart: unless-stopped
     build:
       context: ./api
@@ -34,28 +32,8 @@ services:
       NODE_DEBUG: service
     networks:
       default:
-    ports:
-      - 8091:80
 
-  api-raw:
-    restart: unless-stopped
-    build:
-      context: ./api
-      dockerfile: Dockerfile.raw
-    links:
-      - db
-    depends_on:
-      - db
-    env_file:
-      - ./api/environment
-    environment:
-      NODE_DEBUG: service
-    networks:
-      default:
-    ports:
-      - 8092:80
-
-  api-ticker:
+  api-ticker-a:
     restart: unless-stopped
     build:
       context: ./api
@@ -70,30 +48,46 @@ services:
       NODE_DEBUG: service
     networks:
       default:
-    ports:
-      - 8093:80
+
+  api-raw-a:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.raw
+    links:
+      - db
+    depends_on:
+      - db
+    env_file:
+      - ./api/environment
+    environment:
+      NODE_DEBUG: service
+    networks:
+      default:
 
   api-front:
     restart: unless-stopped
     build: ./nginx
     links:
-      - api-main
-      - api-raw
-      - api-ticker
+      - api-main-a
+      - api-ticker-a
+      - api-raw-a
     depends_on:
-      - api-main
-      - api-raw
-      - api-ticker
+      - api-main-a
+      - api-ticker-a
+      - api-raw-a
     volumes:
       - ./api/assets:/www:ro
       - ./api/server.conf.d:/etc/nginx/server.conf.d:ro
       - ./api/server.dev.conf:/etc/nginx/server.conf:ro
+      - ./api/dev-ssl/fullchain.pem:/etc/nginx/fullchain.pem:ro
+      - ./api/dev-ssl/privkey.pem:/etc/nginx/privkey.pem:ro
     networks:
       default:
     ports:
-      - 8081:80
+      - 4434:443
 
-  raw:
+  raw-back-a:
     restart: unless-stopped
     build:
       context: ./raw
@@ -108,37 +102,40 @@ services:
       NODE_DEBUG: service
     networks:
       default:
-    ports:
-      - 8090:80
 
   raw-front:
     restart: unless-stopped
     build: ./nginx
     links:
-      - raw
+      - raw-a
     depends_on:
-      - raw
+      - raw-a
     volumes:
       - ./raw/assets:/www:ro
       - ./raw/raw.conf:/etc/nginx/raw.conf:ro
       - ./raw/server.dev.conf:/etc/nginx/server.conf:ro
+      - ./raw/dev-ssl/fullchain.pem:/etc/nginx/fullchain.pem:ro
+      - ./raw/dev-ssl/privkey.pem:/etc/nginx/privkey.pem:ro
     networks:
       default:
     ports:
-      - 8082:80
+      - 4435:443
 
   admin:
     restart: unless-stopped
     build: ./nginx
     volumes:
       - ./admin/dist:/www:ro
-      - ./admin/server.dev.conf:/etc/nginx/server.conf:ro
+      - ./admin/server.conf:/etc/nginx/server.conf:ro
+      - ./admin/dev-ssl/fullchain.pem:/etc/nginx/fullchain.pem:ro
+      - ./admin/dev-ssl/privkey.pem:/etc/nginx/privkey.pem:ro
+      - ./admin/ssl/ca.crt:/etc/nginx/ca.crt:ro
     networks:
       default:
     ports:
-      - 8080:80
+      - 4433:443
 
-  portal-back:
+  portal-back-a:
     restart: unless-stopped
     build:
       context: ./portal
@@ -147,16 +144,14 @@ services:
       NODE_DEBUG: service
     networks:
       default:
-    ports:
-      - 8099:80
 
   portal-front:
     restart: unless-stopped
     build: ./nginx
     links:
-      - portal-back
+      - portal-back-a
     depends_on:
-      - portal-back
+      - portal-back-a
     volumes:
       - ./portal/dist/front:/www:ro
       - ./portal/server.conf:/etc/nginx/server.conf:ro

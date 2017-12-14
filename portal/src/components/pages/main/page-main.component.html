@@ -4,12 +4,12 @@
   <div class="bj-page-main__row">
 
     <div class="bj-page-main__col bj-page-main__col--grid">
-      <a *ngFor="let publication of publications_weight_12 | async" class="bj-pub-card bj-page-main__card" [class.bj-page-main__card--wide]="publication.weight > 1" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
+      <a *ngFor="let publication of publications_weight_12 | async" class="bj-pub-card bj-page-main__card" [class.bj-page-main__card--wide]="publication.weight > 1" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'URL', publication.url]"></a>
     </div>
 
     <aside class="bj-page-main__aside">
       <h1 class="column-header">Новости</h1>
-      <a *ngFor="let publication of publications_weight_0 | async" class="bj-pub-line" [value]="publication" [routerLink]="[publication.ts | timestamp:'URL', publication.url]"></a>
+      <a *ngFor="let publication of publications_weight_0 | async" class="bj-pub-line" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'URL', publication.url]"></a>
     </aside>
 
   </div>

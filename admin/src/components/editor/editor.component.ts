@@ -3,7 +3,6 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, NgZone, forwardRef
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms"
 
 import * as $ from 'jquery'
-
 import './froala/imports'
 
 import { OPTIONS } from './froala/options'
@@ -28,6 +27,7 @@ export class EditorComponent implements OnInit, OnDestroy, ControlValueAccessor 
 
   constructor(el: ElementRef,  private zone: NgZone) {
     const element: any = el.nativeElement;
+
     this._$element = (<any>$(element))
 
     this.zone = zone

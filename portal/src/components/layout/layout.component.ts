@@ -1,5 +1,5 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
+import { Component, ViewEncapsulation } from '@angular/core'
+import { Router, NavigationEnd, NavigationStart } from '@angular/router'
 
 @Component({
   selector: 'body',
@@ -7,13 +7,18 @@ import { Router } from '@angular/router'
   styleUrls: [ './layout.component.css' ],
   encapsulation: ViewEncapsulation.None
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent {
 
   constructor(
     private readonly _router: Router,
-  ) {}
+  ) {
 
-  ngOnInit() {
+    // this._router
+    //     .events
+    //     .filter( event => (event instanceof NavigationEnd || event instanceof NavigationStart) )
+    //     .subscribe( event => {
+    //       console.log(event)
+    //     })
 
   }
 }

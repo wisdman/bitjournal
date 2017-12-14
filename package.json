@@ -95,6 +95,7 @@
     "@angular/platform-browser-dynamic": "^5.1.0",
     "@angular/platform-server": "^5.1.0",
     "@angular/router": "^5.1.0",
+    "core-js": "^2.5.3",
     "font-awesome": "^4.7.0",
     "froala-editor": "^2.7.3",
     "jquery": "^3.2.1",

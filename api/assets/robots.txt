@@ -1,0 +1,3 @@
+# api.bitjournal.io
+User-agent: *
+ Host: api.bitjournal.io

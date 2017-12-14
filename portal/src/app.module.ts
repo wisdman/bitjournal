@@ -1,7 +1,7 @@
 
 
 import { NgModule } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
+import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
@@ -30,6 +30,8 @@ import { APP_ID } from './app.id'
 
   imports: [
     BrowserModule.withServerTransition({ appId: APP_ID }),
+    BrowserTransferStateModule,
+
     BrowserAnimationsModule,
 
     FormsModule,

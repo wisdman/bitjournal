@@ -1,5 +1,8 @@
 {
   "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+  },
   "angularCompilerOptions": {
     "entryModule": "src/app.module#AppModule",
     "preserveWhitespaces": false
