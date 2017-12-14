@@ -107,9 +107,9 @@ services:
     restart: unless-stopped
     build: ./nginx
     links:
-      - raw-a
+      - raw-back-a
     depends_on:
-      - raw-a
+      - raw-back-a
     volumes:
       - ./raw/assets:/www:ro
       - ./raw/raw.conf:/etc/nginx/raw.conf:ro
@@ -154,7 +154,7 @@ services:
       - portal-back-a
     volumes:
       - ./portal/dist/front:/www:ro
-      - ./portal/server.conf:/etc/nginx/server.conf:ro
+      - ./portal/server.dev.conf:/etc/nginx/server.conf:ro
       - ./portal/dev-ssl/fullchain.pem:/etc/nginx/fullchain.pem:ro
       - ./portal/dev-ssl/privkey.pem:/etc/nginx/privkey.pem:ro
     networks:

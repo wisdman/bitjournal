@@ -3,6 +3,7 @@ import {
   ArticleComponent,
   AuthDialogComponent,
   CurrenciesRsibbonComponent,
+  FollowComponent,
   FooterComponent,
   HeaderComponent,
   NoContentComponent,
@@ -21,15 +22,16 @@ import {
   PageMarketsItemComponent,
   PageSectionComponent,
   PubCardComponent,
-  FollowComponent,
-  VideoRibbonComponent,
   PubLineComponent,
+  ShareComponent,
+  VideoRibbonComponent,
 } from './components'
 
 export const COMPONENTS: any[] = [
   ArticleComponent,
   AuthDialogComponent,
   CurrenciesRsibbonComponent,
+  FollowComponent,
   FooterComponent,
   HeaderComponent,
   NoContentComponent,
@@ -48,9 +50,9 @@ export const COMPONENTS: any[] = [
   PageMarketsItemComponent,
   PageSectionComponent,
   PubCardComponent,
-  FollowComponent,
-  VideoRibbonComponent,
   PubLineComponent,
+  ShareComponent,
+  VideoRibbonComponent,
 ]
 
 export const ENTRY_COMPONENTS: any[] = [

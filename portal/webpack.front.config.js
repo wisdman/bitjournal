@@ -76,6 +76,7 @@ module.exports = {
 
   entry: {
     main:   [ PATH('./src/main.front.ts') ],
+    'core-js':   [ PATH('./src/core-js.ts') ],
     styles: [ PATH('./src/styles/index.ts') ],
   },
 
