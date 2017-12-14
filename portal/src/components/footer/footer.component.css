@@ -159,6 +159,7 @@
   padding: 0 var(--indent-base) 0 0;
   margin: 0 0 var(--indent-half) 0;
   line-height: 1.4;
+  font-size: 14px;
 }
 
 .bj-footer__col__widget {

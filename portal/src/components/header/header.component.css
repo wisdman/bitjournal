@@ -44,7 +44,7 @@
 
 @media (min-width: 1200px) {
   .bj-header__row {
-    padding: 0 var(--indent-double);
+    padding: 0 var(--indent-base) 0 var(--indent-double);
   }
 }
 

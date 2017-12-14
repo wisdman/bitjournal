@@ -1,6 +1,6 @@
 
 
-import { NgModule } from '@angular/core'
+import { NgModule, APP_INITIALIZER } from '@angular/core'
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -17,8 +17,10 @@ import { ROUTES }   from './app.routes'
 import { SERVICES } from './app.services'
 
 import { LayoutComponent } from './components'
-
-import { APP_ID } from './app.id'
+import {
+  NotificationService,
+  NotificationServiceFactory
+} from './services'
 
 @NgModule({
   bootstrap: [ LayoutComponent ],
@@ -29,7 +31,7 @@ import { APP_ID } from './app.id'
   ],
 
   imports: [
-    BrowserModule.withServerTransition({ appId: APP_ID }),
+    BrowserModule.withServerTransition({ appId: 'app_bj' }),
     BrowserTransferStateModule,
 
     BrowserAnimationsModule,
@@ -48,11 +50,24 @@ import { APP_ID } from './app.id'
   ],
 
   providers: [
-    ...SERVICES
+    ...SERVICES,
+    {
+      // Provider for APP_INITIALIZER
+      provide: APP_INITIALIZER,
+      useFactory: NotificationServiceFactory,
+      deps: [ NotificationService ],
+      multi: true
+    }
   ],
 
   entryComponents: [
     ...ENTRY_COMPONENTS
   ]
 })
-export class AppModule {}
+export class AppModule {
+
+  constructor(notificationService: NotificationService) {
+    notificationService.initNotification()
+  }
+
+}

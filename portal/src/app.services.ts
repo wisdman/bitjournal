@@ -5,6 +5,8 @@ import {
   SocialService,
   UserService,
   YouTubeService,
+  LoaderService,
+  NotificationService,
 } from './services'
 
 export const SERVICES: any[] = [
@@ -14,4 +16,6 @@ export const SERVICES: any[] = [
   SocialService,
   UserService,
   YouTubeService,
+  LoaderService,
+  NotificationService,
 ]

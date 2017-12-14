@@ -62,7 +62,7 @@ module.exports =  class WebpackIndexHTMLPlugin {
           }
 
           if (JS_PATTERN.test(file)) {
-            JS.push(`<script type="text/javascript" src="${publicPath}${file}" defer="defer"></script>`)
+            JS.push(`<script type="text/javascript" src="${publicPath}${file}"></script>`)
             return
           }
         })

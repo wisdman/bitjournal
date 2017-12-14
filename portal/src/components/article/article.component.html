@@ -25,9 +25,8 @@
   <h2 *ngIf="!!value.bigTitle" class="bj-article__header__h2">{{ value.bigTitle }}</h2>
   <h1 class="bj-article__header__h1">{{ value.title }}</h1>
 
-  <!-- <div class="share" [value]="[value.ts | timestamp:'URL', value.url]"></div> -->
-
 </div>
+<div *ngIf="value" class="bj-article__share share" [value]="[value.ts | timestamp:'URL', value.url]"></div>
 <div *ngIf="value" class="bj-article__content article" [innerHTML]="value.content"></div>
 <!-- <div *ngIf="value" class="bj-article__footer">
   {{ value | json}}
