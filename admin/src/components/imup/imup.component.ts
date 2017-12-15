@@ -97,7 +97,9 @@ export class ImupComponent implements ControlValueAccessor {
 
       this._fileService
           .delete(this.value)
-          .subscribe( result => this.value = null )
+          .subscribe( () => {} )
+
+      this.value == null
     })
   }
 }

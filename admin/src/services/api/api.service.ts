@@ -64,24 +64,24 @@ export class APIService {
                      .filter(item => item !== null) as Observable<T>
   }
 
-  post<T>(path: string, data: Partial<T>, skipNull: boolean = true): Observable<T> {
+  post<T>(path: string, data: Partial<T>): Observable<T> {
     return this._http.post<T>(APIService.buildPath(path),
                               data, { headers: this._user.authHeaders })
                      .catch(error => this._handleError(error))
                      .filter(item => item !== null) as Observable<T>
   }
 
-  put<T>(path: string, data: Blob | ArrayBuffer, skipNull: boolean = true): Observable<T> {
+  put<T>(path: string, data: Blob | ArrayBuffer): Observable<T> {
     return this._http.put(APIService.buildPath(path),
                              data, { headers: this._user.authHeaders })
                      .catch(error => this._handleError(error))
                      .filter(item => item !== null) as Observable<T>
   }
 
-  delete<T>(path: string, skipNull: boolean = true): Observable<T> {
+  delete<T>(path: string): Observable<T> {
     return this._http.delete<T>(APIService.buildPath(path), { headers: this._user.authHeaders })
                      .catch(error => this._handleError(error))
-                     .filter(item => !skipNull || item !== null) as Observable<T>
+                     .filter(item => item !== null) as Observable<T>
   }
 
 }
