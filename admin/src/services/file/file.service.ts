@@ -53,7 +53,8 @@ export class FileService {
   }
 
   delete(oid: number): Observable<{ oid: number }> {
-    return this._api.delete<{ oid: number }>(`/${API_BASE}/${oid}`)
+    return this._api
+               .delete<{ oid: number }>(`/${API_BASE}/${oid}`, false)
   }
 
   // openAsArrayBuffer(options?: { accept?: string, multiple?: boolean }) {
