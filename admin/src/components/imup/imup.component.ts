@@ -99,7 +99,7 @@ export class ImupComponent implements ControlValueAccessor {
           .delete(this.value)
           .subscribe( () => {} )
 
-      this.value == null
+      this.value = null
     })
   }
 }
