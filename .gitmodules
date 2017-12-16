@@ -1,0 +1,3 @@
+[submodule "common/cc-icons"]
+	path = common/cc-icons
+	url = git@github.com:cjdowner/cryptocurrency-icons.git
