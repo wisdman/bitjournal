@@ -1,0 +1,3 @@
+POSTGRES_DB=bitjournal
+POSTGRES_USER=bitjournal
+POSTGRES_PASSWORD=bitjournal

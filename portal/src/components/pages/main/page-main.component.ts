@@ -4,13 +4,14 @@ import { isPlatformServer } from '@angular/common'
 
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/of'
+import 'rxjs/add/observable/concat'
 
 import { IPublication } from '@common/models'
 
 import {
   APIService,
   MetaService,
-  LoaderService
+  LoaderService,
 } from '../../../services'
 
 const API_PUBLICATIONS = 'publications'
@@ -30,6 +31,7 @@ export class PageMainComponent implements OnInit {
 
   publications_weight_0: Observable < Array<IPublication> >
   publications_weight_12: Observable < Array<IPublication> >
+  publications: Observable < Array<IPublication> >
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
@@ -72,8 +74,7 @@ export class PageMainComponent implements OnInit {
       this._loaderService.hide()
       this._tstate.remove(PUBLICATIONS_WEIGHT_12_KEY)
     } else {
-      this.publications_weight_12 = this._api
-                                        .get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=1,2&limit=30`)
+      this.publications_weight_12 = this._api.get< Array<IPublication> >(`/${API_PUBLICATIONS}?weight=1,2&limit=30`)
                                         .map( items => {
                                           if (this.isServer)
                                             this._tstate.set(PUBLICATIONS_WEIGHT_12_KEY, items)
@@ -83,6 +84,14 @@ export class PageMainComponent implements OnInit {
                                           return items
                                         })
     }
+
+    this.publications = Observable.concat(this.publications_weight_0, this.publications_weight_12)
+                                  .map( items => {
+
+                                     console.log(items)
+
+                                     return items
+                                  })
 
     this._meta.setMetaTags()
   }

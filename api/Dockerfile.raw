@@ -1,11 +1,10 @@
 FROM node:carbon-alpine
 MAINTAINER Wisdman <wisdman@ajaw.it>
 
-COPY ./dist/raw.bundle.js /app/main.js
-RUN chmod +x /app/main.js
+COPY ./dist/raw.js /app/raw.js
+RUN chmod +x /app/raw.js
 
 EXPOSE 80
-
 WORKDIR /app
 
-CMD ["/app/main.js"]
+CMD ["/app/raw.js"]

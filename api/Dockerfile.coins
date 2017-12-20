@@ -1,0 +1,10 @@
+FROM node:carbon-alpine
+MAINTAINER Wisdman <wisdman@ajaw.it>
+
+COPY ./dist/coins.js /app/coins.js
+RUN chmod +x /app/coins.js
+
+EXPOSE 80
+WORKDIR /app
+
+CMD ["/app/coins.js"]

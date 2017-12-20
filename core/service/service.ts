@@ -11,7 +11,6 @@ import { Middleware, IMiddleware, Compose } from './middleware'
 import { Context } from './context'
 
 import { logError } from './log-error'
-import { DebugMiddleware } from './debug'
 
 import {
   SERVICE_HOSTNAME,
@@ -25,8 +24,6 @@ export class Service extends Server {
   constructor(...items: Array<IMiddleware | Middleware>) {
     super()
 
-   items.unshift( new DebugMiddleware() )
-
    const middleware = Compose( items.map( item => item as any as IMiddleware) )
 
     // Service listener
@@ -34,9 +31,15 @@ export class Service extends Server {
       // Build context
       const context = new Context(req, res)
 
+      //Debug input context
+      context.debug('=== Input Comntext ===\n%O', context)
+
       // Run middleware
       middleware(context, () => Promise.resolve())
-      .then( () => context.respond() )
+      .then( () => {
+        context.respond()
+        context.debug('=== Output Comntext ===\n%O', context)
+      })
       .catch( error => {
         logError(error, context)
         try { context.throw(error) } catch (_) {}

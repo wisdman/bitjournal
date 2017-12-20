@@ -33,14 +33,25 @@ module.exports = {
   context: PATH('./src'),
 
   entry: {
-    main: [ PATH('./src/main.ts') ],
-    raw: [ PATH('./src/raw.ts') ],
-    ticker: [ PATH('./src/ticker.ts') ]
+    ads: [ PATH('./src/auth/main.ts') ],
+
+    auth: [ PATH('./src/auth/main.ts') ],
+
+    coins:          [ PATH('./src/coins/main.ts')  ],
+    'coins-update': [ PATH('./src/coins/update.ts') ],
+
+    publication: [ PATH('./src/publication/main.ts') ],
+
+    raw: [ PATH('./src/raw/main.ts') ],
+
+    users: [ PATH('./src/users/main.ts') ],
+
+    video: [ PATH('./src/video/main.ts') ],
   },
 
   output: {
     path: PATH('./dist'),
-    filename: '[name].bundle.js'
+    filename: '[name].js'
   },
 
   resolve: {

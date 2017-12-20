@@ -12,7 +12,7 @@ import { Context } from './context'
 
 export class Request {
 
-  constructor(private req: IncomingMessage, private ctx: Context) {}
+  constructor(readonly req: IncomingMessage, private _ctx: Context) {}
 
   getHeader(key: string): string | undefined {
     let value = this.req.headers[key.toLowerCase()]
@@ -145,7 +145,7 @@ export class Request {
     }
   }
 
-  async json(): Promise<object> {
+  async json<T>(): Promise<T> {
     if (this.type !== 'application/json') {
       throw new HttpError(400, 'Only application/json data are allowed')
     }
@@ -153,7 +153,7 @@ export class Request {
     let text = await this.text()
 
     try {
-      return JSON.parse(text)
+      return JSON.parse(text) as T
     } catch (err) {
       throw new HttpError(400, 'Invalid json received')
     }

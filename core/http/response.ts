@@ -104,9 +104,8 @@ export class Response {
   }
 
   async json(): Promise<object> {
-    if (this.type !== 'application/json') {
-      throw new Error('Only application/json data are allowed')
-    }
+    if (this.type !== 'application/json')
+      throw new Error(`Only application/json data are allowed! Response: ${JSON.stringify(this)}`)
 
     let text = await this.text()
 
@@ -120,6 +119,7 @@ export class Response {
   valueOf() {
     return {
       ip:       this.ip,
+      status:   this.status,
       type:     this.type,
       length:   this.length
     }

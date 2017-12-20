@@ -3,18 +3,18 @@ import { STATUS_CODES } from 'http'
 export class HttpError extends Error {
 
   readonly status: number
-  readonly originError: Error
+  readonly origin: Error
 
-  constructor(status: number, message?: string | Error, originError?: Error) {
+  constructor(status: number, message?: string | Error, origin?: Error) {
 
     if (message instanceof Error) {
-      originError = message
-      message = originError.message
+      origin = message
+      message = origin.message
     }
 
     // Create origin anyewhere
-    if (originError === undefined) {
-      originError = new Error(message || 'Unknown internal server error')
+    if (origin === undefined) {
+      origin = new Error(message || 'Unknown internal server error')
     }
 
     // Prevent send internal error message to user
@@ -24,6 +24,6 @@ export class HttpError extends Error {
 
     super(message)
     this.status = status
-    this.originError = originError
+    this.origin = origin
   }
 }

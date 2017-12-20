@@ -1,0 +1,221 @@
+version: '3.4'
+
+services:
+
+  db:
+    restart: unless-stopped
+    build: ./sql
+    volumes:
+      - data-volume:/var/lib/postgresql/data
+    env_file:
+      - ./sql/environment
+    networks:
+      default:
+    ports:
+      - 5432:5432
+
+  api-ads-a:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.ads
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-ads-b:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.ads
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-auth-a:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.auth
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-auth-b:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.auth
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-coins-a:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.coins
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-coins-b:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.coins
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-coins-update:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.coins-update
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-publication-a:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.publication
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-publication-b:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.publication
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-raw-a:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.raw
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-raw-b:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.raw
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-users-a:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.users
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-users-b:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.users
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-video-a:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.video
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api-video-b:
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: Dockerfile.video
+    env_file:
+      - ./api/environment
+    links:
+      - db
+    networks:
+      default:
+
+  api:
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile.api
+    links:
+      - api-ads-a
+      - api-ads-b
+      - api-auth-a
+      - api-auth-b
+      - api-coins-a
+      - api-coins-b
+      - api-publication-a
+      - api-publication-b
+      - api-raw-a
+      - api-raw-b
+      - api-users-a
+      - api-users-b
+      - api-video-a
+      - api-video-b
+    networks:
+      default:
+
+volumes:
+  data-volume:

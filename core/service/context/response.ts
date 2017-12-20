@@ -14,7 +14,7 @@ export class Response {
 
   private _body: null | undefined | string | Buffer
 
-  constructor(readonly res: ServerResponse, private ctx: Context) {
+  constructor(readonly res: ServerResponse, private _ctx: Context) {
     this.set(404)
   }
 
@@ -115,7 +115,7 @@ export class Response {
 
       let contentDisposition = 'inline'
 
-      const path = pathParse(this.ctx.request.path)
+      const path = pathParse(this._ctx.request.path)
       if (path.name) {
         const ext = type.extension || path.ext || ''
         if (ext)

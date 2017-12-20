@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  api:
+    networks:
+      default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:65
+    ports:
+      - 145.239.188.65:443:443
+
+networks:
+  outside:
+    external: true

@@ -2,8 +2,10 @@
 import { Context } from '../context'
 import { IMiddleware, INext } from '../middleware'
 
-import { Route } from './route'
 import { PathRoute } from './path-route'
+
+import { Debug } from '@core/debug'
+const debug = new Debug('Route')
 
 export function generateRouteFunction(
                   method: string,
@@ -14,10 +16,7 @@ export function generateRouteFunction(
   const pathRoute = new PathRoute(pattern)
 
   return async function(this: any, ctx: Context, next: INext): Promise<void> {
-    const route = ctx.route as Route
-
-    if (!route)
-      return await next()
+    const route = ctx.route
 
     if (route.finished)
       return await next()
@@ -36,8 +35,7 @@ export function generateRouteFunction(
 
     route.data = match
 
-    ctx.debug('=== Route %s [%s] ===\n%s %s => %s\nData: %s\nQuery: %s',
-              route.method, route.path, pattern, queryKeyList, propertyKey, route.data, route.query )
+    ctx.debug('=== Route [%s %s] ===\n%s %o -> %s', route.method, route.path, pattern, queryKeyList, propertyKey)
 
     await this[propertyKey](ctx, next)
   }

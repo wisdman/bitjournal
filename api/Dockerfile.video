@@ -1,0 +1,10 @@
+FROM node:carbon-alpine
+MAINTAINER Wisdman <wisdman@ajaw.it>
+
+COPY ./dist/video.js /app/video.js
+RUN chmod +x /app/video.js
+
+EXPOSE 80
+WORKDIR /app
+
+CMD ["/app/video.js"]

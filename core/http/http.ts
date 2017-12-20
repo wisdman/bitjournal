@@ -7,15 +7,32 @@ import { IClient, IMethod } from './client.interface'
 import { HTTPClient } from './http-client'
 import { HTTPSClient } from './https-client'
 
+import { Debug } from '@core/debug'
+const debug = new Debug('HTTP')
+
 export class HTTP {
 
-  request(method: IMethod, urlString: string): Promise<Response> {
+  async request(method: IMethod, urlString: string): Promise<Response> {
     const url = new URL(urlString)
 
     const protocol = url.protocol.toLowerCase()
 
     const client = /^https/.test(protocol) ? new HTTPSClient() : new HTTPClient()
-    return client.request(method, url)
+
+    debug(`=== HTTP(S) Request [%s] ===`, urlString)
+
+    let response
+
+    try {
+      response = await client.request(method, url)
+    } catch (error) {
+      debug(`=== HTTP(S) Request [%s] Error ===\n%O`, urlString, error)
+      throw error
+    }
+
+    debug(`=== HTTP(S) Request [%s] Successful ===\n%O`, urlString, response)
+
+    return response
   }
 
   async get(urlString: string): Promise<Response> {

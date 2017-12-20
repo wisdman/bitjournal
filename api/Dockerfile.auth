@@ -1,0 +1,10 @@
+FROM node:carbon-alpine
+MAINTAINER Wisdman <wisdman@ajaw.it>
+
+COPY ./dist/auth.js /app/auth.js
+RUN chmod +x /app/auth.js
+
+EXPOSE 80
+WORKDIR /app
+
+CMD ["/app/auth.js"]
