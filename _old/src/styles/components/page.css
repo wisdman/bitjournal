@@ -1,9 +1,0 @@
-/*
- * ======= PAGE BLOCK =======
- */
-
-/* === Page content host element === */
-.page {
-  margin: var(--indent-base) auto;
-  max-width: var(--max-width)
-}
