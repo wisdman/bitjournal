@@ -81,12 +81,6 @@
   overflow: hidden;
 }
 
-@media (min-width: 600px) {
-  .bj-article__header__tags {
-    padding: 0 20px;
-  }
-}
-
 .bj-article__header__tags a {
   display: block;
   position: relative;
@@ -153,12 +147,6 @@
   color: #fff;
 }
 
-@media (min-width: 600px) {
-  .bj-article__header__datetime {
-    padding: 0 20px;
-  }
-}
-
 .bj-article__header__datetime i {
   margin-right: .5em;
 }
@@ -187,7 +175,6 @@
   .bj-article__header__h2,
   .bj-article__header__h1 {
     font-size: 2.25rem;
-    padding: 0 20px;
   }
 }
 

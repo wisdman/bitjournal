@@ -96,7 +96,7 @@
   }
 }
 
-@media (min-width: 800px) {
+@media (min-width: 850px) {
   .share__item--viber .share__item__text {
     display: flex;
   }
