@@ -4,6 +4,7 @@ import { Query } from '@core/db'
 import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
+import { IPartialCoin } from '@common/coin'
 
 import {
   ROUTE_BASE,
@@ -38,6 +39,9 @@ const FIELDS_FOR_EVERYONE = [
   "priceBTC",
   "priceRUB",
   "volume24h",
+  "change1h",
+  "change24h",
+  "change7d",
   "histoday",
   "rating",
   "branding",
@@ -73,13 +77,18 @@ export class GetByIdAPI extends RouteMiddleware {
                   .select(FIELDS_FOR_EVERYONE)
                   .where('symbol = $1 AND enable', symbol)
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialCoin>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)
       return
     }
 
-    ctx.set(result[0])
+    const item = result[0]
+
+    item.capitalizationUSD = (item.availableSupply || 0) * (item.priceUSD || 0)
+    item.capitalizationRUB = (item.availableSupply || 0) * (item.priceRUB || 0)
+
+    ctx.set(item)
   }
 }

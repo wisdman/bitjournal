@@ -2,38 +2,32 @@ import { Pipe, PipeTransform } from '@angular/core'
 
 import {
   RAW_SERVER,
-  PORTAL_SERVER
-} from './enveroments'
+} from './env'
 
-const PATH_REGEXP = /^\/?(.*)/
+const EMPTY_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
 
-const EMPTY_PNG = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
+const PATH_OG = RAW_SERVER + '/og.png'
 
 @Pipe({
   name: 'image'
 })
 export class ImagePipe implements PipeTransform {
-  static ogURL(input: number | string | null): string {
+  static transform(input: number | string | null, og: boolean = false): string {
     if (!input)
-      return PORTAL_SERVER + '/og.png'
+      return og ? PATH_OG : EMPTY_GIF
 
-    const match = PATH_REGEXP.exec( String(input).trim())
+    const path = ('/' + String(input))
+                 .trim()
+                 .replace(/\/+/g,'/')
+                 .replace(/\/+$/,'')
 
-    if (!match)
-      return PORTAL_SERVER + '/og.png'
+    if (!path)
+      return og ? PATH_OG : EMPTY_GIF
 
-    return RAW_SERVER + '/' + ( match && match[1] )
+    return RAW_SERVER + path
   }
 
-  transform(input: number | string | null): string {
-    if (!input)
-      return EMPTY_PNG
-
-    const match = PATH_REGEXP.exec( String(input).trim())
-
-    if (!match)
-      return EMPTY_PNG
-
-    return RAW_SERVER + '/' + ( match && match[1] )
+  transform(input: number | string | null, og: boolean = false): string {
+    return ImagePipe.transform(input, og)
   }
 }

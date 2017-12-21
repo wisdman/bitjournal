@@ -2,21 +2,17 @@
  * Get RAW data
  */
 
-import { Middleware, Context, INext, RouteMiddleware, Get, Route } from '@core/service'
+import { Middleware, Context, INext, RouteMiddleware, Get } from '@core/service'
 
-import { Client } from 'pg'
+import { Client, DBError } from '@core/db'
 import { LargeObjectManager } from 'pg-large-object'
-
-import { DBError } from '@core/pg-query'
 
 export class RAW extends RouteMiddleware {
 
   async getData(ctx: Context): Promise<Buffer | undefined> {
-    const route = ctx.route as Route
-
     const db = ctx.db as Client
 
-    const oid = Math.max(parseInt(route.data.id), 0)
+    const oid = Math.max(parseInt(ctx.route.data.id), 0)
 
     if (!oid) {
       ctx.set(404)
@@ -43,7 +39,7 @@ export class RAW extends RouteMiddleware {
 
       await db.query('ROLLBACK')
 
-      if (DBError.parseError(error) === DBError.UNDEFINED_OBJECT) {
+      if (error.code === DBError.UNDEFINED_OBJECT) {
         ctx.set(404)
         return
       }
@@ -55,16 +51,6 @@ export class RAW extends RouteMiddleware {
     await db.query('COMMIT')
 
     return buffer
-  }
-
-  @Get(`/img/:id`)
-  async getIMG(ctx: Context, next: INext) {
-    const buffer = await this.getData(ctx)
-
-    if (!buffer)
-      return
-
-    ctx.set(buffer)
   }
 
   @Get(`/:id`)

@@ -4,7 +4,10 @@ import { Timestamp } from '@core/timestamp'
 
 export const CoinModel = new Model({
   symbol: input => {
-    const output = String(input || '').trim().toUpperCase()
+    const output = String(input || '')
+                   .trim()
+                   .toUpperCase()
+                   .replace(/[\.]/g,'')
     return output && { symbol: output } || undefined
   },
 
@@ -79,7 +82,7 @@ export const CoinModel = new Model({
 
   hashRate: input => {
     const output = Math.max(parseFloat(input) || 0, 0)
-    return output && { hashRate: output } || undefined
+    return output && output < Infinity && { hashRate: output } || undefined
   },
 
   priceUSD: input => {
@@ -100,6 +103,21 @@ export const CoinModel = new Model({
   volume24h: input => {
     const output = Math.max(parseFloat(input) || 0, 0)
     return output && { volume24h: output } || undefined
+  },
+
+  change1h: input => {
+    const output = parseFloat(input) || 0
+    return output && { change1h: output } || undefined
+  },
+
+  change24h: input => {
+    const output = parseFloat(input) || 0
+    return output && { change24h: output } || undefined
+  },
+
+  change7d: input => {
+    const output = parseFloat(input) || 0
+    return output && { change7d: output } || undefined
   },
 
   histoday: input => {

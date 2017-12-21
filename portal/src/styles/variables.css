@@ -22,7 +22,10 @@
 
   --color-main: #24292e;
   --color-hover-light: rgba(255, 255, 255, 0.1);
+  --color-hover-dark: rgba(36, 41, 46, 0.07);
 
   --color-gray: #73787e;
 
+  --color-up: #093;
+  --color-down: #d14836;
 }

@@ -1,11 +1,12 @@
 FROM node:carbon-alpine
 MAINTAINER Wisdman <wisdman@ajaw.it>
 
-COPY ./dist/back /app
-RUN chmod +x /app/main.js
+COPY ./dist/back.js /app/back.js
+COPY ./dist/index.html /app/index.html
+
+RUN chmod +x /app/back.js
 
 EXPOSE 80
-
 WORKDIR /app
 
-CMD ["/app/main.js"]
+CMD ["/app/back.js"]

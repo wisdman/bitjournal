@@ -10,10 +10,10 @@ import {
   IYouTubeVideo,
 } from '../../services'
 
-import { IVideo } from '@common/models'
+import { IVideo } from '@common/video'
 import { IVideoRibbonItem } from './video-ribbon-item.interface'
 
-const API_BASE = 'video'
+const API_BASE = '/video'
 
 @Component({
   selector: 'video-ribbon',
@@ -48,8 +48,7 @@ export class VideoRibbonComponent implements OnInit {
 
   ngOnInit() {
     this.items = this._apiService
-                     .get< Array<IVideo> >(`/${API_BASE}`)
-                     .map( items => items.filter( item => item.enable) )
+                     .get< Array<IVideo> >(API_BASE)
                      .map( items => items.map( item => item.id ) )
                      .map( items => this._youTubeService.getVideoData(items) )
                      .mergeAll()

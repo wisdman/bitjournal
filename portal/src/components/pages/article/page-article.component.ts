@@ -6,7 +6,7 @@ import { ActivatedRoute, } from '@angular/router'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/of'
 
-import { IPublication } from '@common/models'
+import { IPublication } from '@common/publication'
 
 import {
   APIService,

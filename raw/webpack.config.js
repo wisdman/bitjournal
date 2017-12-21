@@ -33,12 +33,12 @@ module.exports = {
   context: PATH('./src'),
 
   entry: {
-    main: [ PATH('./src/main.ts') ]
+    raw: [ PATH('./src/main.ts') ]
   },
 
   output: {
     path: PATH('./dist'),
-    filename: '[name].bundle.js'
+    filename: '[name].js'
   },
 
   resolve: {

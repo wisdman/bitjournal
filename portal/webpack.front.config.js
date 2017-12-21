@@ -8,6 +8,10 @@ const PATH = (...p) => path.resolve(__dirname, ...p)
 const isProduction = process.env.NODE_ENV === 'production'
 const package = require('../package.json')
 
+// === URL Config ===
+const API_SERVER = isProduction ? 'https://api.bitjournal.io' : 'https://api.bitjournal.dev:4431'
+const RAW_SERVER = isProduction ? 'https://raw.bitjournal.io' : 'https://raw.bitjournal.dev:4432'
+
 // === Webpack plugins ===
 const {
   EnvironmentPlugin,
@@ -67,7 +71,7 @@ const postcssFinalPlugins = [
 ]
 
 // === Extract css chunks plugins
-const ExtractStylesCSS = new ExtractTextPlugin('css/[name].[hash:10].bundle.css')
+const ExtractStylesCSS = new ExtractTextPlugin('css/[name].[hash:10].css')
 
 // === Webpack config ===
 module.exports = {
@@ -75,15 +79,15 @@ module.exports = {
   context: PATH('./src'),
 
   entry: {
-    main:   [ PATH('./src/main.front.ts') ],
-    'core-js':   [ PATH('./src/core-js.ts') ],
-    styles: [ PATH('./src/styles/index.ts') ],
+    main:      [ PATH('./src/main.front.ts') ],
+    'core-js': [ PATH('./src/core-js.ts') ],
+    styles:    [ PATH('./src/styles/index.ts') ],
   },
 
   output: {
     path: PATH('./dist/front'),
     publicPath: '/',
-    filename: 'js/[name].[hash:10].bundle.js',
+    filename: 'js/[name].[hash:10].js',
     chunkFilename: 'js/[id].[hash:10].chunk.js',
     crossOriginLoading: false,
   },
@@ -222,7 +226,9 @@ module.exports = {
       NODE_ENV: isProduction ? 'production' : '',
       DEBUG: !isProduction,
       APP_NAME: package.name,
-      APP_VERSION: package.version
+      APP_VERSION: package.version,
+      API_SERVER: API_SERVER,
+      RAW_SERVER: RAW_SERVER,
     }),
 
     new NoEmitOnErrorsPlugin(),
@@ -247,7 +253,7 @@ module.exports = {
     new WebpackManifestPlugin(),
 
     new WebpackIndexHTMLPlugin({
-      output: PATH('./dist/back/index.html'),
+      output: PATH('./dist/index.html'),
       minify: isProduction ? {
         caseSensitive: true,
         collapseWhitespace: true,

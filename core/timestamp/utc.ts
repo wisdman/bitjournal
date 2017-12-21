@@ -76,16 +76,16 @@ export class UTC {
 
   get dateString(): string {
     const year  = String(this.fullYear)
-    const month = String(this.month + 1).padStart(2, '0')
-    const date  = String(this.date).padStart(2, '0')
+    const month = ('00' + String(this.month + 1)).slice(-2)
+    const date  = ('00' + String(this.date).padStart(2, '0')).slice(-2)
 
     return `${year}-${month}-${date}`
   }
 
   get timeString(): string {
-    const hours   = String(this.hours).padStart(2, '0')
-    const minutes = String(this.minutes).padStart(2, '0')
-    const seconds = String(this.seconds).padStart(2, '0')
+    const hours   = ('00' + String(this.hours)).slice(-2)
+    const minutes = ('00' + String(this.minutes)).slice(-2)
+    const seconds = ('00' + String(this.seconds)).slice(-2)
 
     return `${hours}:${minutes}:${seconds}`
   }

@@ -1,6 +1,7 @@
 import { RouteMiddleware, Context, INext, Delete, ACL } from '@core/service'
 
-import { Client, LargeObjectManager, DBError } from '@core/db'
+import { Client, DBError } from '@core/db'
+import { LargeObjectManager } from 'pg-large-object'
 
 import { Role } from '@common/role'
 

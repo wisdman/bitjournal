@@ -1,6 +1,6 @@
 import { RouteMiddleware, Context, INext, Post, ACL } from '@core/service'
 
-import { Query } from '@core/db'
+import { Query, DBError } from '@core/db'
 import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
@@ -89,6 +89,18 @@ export class UpdateAPI extends RouteMiddleware {
     }
 
     const result = await query.exec<object>(ctx.db)
+                              .catch( error => error as DBError )
+
+    // Result is error
+    if ( !Array.isArray(result) ) {
+      if (result.code === DBError.UNIQUE_VIOLATION ) {
+        ctx.set(409)
+        return
+      }
+
+      ctx.throw(result)
+      return
+    }
 
     if (result.length !== 1) {
       ctx.set(404)

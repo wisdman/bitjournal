@@ -40,13 +40,10 @@ export class CoinmarketcapSources implements ISource {
                    .trim()
                    .toUpperCase()
 
-    const coinmarketcapId = String(input.id || '')
-                            .trim()
-
-    if (!symbol || !coinmarketcapId)
+    if (!symbol)
       return undefined
 
-    const output: ICoinmarketcapCoin = { coinmarketcapId, symbol }
+    const output: ICoinmarketcapCoin = { symbol }
 
     const title = String(input.name || '').trim()
     if (title) output.title = title
@@ -68,6 +65,15 @@ export class CoinmarketcapSources implements ISource {
 
     const maxSupply = Math.max( parseFloat(input.max_supply), 0)
     if (!Number.isNaN(maxSupply)) output.maxSupply = maxSupply
+
+    const change1h = parseFloat(input.percent_change_1h)
+    if (!Number.isNaN(change1h)) output.change1h = change1h
+
+    const change24h = parseFloat(input.percent_change_24h)
+    if (!Number.isNaN(change24h)) output.change24h = change24h
+
+    const change7d = parseFloat(input.percent_change_7d)
+    if (!Number.isNaN(change7d)) output.change7d = change7d
 
     output.coinmarketcapRank = ~~input.rank
 
@@ -107,15 +113,11 @@ export class CoinmarketcapSources implements ISource {
   // Manual update
   async update() {
 
-    console.log('Coinmarketcap START [ update ]')
-
     const list = await this._getCoinsTicker()
 
     list.forEach( item => this._coinSubject.next(item) )
 
     setTimeout(() => this.update(), UPDATE_LOOP_TIMEOUT)
-
-    console.log('Coinmarketcap FINISH [ update ]')
   }
 
   constructor() {

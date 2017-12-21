@@ -1,0 +1,97 @@
+.bj-coins-ribbon {
+  display: flex;
+
+  flex: 1 1 auto;
+  height: 100%;
+  max-width: 100%;
+
+  flex-wrap: nowrap;
+  overflow: hidden;
+  overflow-x: scroll;
+}
+
+@media (min-width: 1000px) {
+  .bj-coins-ribbon {
+    margin-left: 100px;
+    overflow-x: hidden;
+    flex-wrap: wrap;
+  }
+}
+
+.bj-coins-ribbon__item {
+  display: flex;
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: flex-start;
+
+  height: 100%;
+  overflow: hidden;
+
+  padding: 0 var(--indent-half);
+
+  color: inherit;
+  background: transparent;
+
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.bj-coins-ribbon__item:first-child {
+  padding-left: var(--indent-base);
+}
+.bj-coins-ribbon__item:last-child {
+  padding-right: var(--indent-base);
+}
+
+@media (min-width: 1000px) {
+  .bj-coins-ribbon__item {
+    padding: 0 var(--indent-base);
+  }
+}
+
+.bj-coins-ribbon__item:hover {
+  background: var(--color-hover-dark);
+}
+
+.bj-coins-ribbon__item__icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+
+  margin-right: 8px;
+}
+
+.bj-coins-ribbon__item__data {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+.bj-coins-ribbon__item__symbol {
+  display: block;
+
+  margin: 0;
+  padding: 0;
+
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.bj-coins-ribbon__item__rate {
+  display: block;
+
+  margin: 5px 0 0 0;
+  padding: 0;
+}
+
+.bj-coins-ribbon__item__rate span:first-child {
+  margin-right: 0.15em;
+  font-size: 15px;
+}

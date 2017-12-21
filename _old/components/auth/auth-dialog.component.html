@@ -1,0 +1,16 @@
+<h1 mat-dialog-title class="auth-form-title">Authorization</h1>
+<form mat-dialog-content class="auth-form" [formGroup]="authForm" (ngSubmit)="onSubmit()" novalidate>
+  <mat-form-field class="auth-form-row">
+    <input matInput type="text" placeholder="E-mail" formControlName="email">
+    <mat-error *ngIf="authForm.controls.email.hasError('required')">Email is <strong>required</strong></mat-error>
+    <mat-error *ngIf="authForm.controls.email.hasError('email')">Please enter a valid email address</mat-error>
+  </mat-form-field>
+  <mat-form-field class="auth-form-row">
+    <input matInput type="password" placeholder="Password" formControlName="password">
+    <mat-error *ngIf="authForm.controls.password.hasError('required')">Password is <strong>required</strong></mat-error>
+  </mat-form-field>
+  <input type="submit" hidden>
+</form>
+<mat-dialog-actions>
+  <button type="submit" mat-button class="auth-form-button" color="primary" [disabled]="authForm.invalid" (click)="onSubmit()">Submit</button>
+</mat-dialog-actions>

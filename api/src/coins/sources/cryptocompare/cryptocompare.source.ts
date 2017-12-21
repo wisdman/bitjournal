@@ -276,8 +276,6 @@ export class CryptocompareSources implements ISource {
   // Manual update
   async update() {
 
-    console.log('Cryptocompare START [ update ]')
-
     const list = await this._getCoinsList()
 
     list.forEach( item => this._coinSubject.next(item) )
@@ -299,10 +297,7 @@ export class CryptocompareSources implements ISource {
     .subscribe(
       item => this._coinSubject.next(item),
       error => console.error('Cryptocompare ERREOR [ update Observable error ]', error),
-      () => {
-        console.log('Cryptocompare FINISH [ update ]')
-        setTimeout(() => this.update(), UPDATE_LOOP_TIMEOUT)
-      }
+      () => setTimeout(() => this.update(), UPDATE_LOOP_TIMEOUT)
     )
   }
 

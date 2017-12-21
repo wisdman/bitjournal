@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core'
 import { Meta, Title } from '@angular/platform-browser'
 
-const DEFAULT_TITLE = 'BitJournal — издание про биткоин, криптовалюты, ICO, майнинг и блокчейн'
-const DEFAULT_DESCRIPTION = 'На сайте BitJournal вы найдете оперативные новости из мира криптоиндустрии — все о самых грандиозных ICO в истории, огромные майнинг-фермы про летящий на луну биткоин и многое другое'
-const DEFAULT_KEYWORDS = 'биткоин, bitjournal, криптовалюты, ico, майнинг, блокчейн'
-
 import { ImagePipe } from '../../pipes'
+
+import {
+  DEFAULT_TITLE,
+  DEFAULT_DESCRIPTION,
+  DEFAULT_KEYWORDS,
+} from './env'
 
 @Injectable()
 export class MetaService {
@@ -37,11 +39,13 @@ export class MetaService {
     this._meta.addTag({ name: 'description', content: description || DEFAULT_DESCRIPTION })
     this._meta.addTag({ name: 'keywords', content: keywords || DEFAULT_KEYWORDS })
 
+    const ogImagePath = ImagePipe.transform(ogImage, true)
+
     // Set Og
     this._meta.addTag({ property: 'og:type', content: 'website' })
     this._meta.addTag({ property: 'og:title', content: ogTitle || title || DEFAULT_TITLE })
     this._meta.addTag({ property: 'og:description', content: ogDescription || description || DEFAULT_DESCRIPTION })
-    this._meta.addTag({ property: 'og:image', content: ImagePipe.ogURL(ogImage) })
+    this._meta.addTag({ property: 'og:image', content: ogImagePath })
 
     // Set twitter
     this._meta.addTag({ name: 'twitter:card',        content: 'summary_large_image' })
@@ -49,6 +53,6 @@ export class MetaService {
     this._meta.addTag({ name: 'twitter:creator',     content: '@bitjournal_io' })
     this._meta.addTag({ name: 'twitter:title',       content: ogTitle || title || DEFAULT_TITLE })
     this._meta.addTag({ name: 'twitter:description', content: ogDescription || description || DEFAULT_DESCRIPTION })
-    this._meta.addTag({ name: 'twitter:image',       content: ImagePipe.ogURL(ogImage) })
+    this._meta.addTag({ name: 'twitter:image',       content: ogImagePath })
   }
 }

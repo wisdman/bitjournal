@@ -6,5 +6,5 @@ export const COIN_SNAPSHOT_URL = (id: number) =>
 export const COIN_HISTODAY_URL = (from: string, to: string = 'USD') =>
   `https://min-api.cryptocompare.com/data/histoday?fsym=${from}&tsym=${to}&allData=true`
 
-export const UPDATE_LOOP_TIMEOUT = 3600000
+export const UPDATE_LOOP_TIMEOUT = 600000
 export const REQUEST_TIMEOUT = 15000

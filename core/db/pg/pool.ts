@@ -1,7 +1,7 @@
 
 import { Pool, PoolConfig } from 'pg'
 
-import { POSTGRES_POOL_CONFIG } from './environments'
+import { POSTGRES_POOL_CONFIG } from './env'
 
 // Postgres Pool fabric
 export const createPool = (config: Partial<PoolConfig> = {}) => {

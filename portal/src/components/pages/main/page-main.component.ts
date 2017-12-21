@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/concat'
 
-import { IPublication } from '@common/models'
+import { IPublication } from '@common/publication'
 
 import {
   APIService,

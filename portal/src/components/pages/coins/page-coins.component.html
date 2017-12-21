@@ -1,0 +1,103 @@
+
+<main class="bj-page-coins__wrapper">
+
+  <div class="bj-page-coins__row">
+
+    <div class="bj-page-coins__col bj-common--white-box">
+
+      <div class="bj-page-coins__controls">
+        <mat-form-field class="bj-page-coins__controls__filter">
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск валюты" autocomplete="off">
+        </mat-form-field>
+        <div class="bj-page-coins__controls__currency">
+          <button class="bj-page-coins__controls__currency-button"
+                  (click)="filtredPrice = 'USD'"
+                  [class.bj-page-coins__controls__currency-button--active]="filtredPrice === 'USD'">RUB</button>
+          <button class="bj-page-coins__controls__currency-button"
+                  (click)="filtredPrice = 'RUB'"
+                  [class.bj-page-coins__controls__currency-button--active]="filtredPrice === 'RUB'">USD</button>
+        </div>
+      </div>
+
+      <div class="bj-page-coins__table-wrapper">
+        <mat-table #table [dataSource]="dataSource" matSort matSortActive="capitalizationUSD" matSortDirection="desc" matSortDisableClear class="bj-page-coins__table">
+
+          <!-- Icon Column -->
+          <ng-container matColumnDef="icon">
+            <mat-header-cell *matHeaderCellDef style="max-width:42px"></mat-header-cell>
+            <mat-cell *matCellDef="let item" style="max-width:42px">
+              <img class="bj-page-coins__table__icon" [src]="'/coins/' + item.symbol.toLowerCase() + '.svg'">
+            </mat-cell>
+          </ng-container>
+
+          <!-- Title Column -->
+          <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Наименование</mat-header-cell>
+            <mat-cell *matCellDef="let item">{{ item.title }} ({{ item.symbol }})</mat-cell>
+          </ng-container>
+
+          <!-- Title PriceUSD -->
+          <ng-container matColumnDef="priceUSD">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:130px">Цена, $</mat-header-cell>
+            <mat-cell *matCellDef="let item" style="max-width:130px">{{ item.priceUSD | number:'1.2-8' }}</mat-cell>
+          </ng-container>
+
+          <!-- Title Capitalization -->
+          <ng-container matColumnDef="capitalizationUSD">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Капитализация, $</mat-header-cell>
+            <mat-cell *matCellDef="let item">{{ item.capitalizationUSD | number:'1.2' }}</mat-cell>
+          </ng-container>
+
+          <!-- Title PriceRUB -->
+          <ng-container matColumnDef="priceRUB">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:150px">Цена, ₽</mat-header-cell>
+            <mat-cell *matCellDef="let item" style="max-width:150px">{{ item.priceRUB | number:'1.2-8' }}</mat-cell>
+          </ng-container>
+
+          <!-- Title Capitalization -->
+          <ng-container matColumnDef="capitalizationRUB">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Капитализация, ₽</mat-header-cell>
+            <mat-cell *matCellDef="let item" style="font-size:12px">{{ item.capitalizationRUB | number:'1.2' }}</mat-cell>
+          </ng-container>
+
+          <!-- Title PriceBTC -->
+          <ng-container matColumnDef="priceBTC">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:130px">Цена, BTC</mat-header-cell>
+            <mat-cell *matCellDef="let item" style="max-width:130px">{{ item.priceBTC | number:'1.0-12' }}</mat-cell>
+          </ng-container>
+
+          <!-- Title volume24h -->
+          <ng-container matColumnDef="change24h">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:100px">24ч</mat-header-cell>
+            <mat-cell *matCellDef="let item" style="max-width:100px; text-align: right">
+              <span [class.bj-common--up]="item.change24h > 0"
+                    [class.bj-common--down]="item.change24h < 0" >{{ item.change24h }}&nbsp;%</span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Rating -->
+          <ng-container matColumnDef="rating">
+            <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:80px">Рейтинг</mat-header-cell>
+            <mat-cell *matCellDef="let item" style="max-width:80px">
+              <i class="fa fa-star-o" aria-hidden="true"></i>
+              <i class="fa fa-star-o" aria-hidden="true"></i>
+              <i class="fa fa-star-o" aria-hidden="true"></i>
+              <i class="fa fa-star-o" aria-hidden="true"></i>
+              <i class="fa fa-star-o" aria-hidden="true"></i>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+    </div>
+
+    <aside class="bj-page-coins__aside">
+      <h1 class="column-header">Новости</h1>
+      <a *ngFor="let publication of publications | async" class="bj-pub-line" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]"></a>
+    </aside>
+
+  </div>
+
+</main>

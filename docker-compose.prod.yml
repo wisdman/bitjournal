@@ -9,6 +9,23 @@ services:
     ports:
       - 145.239.188.65:443:443
 
+  raw:
+    networks:
+      default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:66
+    ports:
+      - 145.239.188.66:443:443
+
+  portal:
+    networks:
+      default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:64
+    ports:
+      - 145.239.188.64:443:443
+      - 145.239.188.64:80:80
+
 networks:
   outside:
     external: true

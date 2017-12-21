@@ -1,23 +1,25 @@
 import {
   APIService,
+  CoinService,
+  LoaderService,
   MessageService,
   MetaService,
+  MetrikaService,
+  NotificationService,
   SocialService,
   UserService,
   YouTubeService,
-  LoaderService,
-  NotificationService,
-  MetrikaService,
 } from './services'
 
 export const SERVICES: any[] = [
   APIService,
+  CoinService,
+  LoaderService,
   MessageService,
   MetaService,
+  MetrikaService,
+  NotificationService,
   SocialService,
   UserService,
   YouTubeService,
-  LoaderService,
-  NotificationService,
-  MetrikaService,
 ]

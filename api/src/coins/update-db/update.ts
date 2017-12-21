@@ -5,13 +5,15 @@ import 'rxjs/add/observable/interval'
 import { Timestamp } from '@core/timestamp'
 import { Pool, createPool, Query } from '@core/db'
 
-import { ICoin } from '@common/coin'
+import { IPartialCoin } from '@common/coin'
 
 import { CoinModel } from './coin.model'
 import { IModelResult } from '@core/model'
 
 import {
-  DATATABLE
+  DATATABLE,
+  QUEUE_WAIT_TIMEOUT,
+  DB_REQUEST_TIMEOUT,
 } from './env'
 
 const STATIC_FIELDS = [
@@ -33,11 +35,11 @@ const DYNAMIC_FIELDS = [
   'priceUSD',
   'priceBTC',
   'priceRUB',
+  'volume24h',
+  'change1h',
+  'change24h',
+  'change7d',
 ]
-
-interface IPartialCoin extends Partial<ICoin> {
-  [key: string]: any
-}
 
 export class DBUpdater {
 
@@ -54,12 +56,12 @@ export class DBUpdater {
     const item = this._queue.shift()
 
     if (!item) {
-      setTimeout(() => this._updateLoop(), 10000)
+      setTimeout(() => this._updateLoop(), QUEUE_WAIT_TIMEOUT)
       return
     }
 
     await this._update(item)
-    setTimeout(() => this._updateLoop(), 300)
+    setTimeout(() => this._updateLoop(), DB_REQUEST_TIMEOUT)
   }
 
   private async _update(item: IPartialCoin) {
@@ -154,19 +156,8 @@ export class DBUpdater {
             let newValue = item[key]
             let oldValue = oldFields[key]
 
-            if (!oldValue) {
+            if (!oldValue)
               newFields[key] = newValue
-              return
-            }
-
-            if (key === 'title')
-              return
-
-            if (oldValue !== newValue) {
-              console.error(`=== DBUpdater WARNING [ ${symbol} ] static fields mismatch [ ${key} ] ===\nOld: `,
-                            oldValue, '\nNew: ', newValue )
-              return
-            }
           })
 
     if (Object.keys(newFields).length === 0){

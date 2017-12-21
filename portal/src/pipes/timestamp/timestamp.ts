@@ -6,24 +6,27 @@ import { Timestamp } from '@core/timestamp'
   name: 'timestamp'
 })
 export class TimestampPipe implements PipeTransform {
-  transform(input: any, type: 'ISO' | 'HR' | 'URL' = 'ISO'): string {
+  transform(input: any, type: 'ISO' | 'HR' | 'DATE' = 'ISO'): string {
 
-    const ts = new Timestamp(input)
-    if (ts.isInvalid)
+    let ts
+
+    try {
+      ts = new Timestamp(input)
+    } catch (error) {
+      console.error('TimestampPipe construct error', input)
       return ''
+    }
 
     switch (type) {
-      case 'ISO':
-        return ts.toISOString()
-
       case 'HR':
-        return ts.toHRString()
+        return ts.HRString
 
-      case 'URL':
-        return ts.toURLString()
+      case 'DATE':
+        return ts.UTC.dateString
 
+      case 'ISO':
       default:
-        return ts.toISOString()
+        return ts.iso
     }
   }
 }

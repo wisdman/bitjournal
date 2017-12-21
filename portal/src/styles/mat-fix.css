@@ -2,13 +2,19 @@
 /* === Tables === */
 .mat-header-row,
 .mat-row {
-  padding: 0 !important;
+  padding: 0 20px!important;
+}
+
+@media (min-width: 1000px) {
+  .mat-header-row,
+  .mat-row {
+    padding: 0 40px!important;
+  }
 }
 
 .mat-header-cell,
 .mat-cell {
-  padding: 0 .5rem;
-  overflow: visible !important;
+  padding: 0 10px;
 }
 
 .mat-header-cell:first-child,

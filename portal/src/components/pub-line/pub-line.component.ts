@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation, Input } from '@angular/core'
 
-import { IPublication } from '@common/models'
+import { IPublication } from '@common/publication'
 
 @Component({
   selector: '.bj-pub-line',
@@ -12,6 +12,5 @@ import { IPublication } from '@common/models'
   }
 })
 export class PubLineComponent {
-
   @Input() value: IPublication
 }

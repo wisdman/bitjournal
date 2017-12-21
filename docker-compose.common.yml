@@ -217,5 +217,95 @@ services:
     networks:
       default:
 
+  raw-back-a:
+    restart: unless-stopped
+    build:
+      context: ./raw
+      dockerfile: Dockerfile.raw
+    env_file:
+      - ./raw/environment
+    links:
+      - db
+    networks:
+      default:
+
+  raw-back-b:
+    restart: unless-stopped
+    build:
+      context: ./raw
+      dockerfile: Dockerfile.raw
+    env_file:
+      - ./raw/environment
+    links:
+      - db
+    networks:
+      default:
+
+  raw-back-c:
+    restart: unless-stopped
+    build:
+      context: ./raw
+      dockerfile: Dockerfile.raw
+    env_file:
+      - ./raw/environment
+    links:
+      - db
+    networks:
+      default:
+
+  raw:
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile.raw
+    links:
+      - raw-back-a
+      - raw-back-b
+      - raw-back-c
+    networks:
+      default:
+
+  portal-back-a:
+    restart: unless-stopped
+    build:
+      context: ./portal
+      dockerfile: Dockerfile.back
+    links:
+      - api
+    networks:
+      default:
+
+  portal-back-b:
+    restart: unless-stopped
+    build:
+      context: ./portal
+      dockerfile: Dockerfile.back
+    links:
+      - api
+    networks:
+      default:
+
+  portal-back-c:
+    restart: unless-stopped
+    build:
+      context: ./portal
+      dockerfile: Dockerfile.back
+    links:
+      - api
+    networks:
+      default:
+
+  portal:
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile.portal
+    links:
+      - portal-back-a
+      - portal-back-b
+      - portal-back-c
+    networks:
+      default:
+
 volumes:
   data-volume:

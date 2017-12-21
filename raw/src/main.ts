@@ -3,11 +3,7 @@
  */
 
 import { Service } from '@core/service'
-
-import {
-  PgDBMiddleware,
-  SessionMiddleware,
-} from '@common/middleware'
+import { DBMiddleware } from '@core/db'
 
 import { RAW } from './raw'
 
@@ -16,10 +12,6 @@ process.env.TZ = 'UTC'
 
 // HTTP service
 new Service(
-
-  new PgDBMiddleware(), // Add database to context
-
-  new SessionMiddleware(), // Add session to context
-
+  new DBMiddleware(), // Add database to context
   new RAW(),
 )

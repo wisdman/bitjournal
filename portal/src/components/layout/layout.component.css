@@ -1,0 +1,15 @@
+
+.bj-lottery {
+  width: 100%;
+  display: block;
+
+  background: var(--color-main);
+}
+
+.bj-lottery img {
+  display: block;
+  max-width: 100%;
+  max-height: 200px;
+
+  margin: 0 auto;
+}

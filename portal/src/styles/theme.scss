@@ -1,7 +1,7 @@
 @import '~@angular/material/theming';
 
 $typography: mat-typography-config(
-  $font-family: 'bj-d'
+  $font-family: 'sf'
 );
 
 @include mat-core($typography);
@@ -14,3 +14,4 @@ $warn:    mat-palette($mat-red, 600, 100, 800);
 $theme: mat-light-theme($primary, $accent, $warn);
 
 @include angular-material-theme($theme);
+

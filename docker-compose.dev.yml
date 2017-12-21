@@ -2,5 +2,23 @@ version: '3.4'
 
 services:
   api:
+    volumes:
+      - ./nginx/fullchain.dev.pem:/etc/nginx/fullchain.pem:ro
+      - ./nginx/privkey.dev.pem:/etc/nginx/privkey.pem:ro
+    ports:
+      - 4431:443
+
+  raw:
+    volumes:
+      - ./nginx/fullchain.dev.pem:/etc/nginx/fullchain.pem:ro
+      - ./nginx/privkey.dev.pem:/etc/nginx/privkey.pem:ro
+    ports:
+      - 4432:443
+
+  portal:
+    volumes:
+      - ./nginx/fullchain.dev.pem:/etc/nginx/fullchain.pem:ro
+      - ./nginx/privkey.dev.pem:/etc/nginx/privkey.pem:ro
     ports:
       - 443:443
+      - 80:80

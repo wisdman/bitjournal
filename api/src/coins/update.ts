@@ -17,8 +17,8 @@ import {
 import { DBUpdater } from './update-db'
 
 const items: Observable< Partial<ICoin> > = Observable.merge(
-                                            new CryptocompareSources().coin,
                                             new CoinmarketcapSources().coin,
+                                            new CryptocompareSources().coin,
                                           )
 
 new DBUpdater(items)

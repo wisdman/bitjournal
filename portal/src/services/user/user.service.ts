@@ -1,5 +1,5 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core'
-import { isPlatformServer } from '@angular/common'
+import { isPlatformServer, isPlatformBrowser } from '@angular/common'
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http'
 
 import { Observable } from 'rxjs/Observable'
@@ -13,17 +13,22 @@ import { MatSnackBar } from '@angular/material'
 
 import { AuthDialogComponent } from '../../components'
 
-import { User, RoleEnum } from '@common/models'
+import { Role } from '@common/role'
+import { IUser } from '@common/user'
 
 import { APIService } from '../api'
 import { MessageService } from '../message'
 
 const AUTH_TOKEN_LS_ID = 'auth-token'
 
+const ME_PATH = (path: string = '') => APIService.buildURL(`/users/me/${path}`)
+const AUTH_PATH = (path: string = '') => APIService.buildURL(`/auth/${path}`)
+
 @Injectable()
 export class UserService {
 
-  private isServer: boolean
+  private readonly isServer: boolean
+  private readonly isBrowser: boolean
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
@@ -33,6 +38,7 @@ export class UserService {
     private readonly _snackBar: MatSnackBar
   ) {
     this.isServer = isPlatformServer(platformId)
+    this.isBrowser = isPlatformBrowser(platformId)
   }
 
   private get _authToken(): string | null {
@@ -62,8 +68,8 @@ export class UserService {
     return new HttpHeaders({ 'Authorization': 'token ' + (authToken || 'null') })
   }
 
-  me(): Observable<User> {
-    return this._http.get< Partial<User> >(APIService.buildPath('/users/me'), { headers: this.authHeaders })
+  me(): Observable<IUser> {
+    return this._http.get< Partial<IUser> >(ME_PATH(), { headers: this.authHeaders })
                      .catch(error => {
                         if (error instanceof HttpErrorResponse) {
                           if (error.status === 403)
@@ -77,12 +83,11 @@ export class UserService {
 
                         return Observable.of(null)
                      })
-                     .filter(item => item !== null)
-                     .map( item => new User(item) ) as Observable<User>
+                     .filter(item => item !== null) as Observable<IUser>
   }
 
   login(data: { email: string, password: string, otp: string }): Observable<boolean> {
-    return this._http.post<{token: string}>( APIService.buildPath('/auth/login'), data, { headers: this.authHeaders })
+    return this._http.post<{token: string}>( AUTH_PATH('login'), data, { headers: this.authHeaders })
                      .catch( error => Observable.of(null) )
                      .map( item => {
                        if (item === null) {
@@ -91,13 +96,13 @@ export class UserService {
                        }
 
                        this._authToken = item.token
-                       window.location.reload()
+                       window.location.reload() // ??????
                        return true
                      })
   }
 
   logout(): void {
-    this._http.get<void>(APIService.buildPath('/auth/logout'), { headers: this.authHeaders })
+    this._http.get<void>(AUTH_PATH('logout'), { headers: this.authHeaders })
               .catch( error => Observable.of(null) )
               .subscribe( item => {
                 this._authToken = null

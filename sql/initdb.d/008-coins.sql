@@ -37,7 +37,11 @@ CREATE TABLE coins (
   "priceBTC"        decimal      NOT NULL DEFAULT 0,
   "priceRUB"        decimal      NOT NULL DEFAULT 0,
 
-  "volume24h":      decimal      NOT NULL DEFAULT 0,
+  "volume24h"       decimal      NOT NULL DEFAULT 0,
+
+  "change1h"        decimal      NOT NULL DEFAULT 0,
+  "change24h"       decimal      NOT NULL DEFAULT 0,
+  "change7d"        decimal      NOT NULL DEFAULT 0,
 
   "histoday"        jsonb        NOT NULL DEFAULT '{}'::jsonb,
 
@@ -47,7 +51,7 @@ CREATE TABLE coins (
 
   CONSTRAINT coins__idx_pkey PRIMARY KEY ("symbol"),
 
-  CONSTRAINT coins__check__symbol CHECK ("symbol" ~ '^[A-Z0-9*]+$'),
+  CONSTRAINT coins__check__symbol CHECK ("symbol" ~ '^[A-Z0-9*@$]+$'),
 
   CONSTRAINT coins__check__maxSupply       CHECK ("maxSupply"       >= 0),
   CONSTRAINT coins__check__availableSupply CHECK ("availableSupply" >= 0),
@@ -67,6 +71,10 @@ CREATE TABLE coins (
 ) WITH (OIDS = FALSE);
 
 -- Scann indexes
-CREATE INDEX coins__idx__enable ON coins USING btree ("enable");
-CREATE INDEX coins__idx__hot    ON coins USING btree ("hot");
-CREATE INDEX coins__idx__rating ON coins USING gin   ("rating");
+CREATE INDEX coins__idx__enable   ON coins USING btree ("enable");
+CREATE INDEX coins__idx__hot      ON coins USING btree ("hot");
+CREATE INDEX coins__idx__rating   ON coins USING gin   ("rating");
+CREATE INDEX coins__idx__priceUSD ON coins USING btree ("priceUSD");
+CREATE INDEX coins__idx__priceBTC ON coins USING btree ("priceBTC");
+CREATE INDEX coins__idx__priceRUB ON coins USING btree ("priceRUB");
+

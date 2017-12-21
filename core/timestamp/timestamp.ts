@@ -93,17 +93,18 @@ export class Timestamp extends Date {
   }
 
   get dateString(): string {
+
     const year  = String(this.fullYear)
-    const month = String(this.month + 1).padStart(2, '0')
-    const date  = String(this.date).padStart(2, '0')
+    const month = ('00' + String(this.month + 1)).slice(-2)
+    const date  = ('00' + String(this.date)).slice(-2)
 
     return `${year}-${month}-${date}`
   }
 
   get timeString(): string {
-    const hours   = String(this.hours).padStart(2, '0')
-    const minutes = String(this.minutes).padStart(2, '0')
-    const seconds = String(this.seconds).padStart(2, '0')
+    const hours   = ('00' + String(this.hours)).slice(-2)
+    const minutes = ('00' + String(this.minutes)).slice(-2)
+    const seconds = ('00' + String(this.seconds)).slice(-2)
 
     return `${hours}:${minutes}:${seconds}`
   }
@@ -137,11 +138,11 @@ export class Timestamp extends Date {
       str = '-'
     }
 
-    str += String( Math.floor(offset/60) ).padStart(2, '0')
+    str += ('00' + String( Math.floor(offset/60) )).slice(-2)
 
     str += ':'
 
-    str += String( Math.round( (offset % 60) * 100 ) ).padStart(2, '0')
+    str += ('00' + String( Math.round( (offset % 60) * 100 ) ) ).slice(-2)
 
     return str
   }
@@ -267,7 +268,7 @@ export class Timestamp extends Date {
 
     // Set time
     out += ' ' + String(this.getHours())
-    out += ':' + String(this.getMinutes()).padStart(2, '0')
+    out += ':' + ('00' + String(this.getMinutes())).slice(-2)
 
     return out
   }
