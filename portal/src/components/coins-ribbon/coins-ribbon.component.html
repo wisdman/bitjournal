@@ -1,4 +1,4 @@
-<a *ngFor="let coin of coins | async" class="bj-coins-ribbon__item" [routerLink]="['/coins/', coin.symbol]">
+<a *ngFor="let coin of coins | async" class="bj-coins-ribbon__item" [routerLink]="['/coins']">
   <img class="bj-coins-ribbon__item__icon" [src]="'/coins/' + coin.symbol.toLowerCase() + '.svg'">
   <div class="bj-coins-ribbon__item__data">
     <h5 class="bj-coins-ribbon__item__symbol">{{ coin.symbol }}</h5>
