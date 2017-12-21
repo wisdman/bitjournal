@@ -1,0 +1,8 @@
+.bj-page-404__wrapper {
+  display: block;
+
+  max-width: var(--max-width);
+  margin: 0 auto;
+
+  padding: var(--indent-double) 0;
+}

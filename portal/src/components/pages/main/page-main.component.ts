@@ -88,7 +88,7 @@ export class PageMainComponent implements OnInit {
     this.publications = Observable.concat(this.publications_weight_0, this.publications_weight_12)
                                   .map( items => {
 
-                                     console.log(items)
+                                     // console.log(items)
 
                                      return items
                                   })

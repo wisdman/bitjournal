@@ -1,4 +1,3 @@
-# api.bitjournal.io
 User-agent: *
  Disallow: /
  Host: api.bitjournal.io

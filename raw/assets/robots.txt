@@ -1,3 +1,2 @@
-# raw.bitjournal.io
 User-agent: *
  Host: raw.bitjournal.io

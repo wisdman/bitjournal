@@ -1,6 +1,7 @@
 import {
   APIService,
   CoinService,
+  ContextService,
   LoaderService,
   MessageService,
   MetaService,
@@ -14,6 +15,7 @@ import {
 export const SERVICES: any[] = [
   APIService,
   CoinService,
+  ContextService,
   LoaderService,
   MessageService,
   MetaService,

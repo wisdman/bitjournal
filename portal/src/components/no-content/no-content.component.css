@@ -1,7 +1,19 @@
-.no-content {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.bj-no-content {
+  display: block;
+  margin: 0;
+  padding: 0;
+
+  font-size: 1.17rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.bj-no-content span {
+  display: block;
+  margin: 0 auto;
   text-align: center;
+}
+
+.bj-no-content__code {
+  font-size: 2.5rem;
 }

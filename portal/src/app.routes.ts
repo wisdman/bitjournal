@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router'
 
 import {
-  NoContentComponent,
   Page101Component,
+  Page404Component,
   PageArticleComponent,
   PageCoinComponent,
   PageCoinsComponent,
@@ -19,6 +19,6 @@ export const ROUTES: Routes = [
 
   { path: ':date/:url' , component: PageArticleComponent },
 
-  { path: '**'         , component: NoContentComponent   },
+  { path: '**'         , component: Page404Component     },
 ]
 

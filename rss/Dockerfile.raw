@@ -1,0 +1,10 @@
+FROM node:carbon-alpine
+MAINTAINER Wisdman <wisdman@ajaw.it>
+
+COPY ./dist/rss.js /app/rss.js
+RUN chmod +x /app/rss.js
+
+EXPOSE 80
+WORKDIR /app
+
+CMD ["/app/rss.js"]

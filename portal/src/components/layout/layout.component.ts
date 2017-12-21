@@ -27,7 +27,7 @@ export class LayoutComponent {
 
           window.scrollTo(0,0)
 
-          console.log(document.title)
+          // console.log(document.title)
         })
 
   }

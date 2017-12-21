@@ -8,10 +8,12 @@ import 'zone.js/dist/zone-node'
 import { Socket } from 'net'
 import { createServer, IncomingMessage, ServerResponse } from 'http'
 
-import { enableProdMode, InjectionToken } from '@angular/core'
+import { enableProdMode } from '@angular/core'
 import { renderModuleFactory, INITIAL_CONFIG } from '@angular/platform-server'
 
 import { AppBackModuleNgFactory } from './app.back.module.ngfactory'
+
+import { CONTEXT, Context } from './context'
 
 import fs from 'fs'
 import path from 'path'
@@ -25,15 +27,17 @@ const INDEX_HTML = fs.readFileSync( path.resolve(__dirname, 'index.html'), 'utf8
 
 const server = createServer( ( req: IncomingMessage, res: ServerResponse ) => {
 
+  const context = new Context()
+
   renderModuleFactory(AppBackModuleNgFactory, {
     document: INDEX_HTML,
     url: req.url || '',
-      // extraProviders: [{
-        // provide: CONTEXT,
-        // useValue: ctx
-      // }]
+      extraProviders: [{
+        provide: CONTEXT,
+        useValue: context
+      }]
   }).then( html => {
-    res.writeHead(200, { 'Content-Type': 'text/html' })
+    res.writeHead(context.status, { 'Content-Type': 'text/html' })
     res.end(html)
   }).catch( error => {
     res.writeHead(500, { 'Content-Type': 'text/plain' })

@@ -12,6 +12,7 @@ import {
   APIService,
   MetaService,
   LoaderService,
+  ContextService,
 } from '../../../services'
 
 const API_PUBLICATIONS = 'publications'
@@ -38,6 +39,7 @@ export class PageArticleComponent {
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly _tstate: TransferState,
+    private readonly _context: ContextService,
     private readonly _route: ActivatedRoute,
     private readonly _api: APIService,
     private readonly _meta: MetaService,

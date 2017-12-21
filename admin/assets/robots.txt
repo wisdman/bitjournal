@@ -1,4 +1,3 @@
-# adm.bitjournal.io
 User-agent: *
  Disallow: /
  Host: adm.bitjournal.io
