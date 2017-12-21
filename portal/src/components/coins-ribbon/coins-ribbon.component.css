@@ -10,11 +10,6 @@
   overflow-x: scroll;
 }
 
-.bj-coins-ribbon::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
-}
-
 @media (min-width: 1000px) {
   .bj-coins-ribbon {
     margin-left: 100px;
