@@ -9,7 +9,7 @@ import { ILocale, Locale}  from './locale'
 export class Timestamp extends Date {
   static Locale = Locale
 
-  constructor(value?: any, public locale: ILocale = Timestamp.Locale.EN){
+  constructor(value: any = Date.now(), public locale: ILocale = Timestamp.Locale.RU){
     super(value)
     if ( Number.isNaN(this.getTime()) )
       throw new TypeError('Date is invalid')
@@ -131,11 +131,11 @@ export class Timestamp extends Date {
 
   get timezone(): string {
     let offset = this.timezoneOffset
-    let str = '+'
+    let str = '-'
 
     if (offset < 0) {
       offset = -1 * offset
-      str = '-'
+      str = '+'
     }
 
     str += ('00' + String( Math.floor(offset/60) )).slice(-2)
@@ -249,12 +249,12 @@ export class Timestamp extends Date {
     let out: string = ''
 
     // Set date
-    if ( this.compare(atDate, { ignoreTime: true}) )
+    if ( this.compare(atDate, { ignoreTime: true}) === 0 )
       out += 'Сегодня'
     else {
       atDate.setDate( atDate.getDate() - 1 )
 
-      if (  this.compare(atDate, { ignoreTime: true}) )
+      if (  this.compare(atDate, { ignoreTime: true}) === 0 )
         out += 'Вчера'
       else {
         out += String( this.getDate() )
