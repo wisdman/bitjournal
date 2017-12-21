@@ -11,6 +11,7 @@ import {
   AddAPI,
   DeleteAPI,
   GetByIdAPI,
+  GetByUrlAPI,
   GetListAPI,
   UpdateAPI,
 } from './api'
@@ -26,6 +27,7 @@ new Service(
 
   // === API ===
   new GetListAPI(),
+  new GetByUrlAPI(),
   new GetByIdAPI(),
   new AddAPI(),
   new UpdateAPI(),
