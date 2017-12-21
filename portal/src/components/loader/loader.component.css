@@ -2,9 +2,9 @@
   width: 100px;
   height: 100px;
 
-  position: fixed;
+  position: absolute;
   left: 50%;
-  top: 140px;
+  top: 240px;
 
   transform: translate(-50%, 0);
 
