@@ -7,25 +7,25 @@
       <img src="/svg/logo.svg" alt="BitJournal">
     </a>
     <nav class="bj-header__nav" [class.bj-header__nav--show]="navBarVisibility">
-      <a class="bj-header__button" routerLink="/">
+      <a class="bj-header__button" routerLink="/" (click)="navBarVisibility = false">
         <span>Лента</span>
       </a>
-      <a class="bj-header__button" routerLink="/coins">
+      <a class="bj-header__button" routerLink="/coins" (click)="navBarVisibility = false">
         <span>Валюты</span>
       </a>
       <!-- <a class="bj-header__button" routerLink="/101">
         <span>Новичкам</span>
       </a> -->
-      <!-- <a class="bj-header__button" routerLink="/events">
+      <!-- <a class="bj-header__button" routerLink="/events" (click)="navBarVisibility = false">
         <span>Ивенты</span>
       </a>
-      <a class="bj-header__button" routerLink="/ico">
+      <a class="bj-header__button" routerLink="/ico" (click)="navBarVisibility = false">
         <span>ICO</span>
       </a>
-      <a class="bj-header__button" routerLink="/exchanges">
+      <a class="bj-header__button" routerLink="/exchanges" (click)="navBarVisibility = false">
         <span>Обменники</span>
       </a>
-      <a class="bj-header__button" routerLink="/markets">
+      <a class="bj-header__button" routerLink="/markets" (click)="navBarVisibility = false">
         <span>Биржи</span>
       </a> -->
     </nav>
