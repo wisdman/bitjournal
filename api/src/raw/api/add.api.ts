@@ -15,13 +15,13 @@ const ROUTE_PATH = `${ROUTE_BASE}`
 export class AddAPI extends RouteMiddleware {
 
   @Put(ROUTE_PATH)
-  @ACL(
-    Role.Author,
-    Role.Publisher,
-    Role.Ads,
-    Role.Administrator,
-    Role.Su
-  )
+  // @ACL(
+  //   Role.Author,
+  //   Role.Publisher,
+  //   Role.Ads,
+  //   Role.Administrator,
+  //   Role.Su
+  // )
   async add(ctx: Context, next: INext) {
 
     const buffer = await ctx.request.raw()
