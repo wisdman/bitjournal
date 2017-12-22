@@ -19,7 +19,7 @@ export class CustomSessionMiddleware extends SessionMiddleware {
 
     const query = new CustomQuery(`SELECT
                                      "users".id,
-                                     "users".roles,
+                                     "users".roles
                                    FROM
                                      "sessions"
                                      LEFT JOIN
