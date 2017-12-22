@@ -28,6 +28,7 @@ import {
   UPDATE_LOOP_TIMEOUT,
 } from './env'
 
+import { SYMBOLS_MAP } from './symbols-map'
 
 export class CoinmarketcapSources implements ISource {
 
@@ -36,12 +37,14 @@ export class CoinmarketcapSources implements ISource {
     if (!input)
       return undefined
 
-    const symbol = String(input.symbol || '')
-                   .trim()
-                   .toUpperCase()
+    let symbol = String(input.symbol || '')
+                 .trim()
+                 .toUpperCase()
 
     if (!symbol)
       return undefined
+
+    symbol = SYMBOLS_MAP[input.id] || symbol
 
     const output: ICoinmarketcapCoin = { symbol }
 

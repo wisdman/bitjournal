@@ -53,6 +53,10 @@ module.exports = {
 
   module: {
     rules: [{
+      // === Load template files ===
+      test: /\.tpl$/i,
+      loader: 'raw-loader'
+    },{
       // === Typescript loader ===
       test: /\.ts$/,
       use: [{

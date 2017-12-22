@@ -6,7 +6,7 @@ import { Service } from '@core/service'
 import { DBMiddleware } from '@core/db'
 
 import {
-
+  RSSMiddleware
 } from './engine'
 
 // Set global timezone
@@ -17,5 +17,5 @@ new Service(
   new DBMiddleware(), // Add database to context
 
   // === Engine ===
-  new RAW(),
+  new RSSMiddleware()
 )

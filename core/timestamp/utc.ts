@@ -97,5 +97,30 @@ export class UTC {
     this.milliseconds = 0
   }
 
+  toNumber(): number {
+    return this._this.time
+  }
+
+  toString(): string {
+    return this._this.toUTCString()
+  }
+
+  toJSON(): any {
+    return this._this.iso
+  }
+
+  [Symbol.toPrimitive](hint : 'default' | 'string' | 'number') {
+    switch (hint) {
+      case 'default':
+        return this.valueOf()
+      case 'number':
+        return this.toNumber()
+      case 'string':
+        return this.toString()
+      default:
+        throw new TypeError('Cannot convert Timestamp.UTC value to unknown value')
+    }
+  }
+
   constructor(private _this: Timestamp) {}
 }
