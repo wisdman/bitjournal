@@ -265,6 +265,18 @@ services:
     networks:
       default:
 
+  rss:
+    restart: unless-stopped
+    build:
+      context: ./rss
+      dockerfile: Dockerfile.rss
+    env_file:
+      - ./rss/environment
+    links:
+      - db
+    networks:
+      default:
+
   portal-back-a:
     restart: unless-stopped
     build:
@@ -304,6 +316,7 @@ services:
       - portal-back-a
       - portal-back-b
       - portal-back-c
+      - rss
     networks:
       default:
 

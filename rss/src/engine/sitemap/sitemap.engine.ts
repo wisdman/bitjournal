@@ -7,7 +7,7 @@ import { Timestamp } from '@core/timestamp'
 import { IPartialPublication, PUBLICATIONS_DATATABLE } from '@common/publication'
 
 import { Template } from '../../template'
-import sitemapTemplate from './rss.tpl'
+import sitemapTemplate from './sitemap.tpl'
 
 import { DOMAIN } from '../../env'
 
@@ -18,7 +18,7 @@ const FEELDS = [
 
 export class SitemapMiddleware extends RouteMiddleware {
 
-  private _rssTpl = new Template(sitemapTemplate)
+  private _sitemapTpl = new Template(sitemapTemplate)
 
   async getItems(client:Client): Promise< Array<IPartialPublication> > {
     const query = new Query(PUBLICATIONS_DATATABLE)
@@ -39,10 +39,10 @@ export class SitemapMiddleware extends RouteMiddleware {
     return result
   }
 
-  @Get(`/`)
+  @Get(`/sitemap.xml`)
   async getRSS(ctx: Context, next: INext) {
     const items = await this.getItems(ctx.db)
-    const result = this._rssTpl( items.filter(item => item.rss) )
+    const result = this._sitemapTpl( items )
     ctx.set(result)
   }
 }

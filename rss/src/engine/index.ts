@@ -1,2 +1,2 @@
 export * from './rss'
-// export * from './sitemap'
+export * from './sitemap'

@@ -38,7 +38,7 @@ export class RSSMiddleware extends RouteMiddleware {
     return result.map(item => new RSSItem(item))
   }
 
-  @Get(`/`)
+  @Get(`/rss`)
   async getRSS(ctx: Context, next: INext) {
     const items = await this.getItems(ctx.db)
     const result = this._rssTpl( items.filter(item => item.rss) )
