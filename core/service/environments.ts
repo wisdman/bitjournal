@@ -9,11 +9,3 @@ export const SERVICE_PORT = Math.max(~~(process.env.SERVICE_PORT || '') || 0, 0)
 export const SERVICE_TIMEOUT = Math.max(~~(process.env.SERVICE_TIMEOUT || '') || 0, 0) || 120
 // HTTP Server keep alive timeout value for sockets, default 5 seconds
 export const SERVICE_KEEP_ALIVE = Math.max(~~(process.env.SERVICE_KEEP_ALIVE || '') || 0, 0) || 5
-
-// Node debug
-export const DEBUG = (process.env.NODE_DEBUG || '').split(/\s*,\s*/)
-                                                   .map( item => item.toLowerCase().trim() )
-                                                   .filter( item => !!item )
-
-
-

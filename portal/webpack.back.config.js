@@ -8,10 +8,6 @@ const PATH = (...p) => path.resolve(__dirname, ...p)
 const isProduction = process.env.NODE_ENV === 'production'
 const package = require('../package.json')
 
-// === URL Config ===
-const API_SERVER = isProduction ? 'https://api.bitjournal.io' : 'https://api.bitjournal.dev:4431'
-const RAW_SERVER = isProduction ? 'https://raw.bitjournal.io' : 'https://raw.bitjournal.dev:4432'
-
 // === Webpack plugins ===
 const {
   BannerPlugin,
@@ -149,8 +145,7 @@ module.exports = {
       DEBUG: !isProduction,
       APP_NAME: package.name,
       APP_VERSION: package.version,
-      API_SERVER: API_SERVER,
-      RAW_SERVER: RAW_SERVER,
+      PRODUCTION: isProduction,
     }),
 
     new NoEmitOnErrorsPlugin(),

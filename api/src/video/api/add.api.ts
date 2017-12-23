@@ -5,15 +5,14 @@ import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
+import {
+  VIDEO_DATATABLE,
+  VIDEO_API_PATH,
+  IPartialVideo,
+} from '@common/video'
+
 import { VideoModel } from './video.model'
 import { IModelResult } from '@core/model'
-
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}`
 
 const FIELDS = [
   "id",
@@ -22,7 +21,7 @@ const FIELDS = [
 
 export class AddAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${VIDEO_API_PATH}`)
   @ACL(
     Role.Publisher,
     Role.Administrator,
@@ -38,11 +37,13 @@ export class AddAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .insert(model.value)
+    const value = model.value as IPartialVideo
+
+    const query = new Query(VIDEO_DATATABLE)
+                      .insert(value)
                       .returning(FIELDS)
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialVideo>(ctx.db)
 
     ctx.set(result[0])
   }

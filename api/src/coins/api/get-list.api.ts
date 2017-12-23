@@ -3,23 +3,21 @@ import { RouteMiddleware, Context, INext, Get, ACL } from '@core/service'
 import { Query } from '@core/db'
 
 import { Role } from '@common/role'
-import { IPartialCoin } from '@common/coin'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}`
+  COINS_API_PATH,
+  COINS_DATATABLE,
+  IPartialCoin,
+} from '@common/coin'
 
 const FULL_ACCES_ROLES = [
-  Role.Ads,
   Role.Administrator,
   Role.Su
 ]
 
-const FIELDS_FOR_EVERYONE = [
+const FIELDS = [
   "symbol",
+  "enable",
   "title",
   "availableSupply",
   "priceUSD",
@@ -30,33 +28,33 @@ const FIELDS_FOR_EVERYONE = [
   "rating",
 ]
 
-const FIELDS_FOR_ADMINS = FIELDS_FOR_EVERYONE.concat([
-  "enable",
-  "hot",
-])
+const CHECK_TRUE = (str:string = '') => /^(true|on|enable|1|yes)$/i.test(str)
 
 export class GetListAPI extends RouteMiddleware {
 
-  @Get(ROUTE_PATH)
+  @Get(`${COINS_API_PATH}`)
   async get(ctx: Context, next: INext) {
 
-    const hot = !!ctx.route.query['hot']
+    const symbols = new Array<string>()
+                        .concat(ctx.route.query.symbols)
+                        .join(',').split(',')
+                        .map( item => item.replace(/[^A-Z0-9*@$]+/g, '').trim() )
+                         .filter( item => !!item)
+                         .map( item => `'${item}'`)
 
-    let query
+    const where = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
+                ? ( symbols.length > 0 ? `symbol IN (${ symbols.join(',') })` : '' )
+                : ( symbols.length > 0 ? `symbol IN (${ symbols.join(',') }) AND enable` : 'enable' )
 
-    if ( ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true ) {
-      query = new Query(DATATABLE)
-                  .select(FIELDS_FOR_ADMINS)
-
-      if (hot)
-        query = query.where('hot')
-    } else {
-      query = new Query(DATATABLE)
-                  .select(FIELDS_FOR_EVERYONE)
-                  .where(hot ? 'hot AND enable' : 'enable')
-    }
+    let query = new Query(COINS_DATATABLE)
+                    .select(FIELDS)
+                    .where(where)
 
     query = query.order({'priceUSD': 'DESC'})
+
+    const limit = Math.max(~~( new Array<string>().concat(ctx.route.query['limit']).pop() || '' ) || 0, 0)
+    if (limit > 0)
+      query = query.limit(limit)
 
     let result = await query.exec<IPartialCoin>(ctx.db)
 

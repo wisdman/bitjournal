@@ -8,7 +8,7 @@ export class Debug extends CallableClass {
   public readonly enable: boolean
 
   constructor(name: string) {
-    const enable = isEnable( name.toLowerCase() )
+    const enable = process.env.DEBUG ? true : isEnable( name.toLowerCase() )
 
     super( (str: string, ...args: Array<any>) => {
       if (!enable)

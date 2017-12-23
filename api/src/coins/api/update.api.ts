@@ -9,29 +9,24 @@ import { CoinModel } from './coin.model'
 import { IModelResult } from '@core/model'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
+  COINS_API_PATH,
+  COINS_DATATABLE,
+  IPartialCoin,
+} from '@common/coin'
 
 export class UpdateAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${COINS_API_PATH}/:symbol`)
   @ACL(
-    Role.Ads,
     Role.Administrator,
     Role.Su
   )
   async update(ctx: Context, next: INext) {
 
-    let id: string
+    const symbol = ctx.route.data.symbol
 
-    try {
-      const uuid = new UUID(ctx.route.data.id)
-      id = String(uuid)
-    } catch (error) {
-      ctx.set(400, error.message)
+    if (!symbol) {
+      ctx.set(404)
       return
     }
 
@@ -44,12 +39,14 @@ export class UpdateAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .update(model.value)
-                      .where('id = $1', id)
-                      .returning(model.value)
+    const value = model.value as IPartialCoin
 
-    const result = await query.exec<object>(ctx.db)
+    const query = new Query(COINS_DATATABLE)
+                      .update(value)
+                      .where('symbol = $1', symbol)
+                      .returning(value)
+
+    const result = await query.exec<IPartialCoin>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

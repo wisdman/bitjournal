@@ -1,3 +1,3 @@
 export * from './coin.interface'
-export * from './env'
+export * from './environment'
 export * from './histoday.interface'

@@ -7,7 +7,6 @@ CREATE TABLE coins (
   "symbol"          varchar(16)  NOT NULL,
 
   "enable"          boolean      NOT NULL DEFAULT TRUE,
-  "hot"             boolean      NOT NULL DEFAULT FALSE,
 
   "title"           varchar(160) NOT NULL DEFAULT '',
   "ogTitle"         varchar(160) NOT NULL DEFAULT '',
@@ -72,7 +71,6 @@ CREATE TABLE coins (
 
 -- Scann indexes
 CREATE INDEX coins__idx__enable   ON coins USING btree ("enable");
-CREATE INDEX coins__idx__hot      ON coins USING btree ("hot");
 CREATE INDEX coins__idx__rating   ON coins USING gin   ("rating");
 CREATE INDEX coins__idx__priceUSD ON coins USING btree ("priceUSD");
 CREATE INDEX coins__idx__priceBTC ON coins USING btree ("priceBTC");

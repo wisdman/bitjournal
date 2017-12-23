@@ -1,0 +1,59 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <h1>Статусы пользователей</h1>
+    <button mat-button (click)="add()">
+      <mat-icon>add</mat-icon>
+      <span>Добавить</span>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<main>
+  <mat-form-field class="col-100">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
+  </mat-form-field>
+  <mat-table #table [dataSource]="dataSource" matSort matSortActive="title" matSortDirection="asc" matSortDisableClear>
+
+    <!-- Enabled Column -->
+    <ng-container matColumnDef="enable">
+      <mat-header-cell *matHeaderCellDef style="max-width:24px">#</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:24px;overflow: visible;">
+        <mat-checkbox [ngModel]="item.enable" (click)="toggle(item)"></mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Image Column -->
+    <ng-container matColumnDef="image">
+      <mat-header-cell *matHeaderCellDef style="max-width:40px">Лого</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:40px">
+        <button mat-icon-button (click)="replaceImage(item)">
+          <mat-icon *ngIf="!item.image">add</mat-icon>
+          <img *ngIf="item.image" class="status-image" [src]="item.image | image">
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Название</mat-header-cell>
+      <mat-cell *matCellDef="let item">
+        <span>{{ item.title }}</span>
+        <button mat-icon-button (click)="editTitle(item)">
+          <mat-icon>mode_edit</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Delete Column -->
+    <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef style="max-width:40px">#</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:40px">
+        <button mat-icon-button (click)="delete(item)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" class="pointer"></mat-row>
+  </mat-table>
+</main>

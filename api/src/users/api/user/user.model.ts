@@ -18,7 +18,7 @@ export const UserModel = new Model({
     if (result.length === 0)
       throw new Error('roles is empty')
 
-    return { roles: result }
+    return { roles: result.map(item => item.valueOf()) }
   },
 
   url: input => {
@@ -63,7 +63,7 @@ export const UserModel = new Model({
     if (result && !PHONE_REGEXP.test(result))
       throw new Error('incorrect phone')
 
-    return { title: result || null }
+    return { phone: result || null }
   },
 
   image: input => {
@@ -75,7 +75,7 @@ export const UserModel = new Model({
     const result = new Array<any>()
                    .concat(input)
                    .map( item => new UUID(item) )
-                   .filter( item => item.version !== 1 )
+                   .filter( item => item.version === 1 )
                    .map( item => String(item) )
 
     return { statuses: result }

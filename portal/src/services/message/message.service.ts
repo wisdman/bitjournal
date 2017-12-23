@@ -6,17 +6,17 @@ import { MatSnackBar } from '@angular/material'
 @Injectable()
 export class MessageService {
 
-  private isServer: boolean
+  private _isServer: boolean
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly _snackBar: MatSnackBar
   ) {
-    this.isServer = isPlatformServer(platformId)
+    this._isServer = isPlatformServer(platformId)
   }
 
   message(message: string, duration: number = 2000): void {
-    if (this.isServer)
+    if (this._isServer)
       console.log(message)
     else
       this._snackBar.open(message, undefined, { duration })

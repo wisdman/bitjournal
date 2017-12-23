@@ -34,45 +34,54 @@ export const PublicationModel = new Model({
     return { sections: result }
   },
 
+  bind: input => ({ bind: Math.min( Math.max(~~input, 0), 20) }),
+
   coins: input => {
     const result = new Array<any>()
                    .concat(input)
-                   .map( item => new UUID(item) )
-                   .filter( item => item.version !== 1 )
-                   .map( item => String(item) )
+                   .map( item => item.trim() )
+                   .filter( item => !!item )
 
     return { coins: result }
   },
+
+  allCoins: input => ({ allCoins: !!input }),
 
   markets: input => {
     const result = new Array<any>()
                    .concat(input)
                    .map( item => new UUID(item) )
-                   .filter( item => item.version !== 1 )
+                   .filter( item => item.version === 1 )
                    .map( item => String(item) )
 
     return { markets: result }
   },
 
+  allMarkets: input => ({ allMarkets: !!input }),
+
   exchanges: input => {
     const result = new Array<any>()
                    .concat(input)
                    .map( item => new UUID(item) )
-                   .filter( item => item.version !== 1 )
+                   .filter( item => item.version === 1 )
                    .map( item => String(item) )
 
     return { exchanges: result }
   },
 
+  allExchanges: input => ({ allExchanges: !!input }),
+
   ico: input => {
     const result = new Array<any>()
                    .concat(input)
                    .map( item => new UUID(item) )
-                   .filter( item => item.version !== 1 )
+                   .filter( item => item.version === 1 )
                    .map( item => String(item) )
 
     return { ico: result }
   },
+
+  allICO: input => ({ allICO: !!input }),
 
   bigTitle: input => ({ bigTitle: String(input || '') .trim() }),
 
@@ -106,7 +115,7 @@ export const PublicationModel = new Model({
     const result = new Array<any>()
                    .concat(input)
                    .map( item => new UUID(item) )
-                   .filter( item => item.version !== 1 )
+                   .filter( item => item.version === 1 )
                    .map( item => String(item) )
 
     return { authors: result }

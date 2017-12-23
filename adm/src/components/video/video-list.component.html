@@ -1,0 +1,103 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <h1>Видеолента</h1>
+    <button mat-button (click)="add()">
+      <mat-icon>add</mat-icon>
+      <span>Добавить</span>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<main>
+  <mat-form-field class="col-100">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
+  </mat-form-field>
+  <mat-table #table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc" matSortDisableClear>
+
+    <!-- Enabled Column -->
+    <ng-container matColumnDef="enable">
+      <mat-header-cell *matHeaderCellDef style="max-width:24px"></mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:24px;overflow: visible;">
+        <mat-checkbox [ngModel]="item.enable" (click)="toggle(item)"></mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Priview Column -->
+    <ng-container matColumnDef="thumb">
+      <mat-header-cell *matHeaderCellDef style="max-width:120px">Thumb</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:120px">
+        <img class="video-thumb" [src]="item.thumb">
+      </mat-cell>
+    </ng-container>
+
+    <!-- Date Column -->
+    <ng-container matColumnDef="date">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:135px">Дата</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:135px">
+        <i class="fa fa-calendar-o" aria-hidden="true"></i>
+        <span>{{ item.date | date:'dd.MM.yyyy HH:mm' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Название</mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.title }}</mat-cell>
+    </ng-container>
+
+    <!-- Duration Column -->
+    <ng-container matColumnDef="duration">
+      <mat-header-cell *matHeaderCellDef style="max-width:90px">Время</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <i class="fa fa-clock-o" aria-hidden="true"></i>
+        <span>{{ item.duration }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- View count Column -->
+    <ng-container matColumnDef="view">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">Просмотры</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <i class="fa fa-eye" aria-hidden="true"></i>
+        <span>{{ item.view | number:'1.0-0' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Like count Column -->
+    <ng-container matColumnDef="like">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">Лайки</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        <span>{{ item.like | number:'1.0-0' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Dislike count Column -->
+    <ng-container matColumnDef="dislike">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">Дизлайки</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+        <span>{{ item.dislike | number:'1.0-0' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Сomment count Column -->
+    <ng-container matColumnDef="comment">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">Комменты</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <span>{{ item.comment | number:'1.0-0' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Delete Column -->
+    <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef style="max-width:40px"></mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:40px">
+        <button mat-icon-button (click)="delete(item)"><mat-icon>close</mat-icon></button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</main>

@@ -22,14 +22,15 @@ new Service(
   new CustomSessionMiddleware(), // Add custom session to context
 
   // === Status API ===
-  new Status.GetAPI(),
+  new Status.GetListAPI(),
   new Status.AddAPI(),
   new Status.UpdateAPI(),
   new Status.DeleteAPI(),
 
   // === Users API ===
+  new User.GetMeAPI(),
   new User.GetListAPI(),
-  new User.GetByIdAPI(),
+  new User.GetOneAPI(),
   new User.AddAPI(),
   new User.UpdateAPI(),
   new User.DeleteAPI(),

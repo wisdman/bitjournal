@@ -5,11 +5,10 @@ import { Query } from '@core/db'
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}`
+  USERS_DATATABLE,
+  USERS_API_PATH,
+  IPartialUser,
+} from '@common/user'
 
 const FULL_ACCES_ROLES = [
   Role.Administrator,
@@ -18,6 +17,7 @@ const FULL_ACCES_ROLES = [
 
 const FIELDS_FOR_EVERYONE = [
   "id",
+  "enable",
   "url",
   "title",
   "image",
@@ -26,7 +26,6 @@ const FIELDS_FOR_EVERYONE = [
 ]
 
 const FIELDS_FOR_ADMINS = FIELDS_FOR_EVERYONE.concat([
-  "enable",
   "roles",
   "email",
   "phone",
@@ -34,28 +33,25 @@ const FIELDS_FOR_ADMINS = FIELDS_FOR_EVERYONE.concat([
 
 export class GetListAPI extends RouteMiddleware {
 
-  @Get(ROUTE_PATH)
+  @Get(`${USERS_API_PATH}`)
   async get(ctx: Context, next: INext) {
 
-    let query
+    let query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
 
-    if ( ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true )
-      query = new Query(DATATABLE)
-                  .select(FIELDS_FOR_ADMINS)
-                  .order({'url': 'DESC'})
+              ? new Query(USERS_DATATABLE)
+                    .select(FIELDS_FOR_ADMINS)
 
-    else
-      query = new Query(DATATABLE)
-                  .select(FIELDS_FOR_EVERYONE)
-                  .where('enable')
-                  .order({'url': 'DESC'})
+              : new Query(USERS_DATATABLE)
+                    .select(FIELDS_FOR_EVERYONE)
+                    .where('enable')
 
-    const limit = Math.max(~~(new Array<string>().concat(ctx.route.query['limit']).join('')) || 0, 0)
+    query = query.order({'url': 'DESC'})
 
+    const limit = Math.max(~~( new Array<string>().concat(ctx.route.query['limit']).pop() || '' ) || 0, 0)
     if (limit > 0)
       query = query.limit(limit)
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialUser>(ctx.db)
 
     ctx.set(result)
   }

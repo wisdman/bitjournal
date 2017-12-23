@@ -1,8 +1,7 @@
 
 import { Timestamp } from '@core/timestamp'
 import { IPartialPublication } from '@common/publication'
-
-import { DOMAIN } from '../../env'
+import { DOMAIN_PORTAL } from '@common/environment'
 
 export class RSSItem {
 
@@ -24,7 +23,7 @@ export class RSSItem {
   author: string = 'Редакция BitJournal'
 
   get link():string {
-    return DOMAIN + this._ts.UTC.dateString + '/' + this._url
+    return `https://${DOMAIN_PORTAL}/${this._ts.UTC.dateString}/${this._url}`
   }
 
   get pubDate(): string {

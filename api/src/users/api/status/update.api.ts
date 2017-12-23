@@ -5,19 +5,18 @@ import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
+import {
+  STATUSES_DATATABLE,
+  STATUSES_API_PATH,
+  IPartialStatus,
+} from '@common/status'
+
 import { StatusModel } from './status.model'
 import { IModelResult } from '@core/model'
 
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
-
 export class UpdateAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${STATUSES_API_PATH}/:id`)
   @ACL(
     Role.Administrator,
     Role.Su
@@ -43,12 +42,14 @@ export class UpdateAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .update(model.value)
-                      .where('id = $1', id)
-                      .returning(model.value)
+    const value = model.value as IPartialStatus
 
-    const result = await query.exec<object>(ctx.db)
+    const query = new Query(STATUSES_DATATABLE)
+                      .update(value)
+                      .where('id = $1', id)
+                      .returning(value)
+
+    const result = await query.exec<IPartialStatus>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

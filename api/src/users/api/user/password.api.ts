@@ -1,20 +1,19 @@
 import { RouteMiddleware, Context, INext, Post, ACL } from '@core/service'
 
-import { Query, DBError } from '@core/db'
+import { Query } from '@core/db'
 import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
+  USERS_DATATABLE,
+  USERS_API_PATH,
+  IPartialUser,
+} from '@common/user'
 
 export class PasswordAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${USERS_API_PATH}/:id/password`)
   @ACL(
     Role.Administrator,
     Role.Su
@@ -41,12 +40,12 @@ export class PasswordAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .update("SET password = encode(digest($1, 'sha512'), 'hex')", password1)
+    const query = new Query(USERS_DATATABLE)
+                      .update("password = encode(digest($1, 'sha512'), 'hex')", password1)
                       .where('id = $1', id)
                       .returning('id')
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialUser>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

@@ -1,0 +1,287 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <h1>{{ itemForm.value.title || 'Новая публикация' }}</h1>
+    <button mat-button (click)="back()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Назад</span>
+    </button>
+    <button mat-button (click)="save()">
+      <mat-icon>save</mat-icon>
+      <span>Сохранить</span>
+    </button>
+    <button *ngIf="!isNew" mat-button (click)="delete()">
+      <mat-icon>delete</mat-icon>
+      <span>Удалить</span>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<main>
+  <form mat-dialog-content [formGroup]="itemForm" novalidate>
+    <mat-tab-group>
+
+      <mat-tab label="Основное">
+
+        <div class="row">
+
+          <mat-form-field class="col">
+            <mat-select placeholder="Доступность" formControlName="enable">
+              <mat-option [value]="true">Доступна</mat-option>
+              <mat-option [value]="false">Скрыта</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="col">
+            <mat-select placeholder="Вес" formControlName="weight">
+              <mat-option [value]="0">0</mat-option>
+              <mat-option [value]="1">1</mat-option>
+              <mat-option [value]="2">2</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="col">
+            <input matInput [matDatepicker]="tsPicker" placeholder="Дата" formControlName="ts">
+            <mat-datepicker-toggle matSuffix [for]="tsPicker"></mat-datepicker-toggle>
+            <mat-datepicker #tsPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field class="col">
+            <mat-select placeholder="RSS" formControlName="rss">
+              <mat-option [value]="true">Отдавать</mat-option>
+              <mat-option [value]="false">Скрывать</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="col">
+            <mat-select placeholder="Facebook" formControlName="facebook">
+              <mat-option [value]="true">Автопостинг</mat-option>
+              <mat-option [value]="false">Вручную</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="col">
+            <mat-select placeholder="Twitter" formControlName="twitter">
+              <mat-option [value]="true">Автопостинг</mat-option>
+              <mat-option [value]="false">Вручную</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+
+        <div class="row">
+
+          <mat-form-field class="col-max">
+            <input matInput type="text" placeholder="Ссылка" formControlName="url">
+            <mat-hint>При сбросе ссылки може пострадать SEO</mat-hint>
+            <mat-icon *ngIf="!isNew" matSuffix (click)="resetUrl()" class="pointer">refresh</mat-icon>
+          </mat-form-field>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col-max">
+
+            <div class="row">
+
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="160" placeholder="Громкий заголовок" formControlName="bigTitle">
+                <mat-hint>Если не заполнено используется "Заголовок"</mat-hint>
+                <mat-hint align="end">{{ itemForm.controls.bigTitle.value.length }} / 160</mat-hint>
+              </mat-form-field>
+
+            </div>
+
+            <div class="row">
+
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="160" placeholder="Заголовок" formControlName="title">
+                <mat-hint align="end">{{ itemForm.controls.title.value.length }} / 160</mat-hint>
+                <mat-error *ngIf="itemForm.controls.title.hasError('required')">Должен быть заполнен</mat-error>
+              </mat-form-field>
+
+            </div>
+
+            <div class="row">
+
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="160" placeholder="Описание" formControlName="description">
+                <mat-hint align="end">{{ itemForm.controls.description.value.length }} / 160</mat-hint>
+              </mat-form-field>
+
+            </div>
+
+          </div>
+
+          <div class="col">
+
+            <div class="row">
+              <div class="col">
+                <h3>Картинка</h3>
+                <imup width="380" height="200" formControlName="image"></imup>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <tags formControlName="tags" class="col-max"></tags>
+
+        </div>
+
+      </mat-tab>
+
+      <mat-tab label="Привязки">
+
+        <div class="row">
+
+          <mat-form-field class="col-max">
+            <mat-select placeholder="Разделы" formControlName="sections" multiple>
+              <mat-option *ngFor="let section of sections" [value]="section">{{ section.title }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="col">
+            <mat-select placeholder="Закрепить" formControlName="bind">
+              <mat-option [value]="0">Нет</mat-option>
+              <mat-option [value]="1">1</mat-option>
+              <mat-option [value]="2">2</mat-option>
+              <mat-option [value]="3">3</mat-option>
+              <mat-option [value]="4">4</mat-option>
+              <mat-option [value]="5">5</mat-option>
+              <mat-option [value]="6">6</mat-option>
+              <mat-option [value]="7">7</mat-option>
+              <mat-option [value]="8">8</mat-option>
+              <mat-option [value]="9">9</mat-option>
+              <mat-option [value]="10">10</mat-option>
+              <mat-option [value]="11">11</mat-option>
+              <mat-option [value]="12">12</mat-option>
+              <mat-option [value]="13">13</mat-option>
+              <mat-option [value]="14">14</mat-option>
+              <mat-option [value]="15">15</mat-option>
+              <mat-option [value]="16">16</mat-option>
+              <mat-option [value]="17">17</mat-option>
+              <mat-option [value]="18">18</mat-option>
+              <mat-option [value]="19">19</mat-option>
+              <mat-option [value]="20">20</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+
+        <div class="row">
+
+          <mat-form-field class="col">
+            <mat-select placeholder="Все валюты" formControlName="allCoins">
+              <mat-option [value]="true">Да</mat-option>
+              <mat-option [value]="false">Нет</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="col-max">
+            <mat-select placeholder="Валюты" formControlName="coins" multiple>
+              <mat-option *ngFor="let coin of coins" [value]="coin.symbol">{{ coin.title }}({{ coin.symbol }})</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+
+        <div class="row">
+
+          <mat-form-field class="col-max">
+            <mat-select placeholder="Авторы" formControlName="authors" multiple>
+              <mat-option *ngFor="let author of authors" [value]="author.id">{{ author.title }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+
+      </mat-tab>
+
+      <mat-tab label="Контент">
+        <editor class="col-100" formControlName="content"></editor>
+      </mat-tab>
+
+      <mat-tab label="Шаринг">
+
+        <div class="row">
+
+          <div class="col-max">
+
+            <div class="row">
+
+              <mat-form-field class="col">
+                <mat-select placeholder="Шаринг" formControlName="sharing">
+                  <mat-option [value]="true">Разрешен</mat-option>
+                  <mat-option [value]="false">Запрещен</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            </div>
+
+            <div class="row">
+
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="160" placeholder="Заголовок для шаринга" formControlName="ogTitle">
+                <mat-hint>Виден только при шаринге. Если не заполнено используется "Заголовок"</mat-hint>
+                <mat-hint align="end">{{ itemForm.controls.ogTitle.value.length }} / 160</mat-hint>
+              </mat-form-field>
+
+            </div>
+
+            <div class="row">
+
+              <mat-form-field class="col-max">
+                <input matInput type="text" maxlength="160" placeholder="Описание для шаринга" formControlName="ogDescription">
+                <mat-hint>Виден только при шаринге. Если не заполнено используется "Описание"</mat-hint>
+                <mat-hint align="end">{{ itemForm.controls.ogDescription.value.length }} / 160</mat-hint>
+              </mat-form-field>
+
+            </div>
+
+          </div>
+
+          <div class="col">
+
+            <div class="row">
+              <div class="col">
+                <h3>Картинка для шаринга</h3>
+                <imup width="380" height="200" formControlName="ogImage"></imup>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Брендирование">
+
+        <mat-form-field class="col">
+          <mat-select placeholder="Показывать рекламу" formControlName="ads">
+            <mat-option [value]="true">Показывать</mat-option>
+            <mat-option [value]="false">Скрывать</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </mat-tab>
+
+      <mat-tab label="Комментарии">
+
+        <mat-form-field class="col">
+          <mat-select placeholder="Комментарии" formControlName="comments">
+            <mat-option [value]="true">Разрешены</mat-option>
+            <mat-option [value]="false">Запрещены</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </mat-tab>
+
+      <mat-tab *ngIf="DEBUG" label="Отладка">
+        <p>{{ itemForm.value | json }}</p>
+      </mat-tab>
+    </mat-tab-group>
+  </form>
+</main>

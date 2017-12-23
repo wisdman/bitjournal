@@ -9,15 +9,14 @@ import { AdsModel } from './ads.model'
 import { IModelResult } from '@core/model'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
+  ADS_DATATABLE,
+  ADS_API_PATH,
+  IPartialAds,
+} from '@common/ads'
 
 export class UpdateAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${ADS_API_PATH}/:id`)
   @ACL(
     Role.Ads,
     Role.Administrator,
@@ -44,12 +43,14 @@ export class UpdateAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .update(model.value)
-                      .where('id = $1', id)
-                      .returning(model.value)
+    const value = model.value as IPartialAds
 
-    const result = await query.exec<object>(ctx.db)
+    const query = new Query(ADS_DATATABLE)
+                      .update(value)
+                      .where('id = $1', id)
+                      .returning(value)
+
+    const result = await query.exec<IPartialAds>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

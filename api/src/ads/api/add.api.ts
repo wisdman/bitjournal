@@ -5,15 +5,14 @@ import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
+import {
+  ADS_DATATABLE,
+  ADS_API_PATH,
+  IPartialAds,
+} from '@common/ads'
+
 import { AdsModel } from './ads.model'
 import { IModelResult } from '@core/model'
-
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}`
 
 const FIELDS = [
   "id",
@@ -30,7 +29,7 @@ const FIELDS = [
 
 export class AddAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${ADS_API_PATH}`)
   @ACL(
     Role.Ads,
     Role.Administrator,
@@ -46,11 +45,13 @@ export class AddAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
+    const value = model.value as IPartialAds
+
+    const query = new Query(ADS_DATATABLE)
                       .insert(model.value)
                       .returning(FIELDS)
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialAds>(ctx.db)
 
     ctx.set(result[0])
   }

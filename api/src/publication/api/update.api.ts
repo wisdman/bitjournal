@@ -5,15 +5,14 @@ import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
+import {
+  PUBLICATIONS_DATATABLE,
+  PUBLICATIONS_API_PATH,
+  IPartialPublication,
+} from '@common/publication'
+
 import { PublicationModel } from './publication.model'
 import { IModelResult } from '@core/model'
-
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
 
 const FULL_ACCESS_ROLES = [
   Role.Publisher,
@@ -23,7 +22,7 @@ const FULL_ACCESS_ROLES = [
 
 export class UpdateAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${PUBLICATIONS_API_PATH}/:id`)
   @ACL(
     Role.Author,
     Role.Publisher,
@@ -51,17 +50,11 @@ export class UpdateAPI extends RouteMiddleware {
       return
     }
 
-    let query
+    const value = model.value as IPartialPublication
 
-    if ( ctx.session.roles.checkAny(FULL_ACCESS_ROLES) === true )
-      query = new Query(DATATABLE)
-                  .update(model.value)
-                  .where('id = $1', id)
-                  .returning(model.value)
+    if ( ctx.session.roles.checkAny(FULL_ACCESS_ROLES) !== true ) {
 
-    else {
-
-      const getAuthorsQuery = new Query(DATATABLE)
+      const getAuthorsQuery = new Query(PUBLICATIONS_DATATABLE)
                                   .select(['authors'])
                                   .where('id = $1', id)
 
@@ -79,16 +72,17 @@ export class UpdateAPI extends RouteMiddleware {
         return
       }
 
-      if (model.value.enanle !== undefined)
-        delete model.value.enanle
+      if (value.enanle !== undefined)
+        delete value.enanle
 
-      query = new Query(DATATABLE)
-                  .update(model.value)
-                  .where('id = $1', id)
-                  .returning(model.value)
     }
 
-    const result = await query.exec<object>(ctx.db)
+    const query = new Query(PUBLICATIONS_DATATABLE)
+                      .update(value)
+                      .where('id = $1', id)
+                      .returning(value)
+
+    const result = await query.exec<IPartialPublication>(ctx.db)
                               .catch( error => error as DBError )
 
     // Result is error

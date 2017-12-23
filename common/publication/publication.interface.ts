@@ -3,6 +3,7 @@ import { UUID } from '@core/uuid'
 import { Timestamp } from '@core/timestamp'
 
 import { Rating } from '@common/rating'
+import { Section } from '@common/section'
 
 export interface IPublication {
   id: string | UUID
@@ -14,11 +15,20 @@ export interface IPublication {
 
   weight: 0 | 1 | 2
 
-  sections  : Array<string>
+  sections  : Array<string | Section>
+  bind      : number
+
   coins     : Array<string>
-  markets   : Array<string | UUID>
-  exchanges : Array<string | UUID>
-  ico       : Array<string | UUID>
+  allCoins  : boolean
+
+  markets    : Array<string | UUID>
+  allMarkets : Boolean
+
+  exchanges    : Array<string | UUID>
+  allExchanges : boolean
+
+  ico    : Array<string | UUID>
+  allICO : boolean
 
   bigTitle : string
   title    : string
@@ -48,6 +58,9 @@ export interface IPublication {
   branding: object
 
   lastModified: Timestamp
+
+  // Calculating feelds
+  view?: number
 }
 
 export interface IPartialPublication extends Partial<IPublication> {

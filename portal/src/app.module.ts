@@ -19,7 +19,9 @@ import { SERVICES } from './app.services'
 import { LayoutComponent } from './components'
 import {
   NotificationService,
-  NotificationServiceFactory
+  NotificationServiceFactory,
+  ExternalService,
+  ExternalServiceFactory,
 } from './services'
 
 @NgModule({
@@ -52,12 +54,18 @@ import {
   providers: [
     ...SERVICES,
     {
-      // Provider for APP_INITIALIZER
       provide: APP_INITIALIZER,
       useFactory: NotificationServiceFactory,
       deps: [ NotificationService ],
       multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: ExternalServiceFactory,
+      deps: [ ExternalService ],
+      multi: true
     }
+
   ],
 
   entryComponents: [
@@ -66,8 +74,12 @@ import {
 })
 export class AppModule {
 
-  constructor(notificationService: NotificationService) {
-    notificationService.initNotification()
+  constructor(
+    notificationService: NotificationService,
+    externalService: ExternalService
+  ) {
+    notificationService.init()
+    externalService.init()
   }
 
 }

@@ -8,7 +8,7 @@ services:
     volumes:
       - data-volume:/var/lib/postgresql/data
     env_file:
-      - ./sql/environment
+      - ./environment
     networks:
       default:
     ports:
@@ -20,8 +20,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.ads
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -32,8 +34,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.ads
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -44,8 +48,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.auth
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -56,8 +62,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.auth
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -68,8 +76,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.coins
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -80,8 +90,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.coins
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -92,8 +104,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.coins-update
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -104,8 +118,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.publication
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -116,8 +132,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.publication
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -128,8 +146,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.raw
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -140,8 +160,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.raw
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -152,8 +174,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.users
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -164,8 +188,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.users
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -176,8 +202,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.video
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -188,8 +216,10 @@ services:
       context: ./api
       dockerfile: Dockerfile.video
     env_file:
-      - ./api/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -214,6 +244,21 @@ services:
       - api-users-b
       - api-video-a
       - api-video-b
+    depends_on:
+      - api-ads-a
+      - api-ads-b
+      - api-auth-a
+      - api-auth-b
+      - api-coins-a
+      - api-coins-b
+      - api-publication-a
+      - api-publication-b
+      - api-raw-a
+      - api-raw-b
+      - api-users-a
+      - api-users-b
+      - api-video-a
+      - api-video-b
     networks:
       default:
 
@@ -223,8 +268,10 @@ services:
       context: ./raw
       dockerfile: Dockerfile.raw
     env_file:
-      - ./raw/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -235,8 +282,10 @@ services:
       context: ./raw
       dockerfile: Dockerfile.raw
     env_file:
-      - ./raw/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -247,8 +296,10 @@ services:
       context: ./raw
       dockerfile: Dockerfile.raw
     env_file:
-      - ./raw/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -262,6 +313,10 @@ services:
       - raw-back-a
       - raw-back-b
       - raw-back-c
+    depends_on:
+      - raw-back-a
+      - raw-back-b
+      - raw-back-c
     networks:
       default:
 
@@ -271,8 +326,10 @@ services:
       context: ./rss
       dockerfile: Dockerfile.rss
     env_file:
-      - ./rss/environment
+      - ./environment
     links:
+      - db
+    depends_on:
       - db
     networks:
       default:
@@ -282,8 +339,6 @@ services:
     build:
       context: ./portal
       dockerfile: Dockerfile.back
-    links:
-      - api
     networks:
       default:
 
@@ -292,8 +347,6 @@ services:
     build:
       context: ./portal
       dockerfile: Dockerfile.back
-    links:
-      - api
     networks:
       default:
 
@@ -302,8 +355,6 @@ services:
     build:
       context: ./portal
       dockerfile: Dockerfile.back
-    links:
-      - api
     networks:
       default:
 
@@ -317,6 +368,19 @@ services:
       - portal-back-b
       - portal-back-c
       - rss
+    depends_on:
+      - portal-back-a
+      - portal-back-b
+      - portal-back-c
+      - rss
+    networks:
+      default:
+
+  adm:
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile.adm
     networks:
       default:
 

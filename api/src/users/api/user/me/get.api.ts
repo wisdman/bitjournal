@@ -2,14 +2,11 @@ import { RouteMiddleware, Context, INext, Get, ACL } from '@core/service'
 
 import { Query } from '@core/db'
 
-import { Role } from '@common/role'
-
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from '../env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/me`
+  USERS_DATATABLE,
+  USERS_API_PATH,
+  IPartialUser,
+} from '@common/user'
 
 const FIELDS_FOR_ME = [
   "id",
@@ -25,7 +22,7 @@ const FIELDS_FOR_ME = [
 
 export class GetMeAPI extends RouteMiddleware {
 
-  @Get(ROUTE_PATH)
+  @Get(`${USERS_API_PATH}/me`)
   async get(ctx: Context, next: INext) {
 
     const id = ctx.session.data.user
@@ -35,11 +32,11 @@ export class GetMeAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
+    const query = new Query(USERS_DATATABLE)
                       .select(FIELDS_FOR_ME)
                       .where('id = $1 AND enable', id)
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialUser>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(403)

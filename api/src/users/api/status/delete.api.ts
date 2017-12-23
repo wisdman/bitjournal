@@ -6,15 +6,14 @@ import { UUID } from '@core/uuid'
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
+  STATUSES_DATATABLE,
+  STATUSES_API_PATH,
+  IPartialStatus,
+} from '@common/status'
 
 export class DeleteAPI extends RouteMiddleware {
 
-  @Delete(ROUTE_PATH)
+  @Delete(`${ STATUSES_API_PATH}/:id`)
   @ACL(
     Role.Administrator,
     Role.Su
@@ -31,12 +30,12 @@ export class DeleteAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
+    const query = new Query(STATUSES_DATATABLE)
                       .delete()
                       .where('id = $1', id)
                       .returning('id')
 
-    let result = await query.exec<object>(ctx.db)
+    let result = await query.exec<IPartialStatus>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

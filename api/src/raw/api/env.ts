@@ -1,3 +1,1 @@
-
-export const ROUTE_BASE = '/raw'
-export const DATATABLE  = 'raw'
+export const RAW_API_PATH = '/raw'

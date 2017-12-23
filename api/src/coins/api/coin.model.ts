@@ -5,8 +5,6 @@ import { Timestamp } from '@core/timestamp'
 export const CoinModel = new Model({
   enable: input => ({ enable: !!input }),
 
-  hot: input => ({ hot: !!input }),
-
   title: input => ({ title: String(input || '').trim() }),
 
   description: input => ({ description: String(input || '').trim() }),
@@ -18,6 +16,9 @@ export const CoinModel = new Model({
   founder: input => ({ founder: String(input || '').trim() }),
 
   startDate: input => {
+    if (input === null)
+      return { startDate: null }
+
     let ts
     try {
       ts = new Timestamp(input)

@@ -10,19 +10,19 @@ import { Router, NavigationEnd } from '@angular/router'
 })
 export class LayoutComponent {
 
-  private isServer: boolean
+  private readonly _isServer: boolean
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly _router: Router,
   ) {
-    this.isServer = isPlatformServer(platformId)
+    this._isServer = isPlatformServer(platformId)
 
     this._router
         .events
         .filter( event => (event instanceof NavigationEnd) )
         .subscribe( event => {
-          if (this.isServer)
+          if (this._isServer)
             return
 
           window.scrollTo(0,0)

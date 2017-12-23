@@ -1,15 +1,15 @@
 import { Component, ViewEncapsulation, Input } from '@angular/core'
 
-const SHARE_URL_BASE = 'https://bitjournal.io/'
-
-const FB_BASE       = 'https://www.facebook.com/sharer/sharer.php?u={{URL}}'
-const TWITTER_BASE  = 'https://twitter.com/home?status={{URL}}'
-const VK_BASE       = 'https://vk.com/share.php?url={{URL}}'
-const TELEGRAM_BASE = 'https://t.me/share/url?url={{URL}}'
-const WHATSAPP_BASE = 'whatsapp://send?text={{URL}}'
-const VIBER_BASE    = 'viber://forward?text={{URL}}'
-const GOOGLE_BASE   = 'https://plus.google.com/share?url={{URL}}'
-
+import {
+  SHARE_FB,
+  SHARE_GOOGLE,
+  SHARE_TELEGRAM,
+  SHARE_TWITTER,
+  SHARE_VIBER,
+  SHARE_VK,
+  SHARE_WHATSAPP,
+  DOMAIN_PORTAL,
+} from '@common/environment'
 
 @Component({
   selector: '.share',
@@ -23,31 +23,31 @@ const GOOGLE_BASE   = 'https://plus.google.com/share?url={{URL}}'
 export class ShareComponent {
 
   get fbUrl():string {
-    return FB_BASE.replace(/\{\{\s*URL\s*\}\}/, this.url)
-  }
-
-  get twitterUrl():string {
-    return TWITTER_BASE.replace(/\{\{\s*URL\s*\}\}/, this.url)
-  }
-
-  get vkUrl():string {
-    return VK_BASE.replace(/\{\{\s*URL\s*\}\}/, this.url)
-  }
-
-  get telegramUrl():string {
-    return TELEGRAM_BASE.replace(/\{\{\s*URL\s*\}\}/, this.url)
-  }
-
-  get whatsappUrl():string {
-    return WHATSAPP_BASE.replace(/\{\{\s*URL\s*\}\}/, this.url)
-  }
-
-  get viberUrl():string {
-    return VIBER_BASE.replace(/\{\{\s*URL\s*\}\}/, this.url)
+    return SHARE_FB.replace(/\{\{\s*URL\s*\}\}/, this.url)
   }
 
   get googleUrl():string {
-    return GOOGLE_BASE.replace(/\{\{\s*URL\s*\}\}/, this.url)
+    return SHARE_GOOGLE.replace(/\{\{\s*URL\s*\}\}/, this.url)
+  }
+
+  get telegramUrl():string {
+    return SHARE_TELEGRAM.replace(/\{\{\s*URL\s*\}\}/, this.url)
+  }
+
+  get twitterUrl():string {
+    return SHARE_TWITTER.replace(/\{\{\s*URL\s*\}\}/, this.url)
+  }
+
+  get viberUrl():string {
+    return SHARE_VIBER.replace(/\{\{\s*URL\s*\}\}/, this.url)
+  }
+
+  get vkUrl():string {
+    return SHARE_VK.replace(/\{\{\s*URL\s*\}\}/, this.url)
+  }
+
+  get whatsappUrl():string {
+    return SHARE_WHATSAPP.replace(/\{\{\s*URL\s*\}\}/, this.url)
   }
 
   get url(): string {
@@ -57,7 +57,7 @@ export class ShareComponent {
     url = match && match[1] || ''
 
     if ( !/^http/i.test(url) )
-      url = SHARE_URL_BASE + '/' + url
+      url = `https://${DOMAIN_PORTAL}/${url}`
 
     return encodeURIComponent(url)
   }

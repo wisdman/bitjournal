@@ -1,6 +1,7 @@
 version: '3.4'
 
 services:
+
   api:
     volumes:
       - ./nginx/fullchain.dev.pem:/etc/nginx/fullchain.pem:ro
@@ -22,3 +23,11 @@ services:
     ports:
       - 443:443
       - 80:80
+
+  adm:
+    volumes:
+      - ./nginx/fullchain.dev.pem:/etc/nginx/fullchain.pem:ro
+      - ./nginx/privkey.dev.pem:/etc/nginx/privkey.pem:ro
+      - ./adm/server.dev.conf:/etc/nginx/server.conf.d/server.conf:ro
+    ports:
+      - 4433:443

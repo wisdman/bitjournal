@@ -7,10 +7,9 @@ import 'rxjs/add/operator/mergeAll'
 import {
   APIService,
   YouTubeService,
-  IYouTubeVideo,
 } from '../../services'
 
-import { IVideo } from '@common/video'
+import { IVideo, IYouTubeVideo } from '@common/video'
 import { IVideoRibbonItem } from './video-ribbon-item.interface'
 
 const API_BASE = '/video'
@@ -38,7 +37,7 @@ export class VideoRibbonComponent implements OnInit {
       thumb: item.snippet.thumbnails.default.url,
       date: new Date(item.snippet.publishedAt),
       title: item.snippet.title,
-      duration: YouTubeService.formatDuration(item.contentDetails.duration),
+      duration: item.contentDetails.duration,
       view: parseInt(item.statistics.viewCount) || 0,
       like: parseInt(item.statistics.likeCount) || 0,
       dislike: parseInt(item.statistics.dislikeCount) || 0,

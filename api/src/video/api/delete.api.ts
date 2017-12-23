@@ -6,15 +6,14 @@ import { UUID } from '@core/uuid'
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
+  VIDEO_DATATABLE,
+  VIDEO_API_PATH,
+  IPartialVideo,
+} from '@common/video'
 
 export class DeleteAPI extends RouteMiddleware {
 
-  @Delete(ROUTE_PATH)
+  @Delete(`${VIDEO_API_PATH}/:id`)
   @ACL(
     Role.Publisher,
     Role.Administrator,
@@ -22,22 +21,19 @@ export class DeleteAPI extends RouteMiddleware {
   )
   async delete(ctx: Context, next: INext) {
 
-    let id: string
+    const id = ctx.route.data.id
 
-    try {
-      const uuid = new UUID(ctx.route.data.id)
-      id = String(uuid)
-    } catch (error) {
-      ctx.set(400, error.message)
+    if (!id) {
+      ctx.set(404)
       return
     }
 
-    const query = new Query(DATATABLE)
+    const query = new Query(VIDEO_DATATABLE)
                       .delete()
                       .where('id = $1', id)
                       .returning('id')
 
-    let result = await query.exec<object>(ctx.db)
+    let result = await query.exec<IPartialVideo>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

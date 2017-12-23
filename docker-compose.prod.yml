@@ -26,6 +26,14 @@ services:
       - 145.239.188.64:443:443
       - 145.239.188.64:80:80
 
+  adm:
+    networks:
+      default:
+      outside:
+        ipv6_address: 2001:41d0:303:1f89:3:61b1:6a10:67
+    ports:
+      - 145.239.188.67:443:443
+
 networks:
   outside:
     external: true

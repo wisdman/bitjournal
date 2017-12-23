@@ -1,12 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
-import {
-  RAW_SERVER,
-} from './env'
+import { DOMAIN_RAW } from '@common/environment'
 
 const EMPTY_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
 
-const PATH_OG = RAW_SERVER + '/og.png'
+const PATH_OG = `https://${DOMAIN_RAW}/og.png`
 
 @Pipe({
   name: 'image'
@@ -24,7 +22,7 @@ export class ImagePipe implements PipeTransform {
     if (!path)
       return og ? PATH_OG : EMPTY_GIF
 
-    return RAW_SERVER + path
+    return `https://${DOMAIN_RAW}${path}`
   }
 
   transform(input: number | string | null, og: boolean = false): string {

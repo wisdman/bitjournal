@@ -8,7 +8,7 @@ export class Where {
   constructor(value: IWhereValue = null, index = 0, inputValues: Array<any> = []){
 
     // === Null value ===
-    if (value === null) {
+    if (value === null || !value.trim()) {
       this.values = []
       this.text = ''
       return this

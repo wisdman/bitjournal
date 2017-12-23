@@ -14,10 +14,19 @@ CREATE TABLE publications (
   "weight"        smallint      NOT NULL DEFAULT 1,
 
   "sections"      varchar(16)[] NOT NULL DEFAULT '{main}'::varchar(16)[],
+  "bind"          smallint      NOT NULL DEFAULT 0,
+
   "coins"         varchar(16)[] NOT NULL DEFAULT '{}'::varchar(16)[],
+  "allCoins"      boolean       NOT NULL DEFAULT FALSE,
+
   "markets"       uuid[]        NOT NULL DEFAULT '{}'::uuid[],
+  "allMarkets"    boolean       NOT NULL DEFAULT FALSE,
+
   "exchanges"     uuid[]        NOT NULL DEFAULT '{}'::uuid[],
+  "allExchanges"  boolean       NOT NULL DEFAULT FALSE,
+
   "ico"           uuid[]        NOT NULL DEFAULT '{}'::uuid[],
+  "allICO"        boolean       NOT NULL DEFAULT FALSE,
 
   "bigTitle"      varchar(160)  NOT NULL DEFAULT '',
   "title"         varchar(160)  NOT NULL DEFAULT '',

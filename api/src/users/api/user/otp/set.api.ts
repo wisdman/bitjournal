@@ -8,15 +8,14 @@ import { OTP } from '@core/otp'
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from '../env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id/otp`
+  USERS_DATATABLE,
+  USERS_API_PATH,
+  IPartialUser,
+} from '@common/user'
 
 export class SetOTPAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${USERS_API_PATH}/:id/otp`)
   @ACL(
     Role.Su
   )
@@ -32,7 +31,7 @@ export class SetOTPAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
+    const query = new Query(USERS_DATATABLE)
                       .update("totp = encode(digest(uuid_generate_v4()::text, 'sha256'), 'hex')")
                       .where('id = $1', id)
                       .returning('totp')

@@ -1,0 +1,82 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <h1>Реклама</h1>
+    <button mat-button (click)="add()">
+      <mat-icon>add</mat-icon>
+      <span>Добавить</span>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<main>
+  <mat-form-field class="col-100">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
+  </mat-form-field>
+  <mat-table #table [dataSource]="dataSource" matSort matSortActive="title" matSortDirection="desc" matSortDisableClear>
+
+    <!-- Enabled Column -->
+    <ng-container matColumnDef="enable">
+      <mat-header-cell *matHeaderCellDef style="max-width:24px"></mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:24px;overflow: visible;">
+        <mat-checkbox [ngModel]="item.enable" (click)="$event.stopPropagation(); toggle(item)"></mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="blocks">
+      <mat-header-cell *matHeaderCellDef>Блоки</mat-header-cell>
+      <mat-cell *matCellDef="let item">
+        <span>{{ item.blocks }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Название</mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.title }}</mat-cell>
+    </ng-container>
+
+    <!-- Start Date Column -->
+    <ng-container matColumnDef="startDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Дата начала</mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.startDate | date:'dd.MM.yyyy HH:mm' }}</mat-cell>
+    </ng-container>
+
+    <!-- End Date Column -->
+    <ng-container matColumnDef="endDate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Дата окончания</mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.endDate | date:'dd.MM.yyyy HH:mm' }}</mat-cell>
+    </ng-container>
+
+    <!-- Like count Column -->
+    <ng-container matColumnDef="like">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">Показы</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <i class="fa fa-eye" aria-hidden="true"></i>
+        <span>{{ item.view | number:'1.0-0' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Dislike count Column -->
+    <ng-container matColumnDef="click">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">Переходы</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <i class="fa fa-hand-o-up" aria-hidden="true"></i>
+        <span>{{ item.click | number:'1.0-0' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <!-- CTR Column -->
+    <ng-container matColumnDef="ctr">
+      <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:90px">CTR</mat-header-cell>
+      <mat-cell *matCellDef="let item" style="max-width:90px">
+        <span>{{ item.ctr | number:'1.0-0' }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="select(row)" class="pointer"></mat-row>
+  </mat-table>
+
+  <mat-paginator #paginator [pageSize]="50" [pageSizeOptions]="[50, 100, 200]">
+  </mat-paginator>
+</main>

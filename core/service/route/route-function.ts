@@ -15,6 +15,8 @@ export function generateRouteFunction(
 
   const pathRoute = new PathRoute(pattern)
 
+  debug('=== Route build [%s %s ? %O] => %s', method, pattern, queryKeyList, propertyKey)
+
   return async function(this: any, ctx: Context, next: INext): Promise<void> {
     const route = ctx.route
 

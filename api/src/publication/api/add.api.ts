@@ -1,19 +1,18 @@
 import { RouteMiddleware, Context, INext, Post, ACL } from '@core/service'
 
-import { Query, DBError } from '@core/db'
+import { Query } from '@core/db'
 import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
+import {
+  PUBLICATIONS_DATATABLE,
+  PUBLICATIONS_API_PATH,
+  IPartialPublication,
+} from '@common/publication'
+
 import { PublicationModel } from './publication.model'
 import { IModelResult } from '@core/model'
-
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}`
 
 const CAN_ENABLE_ROLES = [
   Role.Publisher,
@@ -28,10 +27,15 @@ const FIELDS = [
   "url",
   "weight",
   "sections",
+  "bind",
   "coins",
+  "allCoins",
   "markets",
+  "allMarkets",
   "exchanges",
+  "allExchanges",
   "ico",
+  "allICO",
   "bigTitle",
   "title",
   "ogTitle",
@@ -50,9 +54,10 @@ const FIELDS = [
   "content",
 ]
 
+
 export class AddAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${PUBLICATIONS_API_PATH}`)
   @ACL(
     Role.Author,
     Role.Publisher,
@@ -69,14 +74,16 @@ export class AddAPI extends RouteMiddleware {
       return
     }
 
-    if (model.value.enanle !== undefined)
-      model.value.enable = ctx.session.roles.checkAny(CAN_ENABLE_ROLES) ? model.value.enanle : false
+    const value = model.value as IPartialPublication
 
-    const query = new Query(DATATABLE)
-                      .insert(model.value)
+    if (value.enanle !== undefined)
+      value.enable = ctx.session.roles.checkAny(CAN_ENABLE_ROLES) ? value.enanle : false
+
+    const query = new Query(PUBLICATIONS_DATATABLE)
+                      .insert(value)
                       .returning(FIELDS)
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialPublication>(ctx.db)
 
     ctx.set(result[0])
   }

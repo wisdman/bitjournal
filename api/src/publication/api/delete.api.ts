@@ -1,20 +1,19 @@
 import { RouteMiddleware, Context, INext, Delete, ACL } from '@core/service'
 
-import { Query, DBError } from '@core/db'
+import { Query } from '@core/db'
 import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
+  PUBLICATIONS_DATATABLE,
+  PUBLICATIONS_API_PATH,
+  IPartialPublication,
+} from '@common/publication'
 
 export class DeleteAPI extends RouteMiddleware {
 
-  @Delete(ROUTE_PATH)
+  @Delete(`${PUBLICATIONS_API_PATH}/:id`)
   @ACL(
     Role.Publisher,
     Role.Administrator,
@@ -32,13 +31,13 @@ export class DeleteAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
+    const query = new Query(PUBLICATIONS_DATATABLE)
                       .delete()
                       .where('id = $1', id)
                       .returning('id')
 
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialPublication>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

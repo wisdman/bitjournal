@@ -10,7 +10,7 @@ import { CustomSessionMiddleware } from '@common/session'
 import {
   AddAPI,
   DeleteAPI,
-  GetByIdAPI,
+  GetOneAPI,
   GetListAPI,
   UpdateAPI,
 } from './api'
@@ -26,7 +26,7 @@ new Service(
 
   // === API ===
   new GetListAPI(),
-  new GetByIdAPI(),
+  new GetOneAPI(),
   new AddAPI(),
   new UpdateAPI(),
   new DeleteAPI,

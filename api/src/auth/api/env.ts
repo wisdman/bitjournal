@@ -1,2 +1,1 @@
-
-export const ROUTE_BASE = '/auth'
+export const AUTH_API_PATH = '/auth'

@@ -4,15 +4,14 @@ import { Query } from '@core/db'
 
 import { Role } from '@common/role'
 
+import {
+  STATUSES_DATATABLE,
+  STATUSES_API_PATH,
+  IPartialStatus,
+} from '@common/status'
+
 import { StatusModel } from './status.model'
 import { IModelResult } from '@core/model'
-
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}`
 
 const FIELDS = [
   "id",
@@ -23,7 +22,7 @@ const FIELDS = [
 
 export class AddAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${STATUSES_API_PATH}`)
   @ACL(
     Role.Administrator,
     Role.Su
@@ -38,11 +37,13 @@ export class AddAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .insert(model.value)
-                      .returning()
+    const value = model.value as IPartialStatus
 
-    const result = await query.exec<object>(ctx.db)
+    const query = new Query(STATUSES_DATATABLE)
+                      .insert(value)
+                      .returning(FIELDS)
+
+    const result = await query.exec<IPartialStatus>(ctx.db)
 
     ctx.set(result[0])
   }

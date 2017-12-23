@@ -8,7 +8,7 @@ import { DBMiddleware } from '@core/db'
 import { CustomSessionMiddleware } from '@common/session'
 
 import {
-  GetByIdAPI,
+  GetOneAPI,
   GetListAPI,
   UpdateAPI,
 } from './api'
@@ -24,6 +24,6 @@ new Service(
 
   // === API ===
   new GetListAPI(),
-  new GetByIdAPI(),
+  new GetOneAPI(),
   new UpdateAPI()
 )

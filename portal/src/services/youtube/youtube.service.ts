@@ -9,34 +9,12 @@ import 'rxjs/add/operator/map'
 
 import { MessageService } from '../message'
 
-import { IYouTubeVideo } from './youtube-video.interface'
+import { IYouTubeVideo } from '@common/video'
 
-const GOOGLE_API_KEY = 'AIzaSyB2gY86homt-uvqDQrRA0ru8gsNkPKRdZc'
-const YOUTUBE_DATA_URL = `https://www.googleapis.com/youtube/v3/videos?id={{IDS}}&key=${GOOGLE_API_KEY}&part=snippet,statistics,contentDetails`
-
-const YOUTUBE_URL_REGEXP =
-  /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\/?\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/
+import { YOUTUBE_DATA_URL } from '@common/environment'
 
 @Injectable()
 export class YouTubeService {
-  static parseVideoId(text: string): string | undefined {
-    text = text.trim()
-    const idMatch = /^[a-zA-Z0-9_-]{6,11}$/.exec(text)
-    if (idMatch)
-      return idMatch[0]
-
-    const urlMatch = YOUTUBE_URL_REGEXP.exec(text)
-    if (urlMatch)
-      return urlMatch[1]
-
-    return undefined
-  }
-
-  static formatDuration(duration: string): string {
-    return duration.replace(/[^0-9]+/g, ':')
-                   .replace(/(^:+|:+$)/g, '')
-  }
-
   constructor(
     private readonly _http: HttpClient,
     private readonly _message: MessageService) {}

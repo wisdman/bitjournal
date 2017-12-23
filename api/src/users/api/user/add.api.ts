@@ -4,15 +4,14 @@ import { Query, DBError } from '@core/db'
 
 import { Role } from '@common/role'
 
+import {
+  USERS_DATATABLE,
+  USERS_API_PATH,
+  IPartialUser,
+} from '@common/user'
+
 import { UserModel } from './user.model'
 import { IModelResult } from '@core/model'
-
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}`
 
 const FIELDS = [
   "id",
@@ -29,7 +28,7 @@ const FIELDS = [
 
 export class AddAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${USERS_API_PATH}`)
   @ACL(
     Role.Administrator,
     Role.Su
@@ -44,11 +43,13 @@ export class AddAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .insert(model.value)
+    const value = model.value as IPartialUser
+
+    const query = new Query(USERS_DATATABLE)
+                      .insert(value)
                       .returning(FIELDS)
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialUser>(ctx.db)
                               .catch( error => error as DBError )
 
 

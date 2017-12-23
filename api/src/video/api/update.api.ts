@@ -5,19 +5,18 @@ import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
+import {
+  VIDEO_DATATABLE,
+  VIDEO_API_PATH,
+  IPartialVideo,
+} from '@common/video'
+
 import { VideoModel } from './video.model'
 import { IModelResult } from '@core/model'
 
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
-
 export class UpdateAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${VIDEO_API_PATH}/:id`)
   @ACL(
     Role.Publisher,
     Role.Administrator,
@@ -25,13 +24,10 @@ export class UpdateAPI extends RouteMiddleware {
   )
   async update(ctx: Context, next: INext) {
 
-    let id: string
+    const id = ctx.route.data.id
 
-    try {
-      const uuid = new UUID(ctx.route.data.id)
-      id = String(uuid)
-    } catch (error) {
-      ctx.set(400, error.message)
+    if (!id) {
+      ctx.set(404)
       return
     }
 
@@ -44,12 +40,17 @@ export class UpdateAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .update(model.value)
-                      .where('id = $1', id)
-                      .returning(model.value)
+    const value = model.value as IPartialVideo
 
-    const result = await query.exec<object>(ctx.db)
+    if (value.id !== undefined)
+      delete value.id
+
+    const query = new Query(VIDEO_DATATABLE)
+                      .update(value)
+                      .where('id = $1', id)
+                      .returning(value)
+
+    const result = await query.exec<IPartialVideo>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

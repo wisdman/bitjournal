@@ -5,19 +5,18 @@ import { UUID } from '@core/uuid'
 
 import { Role } from '@common/role'
 
+import {
+  USERS_DATATABLE,
+  USERS_API_PATH,
+  IPartialUser,
+} from '@common/user'
+
 import { UserModel } from './user.model'
 import { IModelResult } from '@core/model'
 
-import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
-
 export class UpdateAPI extends RouteMiddleware {
 
-  @Post(ROUTE_PATH)
+  @Post(`${USERS_API_PATH}/:id`)
   @ACL(
     Role.Administrator,
     Role.Su
@@ -43,12 +42,16 @@ export class UpdateAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
-                      .update(model.value)
-                      .where('id = $1', id)
-                      .returning(model.value)
+    const value = model.value as IPartialUser
 
-    const result = await query.exec<object>(ctx.db)
+    console.dir(value)
+
+    const query = new Query(USERS_DATATABLE)
+                      .update(value)
+                      .where('id = $1', id)
+                      .returning(value)
+
+    const result = await query.exec<IPartialUser>(ctx.db)
                               .catch( error => error as DBError )
 
     // Result is error

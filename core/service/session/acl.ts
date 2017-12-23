@@ -24,12 +24,12 @@ export function ACL(...args: Array<any>): MethodDecorator {
       }
 
       if (!ctx.session.roles.checkAny(roles)) {
-        ctx.debug('=== ACL [%o] Denied ===\nSession roles: %o\nProperty key: %s', roles, ctx.session.roles, propertyKey)
+        ctx.debug('=== ACL [%O] Denied ===\nSession roles: %O\nProperty key: %s', roles, ctx.session.roles, propertyKey)
         ctx.set(403)
         return await next()
       }
 
-      ctx.debug('=== ACL [%o] Allow ===\nSession roles: %o\nProperty key: %s', roles, ctx.session.roles, propertyKey)
+      ctx.debug('=== ACL [%O] Allow ===\nSession roles: %O\nProperty key: %s', roles, ctx.session.roles, propertyKey)
 
       await originalFunction.call(this, ctx, next)
     }

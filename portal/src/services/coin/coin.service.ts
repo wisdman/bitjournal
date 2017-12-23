@@ -1,4 +1,5 @@
-import { Injectable, OnInit } from '@angular/core'
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core'
+import { isPlatformServer } from '@angular/common'
 
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/merge'
@@ -8,28 +9,34 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/mergeAll'
 import 'rxjs/add/operator/concatMap'
 
-import { IPartialCoin } from '@common/coin'
+import {
+  COINS_API_PATH,
+  COINS_HOT,
+  IPartialCoin,
+} from '@common/coin'
 
 import { APIService } from '../api'
 
-const HOT_COINS_UPDATE_INTERVAL = 30000
-
-const COUNS_PATH = '/coins'
+const COINS_UPDATE_INTERVAL = 30000
 
 @Injectable()
 export class CoinService {
 
   hot: Observable< IPartialCoin >
 
+  private readonly _isServer: boolean
+
   constructor(
+    @Inject(PLATFORM_ID) platformId: Object,
     private readonly _api: APIService
   ) {
+    this._isServer = isPlatformServer(platformId)
     this.hot = this._api
-                   .get< Array<IPartialCoin> >(COUNS_PATH, { hot: 'true' })
+                   .get< Array<IPartialCoin> >(COINS_API_PATH, { symbols: COINS_HOT.join(',') })
                    .map( item => {
                      const result = Observable.of(item)
 
-                     if (this.isServer)
+                     if (this._isServer)
                        return result
 
                      return Observable.merge(result, this.tiker())
@@ -37,17 +44,9 @@ export class CoinService {
                    .mergeAll()
   }
 
-  get isServer(): boolean {
-    return this._api.isServer
-  }
-
-  get isBrowser(): boolean {
-    return this._api.isBrowser
-  }
-
   tiker() {
     return Observable
-           .interval(HOT_COINS_UPDATE_INTERVAL)
-           .concatMap( () => this._api.get< Array<IPartialCoin> >(COUNS_PATH, { hot: 'true' }) )
+           .interval(COINS_UPDATE_INTERVAL)
+           .concatMap( () => this._api.get< Array<IPartialCoin> >(COINS_API_PATH, { symbols: COINS_HOT.join(',') }) )
   }
 }

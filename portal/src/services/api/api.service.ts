@@ -13,7 +13,7 @@ import { Hash } from '@core/hash'
 import { UserService } from '../user'
 import { MessageService } from '../message'
 
-import { API_SERVER } from './env'
+import { DOMAIN_API } from '@common/environment'
 
 @Injectable()
 export class APIService {
@@ -21,11 +21,11 @@ export class APIService {
   static buildURL(value: string = ''): string {
     const path = ('/' + value).replace(/\/+/g,'/')
                               .replace(/\/+$/,'')
-    return API_SERVER + path
+    return `https://${DOMAIN_API}${path}`
   }
 
-  readonly isServer: boolean
-  readonly isBrowser: boolean
+  private readonly _isServer: boolean
+  private readonly _isBrowser: boolean
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
@@ -34,8 +34,8 @@ export class APIService {
     private readonly _user: UserService,
     private readonly _message: MessageService
   ) {
-    this.isServer = isPlatformServer(platformId)
-    this.isBrowser = isPlatformBrowser(platformId)
+    this._isServer = isPlatformServer(platformId)
+    this._isBrowser = isPlatformBrowser(platformId)
   }
 
   private _transferStateKey(url: string) {
@@ -45,7 +45,7 @@ export class APIService {
   }
 
   private _transferStateGet(url: string): any {
-    if (this.isServer)
+    if (this._isServer)
       return undefined
 
     const itemKey = this._transferStateKey(url)
@@ -59,7 +59,7 @@ export class APIService {
   }
 
   private _transferStateSet(url: string, item: any) {
-    if (this.isBrowser)
+    if (this._isBrowser)
       return
 
     if (item !== undefined && item !== null)

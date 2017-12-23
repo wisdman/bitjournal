@@ -50,7 +50,7 @@ export class Roles {
   checkAny(...arg: Array<any>): boolean {
     const roles = Roles.clearInput(arg)
 
-    for (let role in roles)
+    for (let role of roles)
       if (this._roles.includes(role))
         return true
 
@@ -63,7 +63,7 @@ export class Roles {
     if (roles.length === 0)
       return false
 
-    for (let role in roles)
+    for (let role of roles)
       if (!this._roles.includes(role))
         return false
 

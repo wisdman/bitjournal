@@ -5,11 +5,10 @@ import { Query } from '@core/db'
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}`
+  ADS_DATATABLE,
+  ADS_API_PATH,
+  IPartialAds,
+} from '@common/ads'
 
 const FULL_ACCES_ROLES = [
   Role.Ads,
@@ -19,11 +18,11 @@ const FULL_ACCES_ROLES = [
 
 const FIELDS_FOR_EVERYONE = [
   "id",
+  "enable",
   "blocks",
 ]
 
 const FIELDS_FOR_ADMINS = FIELDS_FOR_EVERYONE.concat([
-  "enable",
   "title",
   "startDate",
   "endDate",
@@ -31,21 +30,19 @@ const FIELDS_FOR_ADMINS = FIELDS_FOR_EVERYONE.concat([
 
 export class GetListAPI extends RouteMiddleware {
 
-  @Get(ROUTE_PATH)
+  @Get(`${ADS_API_PATH}`)
   async get(ctx: Context, next: INext) {
 
-    let query
+    const query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
 
-    if ( ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true )
-      query = new Query(DATATABLE)
-                  .select(FIELDS_FOR_ADMINS)
+                ? new Query(ADS_DATATABLE)
+                      .select(FIELDS_FOR_ADMINS)
 
-    else
-      query = new Query(DATATABLE)
-                  .select(FIELDS_FOR_EVERYONE)
-                  .where('enable')
+                : new Query(ADS_DATATABLE)
+                      .select(FIELDS_FOR_EVERYONE)
+                      .where("enable AND startDate >= timezone('UTC', now()) AND endDate <= timezone('UTC', now())")
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialAds>(ctx.db)
 
     ctx.set(result)
   }

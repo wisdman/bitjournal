@@ -8,15 +8,14 @@ import { OTP } from '@core/otp'
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from '../env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id/otp`
+  USERS_DATATABLE,
+  USERS_API_PATH,
+  IPartialUser,
+} from '@common/user'
 
 export class DeleteOTPAPI extends RouteMiddleware {
 
-  @Delete(ROUTE_PATH)
+  @Delete(`${USERS_API_PATH}/:id/otp`)
   @ACL(
     Role.Su
   )
@@ -32,11 +31,11 @@ export class DeleteOTPAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
+    const query = new Query(USERS_DATATABLE)
                       .update("totp = NULL")
                       .where('id = $1', id)
 
-    const result = await query.exec<object>(ctx.db)
+    const result = await query.exec<IPartialUser>(ctx.db)
 
     if (result.length !== 1) {
       ctx.set(404)

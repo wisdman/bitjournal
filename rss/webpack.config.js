@@ -82,7 +82,8 @@ module.exports = {
       NODE_ENV: isProduction ? 'production' : '',
       DEBUG: !isProduction,
       APP_NAME: package.name,
-      APP_VERSION: package.version
+      APP_VERSION: package.version,
+      PRODUCTION: isProduction,
     }),
 
     new NoEmitOnErrorsPlugin(),

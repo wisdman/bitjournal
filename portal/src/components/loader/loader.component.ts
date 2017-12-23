@@ -3,8 +3,7 @@ import { Component, ViewEncapsulation, OnInit, OnDestroy, HostBinding } from '@a
 import { Subscription } from 'rxjs/Subscription'
 
 import {
-  LoaderService,
-  ILoaderState,
+  LoaderService
 } from '../../services'
 
 @Component({
@@ -26,7 +25,7 @@ export class LoaderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this._loaderService
                             .loaderState
-                            .subscribe( (state: ILoaderState) => this.show = state.show )
+                            .subscribe( (state: boolean) => this.show = state )
   }
 
   ngOnDestroy() {

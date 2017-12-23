@@ -8,15 +8,14 @@ import { OTP } from '@core/otp'
 import { Role } from '@common/role'
 
 import {
-  ROUTE_BASE,
-  DATATABLE,
-} from '../env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id/otp`
+  USERS_DATATABLE,
+  USERS_API_PATH,
+  IPartialUser,
+} from '@common/user'
 
 export class GetOTPAPI extends RouteMiddleware {
 
-  @Get(ROUTE_PATH)
+  @Get(`${USERS_API_PATH}/:id/otp`)
   @ACL(
     Role.Su
   )
@@ -32,7 +31,7 @@ export class GetOTPAPI extends RouteMiddleware {
       return
     }
 
-    const query = new Query(DATATABLE)
+    const query = new Query(USERS_DATATABLE)
                       .select(['totp'])
                       .where('id = $1', id)
 

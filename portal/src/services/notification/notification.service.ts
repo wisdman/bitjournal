@@ -4,18 +4,17 @@ import { isPlatformServer } from '@angular/common'
 @Injectable()
 export class NotificationService {
 
-  private isServer: boolean
-  private allowNotification: boolean = false
+  private readonly _isServer: boolean
+  private _allowNotification: boolean = false
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
   ) {
-    this.isServer = isPlatformServer(platformId)
-    this.initNotification()
+    this._isServer = isPlatformServer(platformId)
   }
 
-  initNotification() {
-    if (this.isServer)
+  init() {
+    if (this._isServer)
       return
 
     if (!window || !('Notification' in window))
@@ -23,16 +22,16 @@ export class NotificationService {
 
     switch ((<any>window).Notification.permission) {
       case 'granted':
-        this.allowNotification = true
+        this._allowNotification = true
         return
 
       case 'denied':
-        this.allowNotification = false
+        this._allowNotification = false
         return
 
       default:
         Notification.requestPermission( permission => {
-          this.allowNotification = permission === 'granted'
+          this._allowNotification = permission === 'granted'
         })
     }
   }

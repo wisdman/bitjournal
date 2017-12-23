@@ -5,12 +5,7 @@ import { LargeObjectManager } from 'pg-large-object'
 
 import { Role } from '@common/role'
 
-import {
-  ROUTE_BASE,
-  DATATABLE
-} from './env'
-
-const ROUTE_PATH = `${ROUTE_BASE}/:id`
+import { RAW_API_PATH } from './env'
 
 const DELETE_FOREVER_ROLES = [
   Role.Administrator,
@@ -19,7 +14,7 @@ const DELETE_FOREVER_ROLES = [
 
 export class DeleteAPI extends RouteMiddleware {
 
-  @Delete(ROUTE_PATH)
+  @Delete(`${RAW_API_PATH}/:oid`)
   @ACL(
     Role.Author,
     Role.Publisher,
@@ -28,7 +23,7 @@ export class DeleteAPI extends RouteMiddleware {
     Role.Su
   )
   async delete(ctx: Context, next: INext) {
-    const oid = parseInt(ctx.route.data.id)
+    const oid = ~~ctx.route.data.oid
 
     if (!oid || oid < 0) {
       ctx.set(404)
@@ -40,7 +35,7 @@ export class DeleteAPI extends RouteMiddleware {
       return
     }
 
-    ctx.debug(`=== Large object [ DELETE ${ROUTE_PATH} ] %s ===`, oid)
+    ctx.debug(`=== Large object [ DELETE ${RAW_API_PATH} ] %s ===`, oid)
 
     const db = ctx.db as Client
 

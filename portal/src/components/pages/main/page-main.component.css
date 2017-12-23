@@ -47,6 +47,10 @@
   .bj-page-main__aside {
     display: flex;
   }
+
+  .bj-page-main__card--zero {
+    display: none;
+  }
 }
 
 .bj-page-main__card {

@@ -50,9 +50,6 @@
   background: linear-gradient(to left, #fff 0%, #fff 30%, transparent 100%);
 }
 
-
-
-
 .bj-header__row {
   margin: 0 auto;
 
@@ -60,6 +57,11 @@
   max-width: var(--max-width);
 
   display: flex;
+
+}
+
+.bj-header__row--hidden {
+  overflow: hidden;
 }
 
 @media (min-width: 1000px) {
