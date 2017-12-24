@@ -16,7 +16,7 @@ export const PublicationModel = new Model({
     const result = String(input || '')
                    .trim()
 
-    if (result && !URL_REGEXP.test(result))
+    if (!result || !URL_REGEXP.test(result))
       throw new Error('incorrect url')
 
     return { url: result }

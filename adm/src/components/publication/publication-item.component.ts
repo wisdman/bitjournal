@@ -235,13 +235,21 @@ export class PublicationItemComponent implements OnInit {
   }
 
   save() {
+
+    console.log('!!!!!!')
+
     if (this.itemForm.invalid)
       return
 
     const postURL = this.isNew ? `${PUBLICATIONS_API_PATH}` : `${PUBLICATIONS_API_PATH}/${this._id}`
 
+    const value = Object.assign({}, this.itemForm.value)
+    value.url = this.itemForm.controls.url.value || new HURL(128, this.itemForm.value.title).toString()
+
+    console.log(value)
+
     this._apiService
-        .post<IPartialPublication>(postURL, this.itemForm.value)
+        .post<IPartialPublication>(postURL, value)
         .subscribe( _ => this._location.back() )
   }
 
