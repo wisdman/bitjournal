@@ -13,7 +13,7 @@ export const OPTIONS = {
   htmlAllowComments: false,
 
   htmlAllowedAttrs: [
-    'alt', 'class', 'href', 'src', 'target', 'title',
+    'alt', 'class', 'href', 'src', 'target', 'title', 'contenteditable'
   ],
 
   htmlAllowedEmptyTags: [

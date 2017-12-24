@@ -11,3 +11,10 @@ export const COINS_HOT = [
   'BTG',
   'LTC',
 ]
+
+export const SYMBOL_CHARACTER_MAP = ['*','@','$']
+export const IMG = (symbol: string) => symbol.replace(/[^a-z0-9]/gi, (match: string) => {
+                                         let i = SYMBOL_CHARACTER_MAP.indexOf(match)
+                                         return i >= 0 ? String(i) : ''
+                                       }).toLowerCase()
+

@@ -1,7 +1,7 @@
 
 import { Timestamp } from '@core/timestamp'
 import { IPartialPublication } from '@common/publication'
-import { DOMAIN_PORTAL } from '@common/environment'
+import { DOMAIN_PORTAL, DOMAIN_RAW } from '@common/environment'
 
 export class RSSItem {
 
@@ -18,7 +18,7 @@ export class RSSItem {
 
   readonly content: string
 
-  readonly imege: number | null
+  private readonly _image: number | null
 
   author: string = 'Редакция BitJournal'
 
@@ -54,6 +54,10 @@ export class RSSItem {
     return description.slice(0,160) + '...'
   }
 
+  get image(): string {
+    return `https://${DOMAIN_RAW}/${this._image}`
+  }
+
   constructor(item: IPartialPublication) {
     this.rss      = item.rss      || false
     this.facebook = item.facebook || false
@@ -68,7 +72,7 @@ export class RSSItem {
 
     this.content = String(item.content || '').trim()
 
-    this.imege = item.image || null
+    this._image = item.image || null
   }
 
 }

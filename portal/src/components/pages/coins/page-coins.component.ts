@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation, OnInit, ViewChild } from '@angular/core'
 
-import { MatTableDataSource, MatSort } from '@angular/material'
+import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material'
 
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/operator/map'
@@ -52,9 +52,11 @@ export class PageCoinsComponent implements OnInit {
   dataSource = new MatTableDataSource(new Array<IPartialCoin>())
 
   @ViewChild(MatSort) sort: MatSort
+  @ViewChild(MatPaginator) paginator: MatPaginator
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort
+    this.dataSource.paginator = this.paginator
   }
 
   applyFilter(filterValue: string) {

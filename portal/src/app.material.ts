@@ -1,12 +1,13 @@
 
 import {
+  MatButtonModule,
   MatDialogModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatSnackBarModule,
   MatSortModule,
   MatTableModule,
-  MatSnackBarModule,
-  MatInputModule,
-  MatButtonModule,
-  MatFormFieldModule,
 } from '@angular/material';
 
 import {
@@ -14,13 +15,14 @@ import {
 } from '@angular/cdk/scrolling';
 
 export const MATERIAL: any[] = [
+  MatButtonModule,
   MatDialogModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatSnackBarModule,
   MatSortModule,
   MatTableModule,
-  MatSnackBarModule,
-  MatInputModule,
-  MatButtonModule,
-  MatFormFieldModule,
 
   ScrollDispatchModule,
 ]

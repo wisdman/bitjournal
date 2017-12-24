@@ -18,7 +18,7 @@
   </channel>
   {{~it.items :item:index}}
     <item>
-      <guid isPermaLink="true">{{=item.link}}</guid>
+      <guid>{{=item.link}}</guid>
       <title>{{=item.title}}</title>
       <link>{{=item.link}}</link>
       <pdalink>{{=item.link}}</pdalink>
@@ -27,7 +27,7 @@
       <author>{{=item.author}}</author>
       <enclosure url="{{=item.image}}" type="image/jpeg"/>
       <pubDate>{{=item.pubDate}}</pubDate>
-      <yandex:full-text>{{=item.yandexFullText}}</yandex:full-text>
+      <yandex:full-text>{{=item.clearText}}</yandex:full-text>
     </item>
   {{~}}
 </rss>

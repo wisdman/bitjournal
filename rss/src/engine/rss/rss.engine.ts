@@ -30,7 +30,7 @@ export class RSSMiddleware extends RouteMiddleware {
     const query = new Query(PUBLICATIONS_DATATABLE)
                       .select(FEELDS)
                       .where(`enable AND ts <= timezone('UTC', now())`)
-                      .order({'ts': 'DESC'})
+                      .order({'lastModified': 'DESC'})
                       .limit(100)
 
     const result = await query.exec<IPartialPublication>(client)
@@ -41,7 +41,7 @@ export class RSSMiddleware extends RouteMiddleware {
   @Get(`/rss`)
   async getRSS(ctx: Context, next: INext) {
     const items = await this.getItems(ctx.db)
-    const result = this._rssTpl( items.filter(item => item.rss) )
+    const result = this._rssTpl({ items: items.filter(item => item.rss) })
     ctx.set(result)
   }
 }

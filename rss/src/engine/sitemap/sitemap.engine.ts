@@ -19,13 +19,13 @@ export class SitemapMiddleware extends RouteMiddleware {
     const query = new Query(PUBLICATIONS_DATATABLE)
                       .select(["ts", "url"])
                       .where(`enable AND ts <= timezone('UTC', now())`)
-                      .order({'ts': 'DESC'})
+                      .order({'lastModified': 'DESC'})
                       .limit(100)
 
     let result = await query.exec<IPartialPublication>(client)
 
     result = result.map(item => {
-      const ts = new Timestamp(item)
+      const ts = new Timestamp(item.ts)
       item.loc = `https://${DOMAIN_PORTAL}/${ts.UTC.dateString}/${item.url}`
       item.lastmod = ts.iso
       return item
@@ -37,7 +37,7 @@ export class SitemapMiddleware extends RouteMiddleware {
   @Get(`/sitemap.xml`)
   async getRSS(ctx: Context, next: INext) {
     const items = await this.getItems(ctx.db)
-    const result = this._sitemapTpl( items )
+    const result = this._sitemapTpl( { items } )
     ctx.set(result)
   }
 }

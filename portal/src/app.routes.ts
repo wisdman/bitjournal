@@ -7,12 +7,15 @@ import {
   PageCoinComponent,
   PageCoinsComponent,
   PageMainComponent,
+  PagePrivacyComponent,
 } from './components'
 
 export const ROUTES: Routes = [
   { path: ''           , component: PageMainComponent    },
 
   { path: '101'        , component: Page101Component     },
+
+  { path: 'privacy'    , component: PagePrivacyComponent },
 
   { path: 'coins/:id'  , component: PageCoinComponent    },
   { path: 'coins'      , component: PageCoinsComponent   },
