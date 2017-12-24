@@ -23,6 +23,7 @@ export class HURL {
 
     // Clear
     value = value.replace(/[^0-9a-z_-]/g, '')
+                 .replace(/_+/g, '_')
                  .slice(0, this._maxLength)
                  .replace(/(^[_-]+|[_-]+$)/g, '')
 

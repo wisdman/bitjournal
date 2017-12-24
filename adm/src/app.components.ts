@@ -18,6 +18,7 @@ import {
   UserItemComponent,
   UserListComponent,
   VideoListComponent,
+  DateTimeComponent,
 } from './components'
 
 export const COMPONENTS: any[] = [
@@ -39,6 +40,7 @@ export const COMPONENTS: any[] = [
   UserItemComponent,
   UserListComponent,
   VideoListComponent,
+  DateTimeComponent,
 ]
 
 export const ENTRY_COMPONENTS: any[] = [

@@ -39,6 +39,8 @@ import {
 
 import { Rating } from '@common/rating'
 
+const AUTOSAVE_LS_ID = 'publication-draft'
+
 @Component({
   selector: 'publication-item',
   templateUrl: './publication-item.component.html',
@@ -70,7 +72,7 @@ export class PublicationItemComponent implements OnInit {
     private readonly _location: Location
   ) {
     this.itemForm = this._fb.group({
-      enable:        [ true, [
+      enable:        [ false, [
                        Validators.required
                      ] ],
 
@@ -123,7 +125,7 @@ export class PublicationItemComponent implements OnInit {
 
       tags:          [ new Array<string>() ],
 
-      sections:      [ new Array<Section>() ],
+      sections:      [ [Section.Main] ],
 
       bind:          [ 0, [
                        Validators.min(0),
@@ -154,6 +156,50 @@ export class PublicationItemComponent implements OnInit {
 
       content:       [ '' ]
     })
+
+    // === Autoupdate url is empty ===
+    this.itemForm.controls.title
+        .valueChanges
+        .subscribe( value => {
+          if (this.isNew)
+            this.setUrlByTitle(value)
+        })
+
+    // === Autosave form ===
+    this.itemForm
+        .valueChanges
+        .subscribe( value => this.autosave(value))
+  }
+
+  setUrlByTitle(value:string | null = null){
+    const title = value || this.itemForm.value.title
+    this.itemForm.controls.url.patchValue(new HURL(128, title).toString())
+  }
+
+  autosave(value: any) {
+    if (!this.isNew || this.itemForm.pristine)
+      return
+
+    window.localStorage.setItem(AUTOSAVE_LS_ID, JSON.stringify(this.itemForm.value))
+  }
+
+  getDraft() {
+    const raw =  window.localStorage.getItem(AUTOSAVE_LS_ID) || null
+    if (!raw)
+      return
+
+    let data: any
+    try {
+      data = JSON.parse(raw)
+    } catch (_) {
+      data = null
+    }
+
+    if (!data)
+      return
+
+    data.sections = Section.getArray(data.sections)
+    this.itemForm.patchValue(data)
   }
 
   ngOnInit() {
@@ -177,7 +223,9 @@ export class PublicationItemComponent implements OnInit {
           .get< Array<IPartialUser> >(`${USERS_API_PATH}`)
           .subscribe( items => this.authors = items )
 
-      if (!this.isNew)
+      if (this.isNew)
+        this.getDraft()
+      else
         this._apiService
             .get<IPartialPublication>(`${PUBLICATIONS_API_PATH}/${this._id}`)
             .subscribe( item => {
@@ -193,6 +241,7 @@ export class PublicationItemComponent implements OnInit {
 
   back() {
     if (this.itemForm.pristine) {
+      window.localStorage.removeItem(AUTOSAVE_LS_ID)
       this._location.back()
       return
     }
@@ -205,8 +254,10 @@ export class PublicationItemComponent implements OnInit {
         'Да': true
       }
     }).subscribe( result => {
-      if (result === true)
+      if (result === true) {
+        window.localStorage.removeItem(AUTOSAVE_LS_ID)
         this._location.back()
+      }
     })
   }
 
@@ -230,14 +281,11 @@ export class PublicationItemComponent implements OnInit {
       }
     }).subscribe( result => {
       if (result === true)
-        this.itemForm.patchValue({ url: new HURL(128, title).toString() })
+        this.setUrlByTitle()
     })
   }
 
   save() {
-
-    console.log('!!!!!!')
-
     if (this.itemForm.invalid)
       return
 
@@ -246,11 +294,12 @@ export class PublicationItemComponent implements OnInit {
     const value = Object.assign({}, this.itemForm.value)
     value.url = this.itemForm.controls.url.value || new HURL(128, this.itemForm.value.title).toString()
 
-    console.log(value)
-
     this._apiService
         .post<IPartialPublication>(postURL, value)
-        .subscribe( _ => this._location.back() )
+        .subscribe( _ => {
+          window.localStorage.removeItem(AUTOSAVE_LS_ID)
+          this._location.back()
+        })
   }
 
   delete() {
@@ -267,7 +316,10 @@ export class PublicationItemComponent implements OnInit {
     }).subscribe( result => {
       if (result === true)
         this._apiService.delete<IPartialPublication>(`${PUBLICATIONS_API_PATH}/${this._id}`)
-                        .subscribe( _ => this._location.back() )
+                        .subscribe( _ => {
+                          window.localStorage.removeItem(AUTOSAVE_LS_ID)
+                          this._location.back()
+                        })
     })
   }
 }

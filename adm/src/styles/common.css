@@ -53,3 +53,11 @@ h3, h4 {
 h4 {
   font-size: .8rem;
 }
+
+::-webkit-clear-button {
+  display: none;
+}
+
+::-webkit-inner-spin-button {
+  display: none;
+}

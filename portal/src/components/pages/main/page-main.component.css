@@ -48,7 +48,8 @@
     display: flex;
   }
 
-  .bj-page-main__card--zero {
+  .bj-page-main__card--zero,
+  .bj-pub-card.bj-page-main__card--zero {
     display: none;
   }
 }

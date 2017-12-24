@@ -93,7 +93,8 @@ module.exports = {
     mainFields: ['browser', 'module', 'main'],
     symlinks: true,
     alias: {
-      '@core': PATH('../core')
+      '@core': PATH('../core'),
+      '@common': PATH('../common'),
     }
   },
 
@@ -123,6 +124,7 @@ module.exports = {
       test: /\.(css|scss)$/i,
       include: [
         PATH('./src/styles'),
+        PATH('../common/styles'),
         PATH('../node_modules/@angular/material/theming'),
         PATH('../node_modules/font-awesome'),
       ],
@@ -167,6 +169,7 @@ module.exports = {
       test: /\.(css|scss)$/i,
       exclude: [
         PATH('./src/styles'),
+        PATH('../common/styles'),
         PATH('../node_modules/@angular/material/theming'),
         PATH('../node_modules/font-awesome'),
         PATH('../node_modules/froala-editor'),

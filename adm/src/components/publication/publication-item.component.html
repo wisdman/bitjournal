@@ -38,11 +38,13 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field class="col">
+          <!-- <mat-form-field class="col">
             <input matInput [matDatepicker]="tsPicker" placeholder="Дата" formControlName="ts">
             <mat-datepicker-toggle matSuffix [for]="tsPicker"></mat-datepicker-toggle>
             <mat-datepicker #tsPicker></mat-datepicker>
-          </mat-form-field>
+          </mat-form-field> -->
+
+          <datetime class="col" formControlName="ts"></datetime>
 
           <mat-form-field class="col">
             <mat-select placeholder="RSS" formControlName="rss">

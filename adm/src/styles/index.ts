@@ -12,3 +12,6 @@ import './mat-fix.css'
 
 // === Common styles ===
 import './common.css'
+
+// === Article typography ===
+import '@common/styles/article.css'
