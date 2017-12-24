@@ -21,7 +21,7 @@
     <ng-container matColumnDef="image">
       <mat-header-cell *matHeaderCellDef style="max-width:40px">Лого</mat-header-cell>
       <mat-cell *matCellDef="let item" style="max-width:40px">
-        <img class="coin-list-logo" [src]="item.logo">
+        <img class="coin-list-logo" [src]="item.symbol | ccimg">
       </mat-cell>
     </ng-container>
 

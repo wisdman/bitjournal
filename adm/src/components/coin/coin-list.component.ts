@@ -60,11 +60,7 @@ export class CoinListComponent implements OnInit {
         .get< Array<IPartialCoin> >(`${COINS_API_PATH}`)
         .subscribe( items => {
           this.dataSource.data = items.map( item => {
-            const symbol = item.symbol || '000'
-            item.logo = `https://${DOMAIN_PORTAL}/coins/${symbol.toLowerCase()}.svg`
-
             item.rating = new Rating(item.rating)
-
             return item
           })
         })

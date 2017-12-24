@@ -26,7 +26,7 @@
           <ng-container matColumnDef="icon">
             <mat-header-cell *matHeaderCellDef style="max-width:42px"></mat-header-cell>
             <mat-cell *matCellDef="let item" style="max-width:42px">
-              <img class="bj-page-coins__table__icon" [src]="'/coins/' + item.symbol.toLowerCase() + '.svg'">
+              <img class="bj-page-coins__table__icon" [src]="item.symbol | ccimg">
             </mat-cell>
           </ng-container>
 

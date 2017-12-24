@@ -1,4 +1,5 @@
 import {
+  CoinImagePipe,
   FilterPipe,
   ImagePipe,
   OrderPipe,
@@ -6,6 +7,7 @@ import {
 } from './pipes'
 
 export const PIPES: any[] = [
+  CoinImagePipe,
   FilterPipe,
   ImagePipe,
   OrderPipe,

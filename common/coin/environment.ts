@@ -13,8 +13,7 @@ export const COINS_HOT = [
 ]
 
 export const SYMBOL_CHARACTER_MAP = ['*','@','$']
-export const IMG = (symbol: string) => symbol.replace(/[^a-z0-9]/gi, (match: string) => {
-                                         let i = SYMBOL_CHARACTER_MAP.indexOf(match)
-                                         return i >= 0 ? String(i) : ''
-                                       }).toLowerCase()
-
+export const COIN_IMG = (symbol: string) => symbol.replace(/[^a-z0-9]/gi, (match: string) => {
+                                              let i = SYMBOL_CHARACTER_MAP.indexOf(match)
+                                              return i >= 0 ? String(i) : ''
+                                            }).toLowerCase()

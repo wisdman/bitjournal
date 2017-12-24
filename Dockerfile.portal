@@ -15,7 +15,7 @@ COPY ./nginx/privkey.pem   /etc/nginx/privkey.pem
 
 COPY ./portal/server.conf.d /etc/nginx/server.conf.d
 COPY ./portal/dist/front /www
-COPY ./common/cc-icons/svg/color /www/coins
+COPY ./coins-png /www/coins
 
 VOLUME /www
 EXPOSE 80 443
