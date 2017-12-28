@@ -15,19 +15,19 @@
     </image>
     <yandex:logo type="square">https://bitjournal.io/logo-100x100.png</yandex:logo>
     <atom:link href="https://bitjournal.io/rss" rel="self" type="application/rss+xml" />
+    {{~it.items :item:index}}
+      <item>
+        <guid>{{=item.link}}</guid>
+        <title>{{=item.title}}</title>
+        <link>{{=item.link}}</link>
+        <pdalink>{{=item.link}}</pdalink>
+        <comments>{{=item.link}}#comments</comments>
+        <description>{{=item.description}}</description>
+        <author>{{=item.author}}</author>
+        <enclosure url="{{=item.image}}" type="image/jpeg"/>
+        <pubDate>{{=item.pubDate}}</pubDate>
+        <yandex:full-text>{{=item.clearText}}</yandex:full-text>
+      </item>
+    {{~}}
   </channel>
-  {{~it.items :item:index}}
-    <item>
-      <guid>{{=item.link}}</guid>
-      <title>{{=item.title}}</title>
-      <link>{{=item.link}}</link>
-      <pdalink>{{=item.link}}</pdalink>
-      <comments>{{=item.link}}#comments</comments>
-      <description>{{=item.description}}</description>
-      <author>{{=item.author}}</author>
-      <enclosure url="{{=item.image}}" type="image/jpeg"/>
-      <pubDate>{{=item.pubDate}}</pubDate>
-      <yandex:full-text>{{=item.clearText}}</yandex:full-text>
-    </item>
-  {{~}}
 </rss>
