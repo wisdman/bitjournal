@@ -20,7 +20,6 @@
         <guid>{{=item.link}}</guid>
         <title>{{=item.title}}</title>
         <link>{{=item.link}}</link>
-        <pdalink>{{=item.link}}</pdalink>
         <comments>{{=item.link}}#comments</comments>
         <description>{{=item.description}}</description>
         <author>{{=item.author}}</author>
