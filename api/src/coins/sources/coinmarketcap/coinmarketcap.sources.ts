@@ -60,8 +60,11 @@ export class CoinmarketcapSources implements ISource {
     const priceRUB = Math.max( parseFloat(input.price_rub), 0)
     if (!Number.isNaN(priceRUB) && priceRUB > 0) output.priceRUB = priceRUB
 
-    const volume24h = Math.max( parseFloat(input['24h_volume_usd']), 0)
-    if (!Number.isNaN(volume24h) && volume24h > 0) output.volume24h = volume24h
+    const volume24hUSD = Math.max( parseFloat(input['24h_volume_usd']), 0)
+    if (!Number.isNaN(volume24hUSD) && volume24hUSD > 0) output.volume24hUSD = volume24hUSD
+
+    const volume24hRUB = Math.max( parseFloat(input['24h_volume_rub']), 0)
+    if (!Number.isNaN(volume24hRUB) && volume24hRUB > 0) output.volume24hRUB = volume24hRUB
 
     const availableSupply = Math.max( parseFloat(input.available_supply), 0)
     if ( !Number.isNaN(availableSupply)) output.availableSupply = availableSupply

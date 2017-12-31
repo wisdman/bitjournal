@@ -36,7 +36,8 @@ CREATE TABLE coins (
   "priceBTC"        decimal      NOT NULL DEFAULT 0,
   "priceRUB"        decimal      NOT NULL DEFAULT 0,
 
-  "volume24h"       decimal      NOT NULL DEFAULT 0,
+  "volume24hUSD"    decimal      NOT NULL DEFAULT 0,
+  "volume24hRUB"    decimal      NOT NULL DEFAULT 0,
 
   "change1h"        decimal      NOT NULL DEFAULT 0,
   "change24h"       decimal      NOT NULL DEFAULT 0,

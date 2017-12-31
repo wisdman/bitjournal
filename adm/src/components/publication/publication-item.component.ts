@@ -134,7 +134,7 @@ export class PublicationItemComponent implements OnInit {
 
       coins:         [ new Array<string>() ],
 
-      allCoins:      [ true, [
+      allCoins:      [ false, [
                        Validators.required
                      ] ],
 

@@ -33,7 +33,9 @@
           <!-- Title Column -->
           <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Наименование</mat-header-cell>
-            <mat-cell *matCellDef="let item">{{ item.title }} ({{ item.symbol }})</mat-cell>
+            <mat-cell *matCellDef="let item">
+              <a class="bj-page-coins__table__link" [routerLink]="['/coins', item.symbol]">{{ item.title }} ({{ item.symbol }})</a>
+            </mat-cell>
           </ng-container>
 
           <!-- Title PriceUSD -->
@@ -45,7 +47,7 @@
           <!-- Title Capitalization -->
           <ng-container matColumnDef="capitalizationUSD">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Капитализация, $</mat-header-cell>
-            <mat-cell *matCellDef="let item">{{ item.capitalizationUSD | number:'1.2' }}</mat-cell>
+            <mat-cell *matCellDef="let item">{{ item.capitalizationUSD | number:'1.2-2' }}</mat-cell>
           </ng-container>
 
           <!-- Title PriceRUB -->
@@ -57,7 +59,7 @@
           <!-- Title Capitalization -->
           <ng-container matColumnDef="capitalizationRUB">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Капитализация, ₽</mat-header-cell>
-            <mat-cell *matCellDef="let item" style="font-size:12px">{{ item.capitalizationRUB | number:'1.2' }}</mat-cell>
+            <mat-cell *matCellDef="let item" style="font-size:12px">{{ item.capitalizationRUB | number:'1.2-2' }}</mat-cell>
           </ng-container>
 
           <!-- Title PriceBTC -->

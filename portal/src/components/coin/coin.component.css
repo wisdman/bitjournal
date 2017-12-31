@@ -1,0 +1,200 @@
+.bj-coin {
+  display: block;
+  width: 100%;
+}
+
+.bj-coin__wrapper {
+  display: block;
+  padding: 20px;
+}
+
+.bj-coin__row {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.bj-coin__row + .bj-coin__row {
+  margin-top: var(--indent-base);
+}
+
+.bj-coin__row--center {
+  align-items: center;
+}
+
+.bj-coin__col + .bj-coin__col {
+  margin-left: var(--indent-double);
+}
+
+.bj-coin__col--row {
+  flex: 1 1 auto;
+  display: block;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 900px) {
+  .bj-coin__col--row {
+    display: flex;
+  }
+}
+
+
+/* === Logo === */
+.bj-coin__logo {
+  display: block;
+  flex: 0 0 88px;
+  width: 88px;
+  height: 88px;
+
+  order: 2;
+}
+
+.bj-coin__logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* === Title === */
+.bj-coin__h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1;
+
+  margin: 1rem 0 .1rem var(--indent-base);
+  padding: 0;
+
+  order: 2;
+}
+
+.bj-coin__h1__symbol {
+  display: block;
+
+  color: var(--color-gray);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+
+/* === Prices === */
+.bj-coin__prices {
+  margin: 0 var(--indent-double);
+  order: 2;
+}
+
+.bj-coin__prices__currency {
+  display: block;
+
+  font-size: 30px;
+  font-weight: 400;
+  font-style: normal;
+
+  margin: 1rem 0 .1rem 0;
+  padding: 0;
+}
+
+.bj-coin__prices__btc {
+  display: block;
+
+  color: var(--color-gray);
+  font-size: 1rem;
+}
+
+
+/* === Change currency === */
+.bj-coin__controls__currency {
+  flex: 0 0 auto;
+  display: flex;
+
+  margin-left: auto;
+
+  order: 2;
+}
+
+.bj-coin__controls__currency-button {
+  display: block;
+
+  font-size: 100%;
+  font-weight: 300;
+  font-style: normal;
+
+  background: transparent;
+  border: 0 none;
+
+  padding: 0;
+  margin: 0 0 0 var(--indent-double);
+
+  color: var(--color-gray);
+  cursor: pointer;
+}
+
+.bj-coin__controls__currency-button + .bj-coin__controls__currency-button {
+  margin-left: var(--indent-half);
+}
+
+.bj-coin__controls__currency-button--active {
+  color: inherit;
+  font-weight: 400;
+}
+
+
+/* === Info === */
+.bj-coin__info {
+  padding-top: var(--indent-base);
+}
+
+.bj-coin__col--row .bj-coin__info {
+  flex: 1 0 auto;
+}
+
+.bj-coin__info h3 {
+  font-size: 13px;
+  font-weight: 500;
+  font-style: normal;
+
+  margin: 0;
+  padding: 0;
+  padding-right: var(--indent-base);
+  padding-bottom: 5px;
+
+  white-space: nowrap;
+}
+
+.bj-coin__info span {
+  font-size: 16px;
+  font-weight: 300;
+  white-space: nowrap;
+
+  margin: 0;
+  padding: 0;
+  padding-right: var(--indent-base);
+}
+
+
+.bj-coin__chart {
+  width: 100%;
+  height: 500px;
+  min-height: 500px;
+}
+
+.bj-coin__chart iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+
+.bj-coin__table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  overflow-x: scroll;
+}
+
+.bj-coin__table {
+  width: 100%;
+  min-width: 550px;
+}

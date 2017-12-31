@@ -8,6 +8,8 @@ import { FileType } from '@core/file-type'
 
 import { Context } from './context'
 
+import { textContentType } from './text-content-type'
+
 export type IBody = null | undefined | string | Buffer | object
 
 export class Response {
@@ -101,7 +103,7 @@ export class Response {
     // string contenet (html or plain)
     if (typeof value === 'string') {
       this._body = value
-      this.setHeader('Content-Type', (/^\s*</.test(value) ? 'text/html' : 'text/plain') + '; charset=utf-8' )
+      this.setHeader('Content-Type', textContentType(value) + '; charset=utf-8' )
       this.setHeader('Content-Length', Buffer.byteLength(value))
       return
     }

@@ -35,7 +35,8 @@ export interface ICoin {
   priceBTC: number
   priceRUB: number
 
-  volume24h: number
+  volume24hUSD: number
+  volume24hRUB: number
 
   change1h: number
   change24h: number

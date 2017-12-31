@@ -1,0 +1,38 @@
+<!doctype html>
+<html style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; padding: 0; margin: 0;">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+  <link rel="icon" href="/svg/favicon.svg" sizes="any" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" sizes="192x192" type="image/png">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" type="image/png">
+  <link rel="mask-icon" href="/svg/favicon.svg" type="image/svg+xml" color="#24292e">
+
+  <title>BitJournal Coin Chart</title>
+</head>
+<body style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; padding: 0; margin: 0;">
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script type="text/javascript">
+    const symbol = window.location.hash.match(/#(.*)/)[1]
+    new TradingView.widget({
+      "autosize": true,
+      "symbol": symbol + "USD",
+      "interval": "60",
+      "timezone": "Europe/London",
+      "theme": "Light",
+      "style": "1",
+      "locale": "ru",
+      "toolbar_bg": "#ffffff",
+      "enable_publishing": false,
+      "hideideas": true
+    })
+  </script>
+</body>
+</html>

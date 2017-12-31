@@ -2,6 +2,7 @@
 import {
   ArticleComponent,
   AuthDialogComponent,
+  CoinComponent,
   CoinsRsibbonComponent,
   FooterComponent,
   HeaderComponent,
@@ -17,12 +18,14 @@ import {
   PubCardComponent,
   PubLineComponent,
   ShareComponent,
+  TradingViewComponent,
   VideoRibbonComponent,
 } from './components'
 
 export const COMPONENTS: any[] = [
   ArticleComponent,
   AuthDialogComponent,
+  CoinComponent,
   CoinsRsibbonComponent,
   FooterComponent,
   HeaderComponent,
@@ -38,6 +41,7 @@ export const COMPONENTS: any[] = [
   PubCardComponent,
   PubLineComponent,
   ShareComponent,
+  TradingViewComponent,
   VideoRibbonComponent,
 ]
 

@@ -11,17 +11,17 @@ import {
 } from './components'
 
 export const ROUTES: Routes = [
-  { path: ''           , component: PageMainComponent    },
+  { path: ''               , component: PageMainComponent    },
 
-  { path: '101'        , component: Page101Component     },
+  { path: '101'            , component: Page101Component     },
 
-  { path: 'privacy'    , component: PagePrivacyComponent },
+  { path: 'privacy'        , component: PagePrivacyComponent },
 
-  { path: 'coins/:id'  , component: PageCoinComponent    },
-  { path: 'coins'      , component: PageCoinsComponent   },
+  { path: 'coins/:symbol'  , component: PageCoinComponent    },
+  { path: 'coins'          , component: PageCoinsComponent   },
 
-  { path: ':date/:url' , component: PageArticleComponent },
+  { path: ':date/:url'     , component: PageArticleComponent },
 
-  { path: '**'         , component: Page404Component     },
+  { path: '**'             , component: Page404Component     },
 ]
 

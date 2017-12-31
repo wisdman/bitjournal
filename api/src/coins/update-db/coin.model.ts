@@ -72,7 +72,7 @@ export const CoinModel = new Model({
     } catch (_) {
       ts = undefined
     }
-    return ts && { startDate: ts } || undefined
+    return ts && { lastBlockTS: ts } || undefined
   },
 
   lastBlockNumber: input => {
@@ -100,9 +100,14 @@ export const CoinModel = new Model({
     return output && { priceRUB: output } || undefined
   },
 
-  volume24h: input => {
+  volume24hUSD: input => {
     const output = Math.max(parseFloat(input) || 0, 0)
-    return output && { volume24h: output } || undefined
+    return output && { volume24hUSD: output } || undefined
+  },
+
+  volume24hRUB: input => {
+    const output = Math.max(parseFloat(input) || 0, 0)
+    return output && { volume24hRUB: output } || undefined
   },
 
   change1h: input => {

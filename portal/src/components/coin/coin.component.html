@@ -1,0 +1,161 @@
+<div *ngIf="value" class="bj-coin__wrapper">
+
+  <div class="bj-coin__row bj-coin__row--center">
+
+    <picture class="bj-coin__logo">
+      <img [src]="value.symbol | ccimg">
+    </picture>
+
+    <h1 class="bj-coin__h1">
+      <span>{{ value.title }}</span>
+      <span class="bj-coin__h1__symbol">{{ value.symbol }}</span>
+    </h1>
+
+    <div class="bj-coin__prices">
+      <div *ngIf="showPrice === 'USD'" class="bj-coin__prices__currency">
+        <span>$&nbsp;{{ value.priceUSD | number:'1.2-8' }}</span>
+      </div>
+      <div *ngIf="showPrice === 'RUB'" class="bj-coin__prices__currency">
+        <span>₽&nbsp;{{ value.priceRUB | number:'1.2-8' }}</span>
+      </div>
+      <div class="bj-coin__prices__btc">
+        <span>{{ value.priceBTC | number:'1.0-12' }}&nbsp;BTC</span>
+      </div>
+    </div>
+
+    <div class="bj-coin__controls__currency">
+      <button class="bj-coin__controls__currency-button"
+              (click)="showPrice = 'RUB'"
+              [class.bj-coin__controls__currency-button--active]="showPrice === 'RUB'">RUB</button>
+      <button class="bj-coin__controls__currency-button"
+              (click)="showPrice = 'USD'"
+              [class.bj-coin__controls__currency-button--active]="showPrice === 'USD'">USD</button>
+    </div>
+
+  </div>
+
+  <div class="bj-coin__row">
+    <div class="bj-coin__col">
+
+      <div *ngIf="value.founder" class="bj-coin__info">
+        <h3>Основатель:</h3>
+        <span>{{ value.founder }}</span>
+      </div>
+
+      <div *ngIf="value.startDate" class="bj-coin__info">
+        <h3>Дата основания:</h3>
+        <span>{{ value.startDate }}</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Алгоритм:</h3>
+        <span>{{ value.algorithm }}</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Proof type:</h3>
+        <span>{{ value.proofType }}</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Доступно монет:</h3>
+        <span>{{ value.availableSupply }}</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Всего монет:</h3>
+        <span>{{ value.maxSupply }}</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Награда за блок:</h3>
+        <span>{{ value.blockReward }}</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Последний блок:</h3>
+        <span>{{ value.lastBlockNumber }}</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Мощность сети:</h3>
+        <span>{{ value.hashRate | number:'1.0-0' }}</span>
+      </div>
+
+    </div>
+
+    <div class="bj-coin__col bj-coin__col--row">
+
+      <div *ngIf="showPrice === 'USD'" class="bj-coin__info">
+        <h3>Капитализация:</h3>
+        <span>$&nbsp;{{ value.capitalizationUSD | number:'1.2-2' }}</span>
+      </div>
+
+      <div *ngIf="showPrice === 'RUB'" class="bj-coin__info">
+        <h3>Капитализация:</h3>
+        <span>₽&nbsp;{{ value.capitalizationRUB | number:'1.2-2' }}</span>
+      </div>
+
+      <div *ngIf="showPrice === 'USD'" class="bj-coin__info">
+        <h3>Объем, 24ч:</h3>
+        <span>$&nbsp;{{ value.volume24hUSD | number:'1.2-2' }}</span>
+      </div>
+
+      <div *ngIf="showPrice === 'RUB'" class="bj-coin__info">
+        <h3>Объем, 24ч:</h3>
+        <span>₽&nbsp;{{ value.volume24hRUB | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Изм., 1ч:</h3>
+        <span [class.bj-common--up]="value.change1h > 0"
+              [class.bj-common--down]="value.change1h < 0" >{{ value.change1h }}&nbsp;%</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Изм., 24ч:</h3>
+        <span [class.bj-common--up]="value.change24h > 0"
+              [class.bj-common--down]="value.change24h < 0" >{{ value.change24h }}&nbsp;%</span>
+      </div>
+
+      <div class="bj-coin__info">
+        <h3>Изм., 7д:</h3>
+        <span [class.bj-common--up]="value.change7d > 0"
+              [class.bj-common--down]="value.change7d < 0" >{{ value.change7d }}&nbsp;%</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bj-coin__row bj-coin__chart">
+    <iframe [src]="chartURL" frameborder="0"></iframe>
+  </div>
+
+  <div class="bj-coin__row bj-coin__table-wrapper">
+    <mat-table #table [dataSource]="marketsSource" matSort matSortActive="price" matSortDirection="desc" matSortDisableClear class="bj-coin__table">
+
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Биржа</mat-header-cell>
+        <mat-cell *matCellDef="let item">{{ item.title }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:130px">Цена, $</mat-header-cell>
+        <mat-cell *matCellDef="let item" style="max-width:130px">{{ item.price | number:'1.2-4' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="high24Hour">
+        <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:130px">Min, 24ч</mat-header-cell>
+        <mat-cell *matCellDef="let item" style="max-width:130px">{{ item.high24Hour | number:'1.2-4' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="low24Hour">
+        <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width:130px">Max, 24ч</mat-header-cell>
+        <mat-cell *matCellDef="let item" style="max-width:130px">{{ item.low24Hour | number:'1.2-4' }}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
+</div>

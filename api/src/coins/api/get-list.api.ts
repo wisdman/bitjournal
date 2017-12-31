@@ -23,7 +23,6 @@ const FIELDS = [
   "priceUSD",
   "priceBTC",
   "priceRUB",
-  "volume24h",
   "change24h",
   "rating",
 ]

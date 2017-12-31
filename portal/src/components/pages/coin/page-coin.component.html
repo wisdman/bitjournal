@@ -1,0 +1,15 @@
+<main class="bj-page-coin__wrapper">
+
+  <div class="bj-page-coin__row">
+
+    <div class="bj-page-coin__col bj-common--white-box bj-coin" [value]="item | async"></div>
+
+    <aside class="bj-page-coin__aside">
+      <h3 class="column-header">Новости</h3>
+      <a *ngFor="let publication of publications | async" class="bj-pub-line" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]"></a>
+    </aside>
+
+  </div>
+
+
+</main>
