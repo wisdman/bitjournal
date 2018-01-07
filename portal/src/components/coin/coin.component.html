@@ -57,29 +57,29 @@
         <span>{{ value.proofType }}</span>
       </div>
 
-      <div class="bj-coin__info">
+      <div *ngIf="value.availableSupply" class="bj-coin__info">
         <h3>Доступно монет:</h3>
         <span>{{ value.availableSupply }}</span>
       </div>
 
-      <div class="bj-coin__info">
+      <div *ngIf="value.maxSupply" class="bj-coin__info">
         <h3>Всего монет:</h3>
         <span>{{ value.maxSupply }}</span>
       </div>
 
-      <div class="bj-coin__info">
+      <div *ngIf="value.blockReward" class="bj-coin__info">
         <h3>Награда за блок:</h3>
         <span>{{ value.blockReward }}</span>
       </div>
 
-      <div class="bj-coin__info">
+      <div *ngIf="value.lastBlockNumber" class="bj-coin__info">
         <h3>Последний блок:</h3>
         <span>{{ value.lastBlockNumber }}</span>
       </div>
 
-      <div class="bj-coin__info">
+      <div *ngIf="value.hashRate" class="bj-coin__info">
         <h3>Мощность сети:</h3>
-        <span>{{ value.hashRate | number:'1.0-0' }}</span>
+        <span>{{ value.hashRate | number:'1.0-0' }}HS/s</span>
       </div>
 
     </div>
