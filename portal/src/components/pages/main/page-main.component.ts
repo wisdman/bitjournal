@@ -1,8 +1,10 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core'
+import { Component, ViewEncapsulation, OnInit, ViewChildren, QueryList, ViewContainerRef } from '@angular/core'
 
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/forkJoin'
 import 'rxjs/add/operator/map'
+
+import { PubCardComponent } from  '../../pub-card'
 
 import {
   IPublication,
@@ -42,21 +44,31 @@ export class PageMainComponent implements OnInit {
     this.publications_weight_0 = this._api
                                      .get< Array<IPublication> >(`${PUBLICATIONS_API_PATH}`, {
                                        weight: '0',
-                                       limit: '30'
+                                       limit: '20'
                                      })
 
     this.publications_weight_12 = this._api
                                       .get< Array<IPublication> >(`${PUBLICATIONS_API_PATH}`, {
                                         weight: '1,2',
-                                        limit: '30'
-                                      })
-                                      .map(items => {
-                                        this._loaderService.hide()
-                                        return items
+                                        limit: '9'
                                       })
 
     this.publications = Observable.forkJoin(this.publications_weight_0, this.publications_weight_12)
-                                  .map( ([s1, s2]) => [...s1, ...s2] )
+                                  .map( ([s1, s2]) => {
+                                    this._loaderService.hide()
+                                    const result = [...s1, ...s2]
+                                    result.forEach( item => console.dir(item) )
+                                    return result
+                                  })
+  }
+
+  @ViewChildren('publicationsList', { read: ViewContainerRef }) publicationsList: QueryList<PubCardComponent>
+
+  ngAfterViewInit() {
+    this.publicationsList.changes.subscribe(t => {
+      console.dir(t)
+      console.dir(this.publicationsList)
+    })
   }
 
 }
