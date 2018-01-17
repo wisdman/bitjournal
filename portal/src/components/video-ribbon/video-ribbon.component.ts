@@ -15,7 +15,7 @@ import { IVideoRibbonItem } from './video-ribbon-item.interface'
 const API_BASE = '/video'
 
 @Component({
-  selector: 'video-ribbon',
+  selector: '.bj-video-ribbon',
   templateUrl: './video-ribbon.component.html',
   styleUrls: [ './video-ribbon.component.css' ],
   encapsulation: ViewEncapsulation.None
@@ -34,7 +34,7 @@ export class VideoRibbonComponent implements OnInit {
     return {
       id: item.id,
       href: 'https://www.youtube.com/watch?v=' + item.id,
-      thumb: item.snippet.thumbnails.default.url,
+      thumb: item.snippet.thumbnails.medium.url,
       date: new Date(item.snippet.publishedAt),
       title: item.snippet.title,
       duration: item.contentDetails.duration,

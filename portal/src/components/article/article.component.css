@@ -195,3 +195,37 @@
   margin: 40px auto 30px auto;
   padding: 0 20px;
 }
+
+.bj-article__content {
+  padding: var(--indent-base) 0;
+}
+
+.bj-article__footer {
+  border-top: 1px solid #eee;
+}
+
+.bj-article__footer .bj-article__share {
+  margin-bottom: 40px;
+}
+
+.bj-article__telegram {
+  width: 100%;
+  max-width: var(--max-article-width);
+  padding: 0 20px;
+
+  margin: 40px auto 0 auto;
+}
+
+.bj-article__telegram__link {
+  color: inherit;
+  text-decoration: none;
+  text-transform: none;
+}
+
+.bj-article__telegram__link span {
+  color: #0088cc;
+}
+
+.bj-article__telegram__link:hover span {
+  text-decoration: underline;
+}
