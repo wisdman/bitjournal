@@ -52,5 +52,6 @@ export class VideoRibbonComponent implements OnInit {
                      .map( items => this._youTubeService.getVideoData(items) )
                      .mergeAll()
                      .map( items => items.map( item => this.createVideoRibbonItem(item) ) )
+                     .map( items => items.sort((a, b) => a.date < b.date ? 1 : -1 ) )
   }
 }
