@@ -37,7 +37,7 @@ export class VideoRibbonComponent implements OnInit {
       thumb: item.snippet.thumbnails.medium.url,
       date: new Date(item.snippet.publishedAt),
       title: item.snippet.title,
-      duration: item.contentDetails.duration,
+      duration: YouTubeService.convertDuration(item.contentDetails.duration),
       view: parseInt(item.statistics.viewCount) || 0,
       like: parseInt(item.statistics.likeCount) || 0,
       dislike: parseInt(item.statistics.dislikeCount) || 0,
