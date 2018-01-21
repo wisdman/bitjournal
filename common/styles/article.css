@@ -66,6 +66,7 @@
   line-height: 1.5;/* from 1.618*/
 
   margin: 0;
+  margin-left: 2rem;
   padding: 0;
 }
 
@@ -86,14 +87,23 @@
   margin-bottom: 1.8rem;
 }
 
-a {
+.blockquote-foooter {
+  margin-top: 1rem;
+}
+
+.article a {
   color:inherit;
   text-decoration: none;
 }
 
-a:hover {
+.article a:hover {
   color: #ef6c00;
   text-decoration: underline;
 }
 
-/* Add margin-top 2rem and margin-bottom 2.1rem to the bj-article__content article */
+.bj-article__content {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Add margin-top 2rem and margin-bottom 2rem to the bj-article__content article */
