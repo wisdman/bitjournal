@@ -11,7 +11,7 @@
   max-width: var(--max-text-width);
 
   font-size: 1rem;
-  line-height: 1.45;/* from 1.618*/
+  line-height: 1.5;/* from 1.618*/
 
   margin: 1em auto;
   padding: 0 var(--padding-size);
@@ -82,4 +82,18 @@
   border-left: 3px solid grey;
 
   margin-left: 5rem;
+  margin-top: 1.8rem;
+  margin-bottom: 1.8rem;
 }
+
+a {
+  color:inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ef6c00;
+  text-decoration: underline;
+}
+
+/* Add margin-top 2rem and margin-bottom 2.1rem to the bj-article__content article */
