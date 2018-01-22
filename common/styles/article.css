@@ -3,7 +3,7 @@
   --padding-size: 20px;
 }
 
-.article p {
+.article p, .blockquote {
   display: block;
   position: relative;
 
@@ -85,19 +85,70 @@
 }
 
 .blockquote {
-  font-size: 1.2rem;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  max-width: var(--max-text-width);
+
   line-height: 1.5rem;
   color:dimgrey;
+  text-align: center;
+  font-style: italic;
 
-  border-left: 3px solid grey;
+  border-top: 3px solid #ef6c00;
 
-  margin-left: 7rem;
-  padding-left: 1.3rem;
+  margin-top: 1.6rem;
+  padding-top:1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blockquote::before {
+  position: absolute;
+  display: block;
+
+  background-color: white;
+
+  top: 0.05em;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding-right: 0.12em;
+
+  content: "\275D";
+  font-size: 4rem;
+  color: #ef6c00;
 }
 
 .blockquote-foooter {
-  font-size: 1.1rem;
   margin-top: 1rem;
+}
+
+.blockquote img {
+  display: block;
+
+  border-radius: 50%;
+
+  width: 60px;
+  height: 60px;
+
+  margin-top: 1rem;
+  margin-bottom:0;
+}
+
+.blockquote-author {
+  color: black;
+  font-size: 1.2rem;
+  font-style: normal;
+
+  margin-top: 1rem;
+}
+
+.blockquote-author-position {
+  font-style: normal;
+  font-size: 0.9rem;
 }
 
 .article a {
@@ -113,5 +164,3 @@
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
-
-/* Add margin-top 2rem and margin-bottom 2rem to the bj-article__content article */
