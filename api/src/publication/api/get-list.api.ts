@@ -55,11 +55,15 @@ export class GetListAPI extends RouteMiddleware {
   @Get(`${PUBLICATIONS_API_PATH}`, 'q')
   async search(ctx: Context, next: INext) {
 
-    let q = String(ctx.route.data.query)
+    let q = String(ctx.route.query.q)
+            .replace(/[^a-zа-я0-9]+/,' ')
+            .replace(/\s+/,' ')
+            .trim()
 
-    q = q.replace(/[^a-zа-я0-9]+/,' ')
-         .replace(/\s+/,' ')
-         .trim()
+    if (q.length === 0) {
+      ctx.set([])
+      return
+    }
 
     let query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
 
