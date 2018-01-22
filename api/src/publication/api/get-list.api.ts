@@ -1,6 +1,6 @@
 import { RouteMiddleware, Context, INext, Get, ACL } from '@core/service'
 
-import { Query } from '@core/db'
+import { Query, CustomQuery } from '@core/db'
 import { Role } from '@common/role'
 
 import {
@@ -54,8 +54,32 @@ export class GetListAPI extends RouteMiddleware {
 
   @Get(`${PUBLICATIONS_API_PATH}`, 'q')
   async search(ctx: Context, next: INext) {
-    ctx.set([])
-    return
+
+    let q = String(ctx.route.data.query)
+
+    q = q.replace(/[^a-zа-я0-9]+/,' ')
+         .replace(/\s+/,' ')
+         .trim()
+
+    let query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
+
+              ? new Query(PUBLICATIONS_DATATABLE)
+                    .select(FIELDS_FOR_ADMINS)
+                    .where(`(tsv @@ plainto_tsquery($1))`, q)
+
+              : new Query(PUBLICATIONS_DATATABLE)
+                    .select(FIELDS_FOR_EVERYONE)
+                    .where(`enable AND ts <= timezone('UTC', now()) AND (tsv @@ plainto_tsquery($1))`, q)
+
+    query = query.order({'ts': 'DESC'})
+
+    const limit = Math.max(~~( new Array<string>().concat(ctx.route.query['limit']).pop() || '' ) || 0, 0)
+    if (limit > 0)
+      query = query.limit(limit)
+
+
+    const result = await query.exec<IPartialPublication>(ctx.db)
+    ctx.set(result)
   }
 
   @Get(`${PUBLICATIONS_API_PATH}`)
