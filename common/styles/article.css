@@ -102,8 +102,16 @@
 
   margin-top: 1.6rem;
   padding-top:1.5rem;
-  margin-left: auto;
-  margin-right: auto;
+}
+
+@media (max-width: 1100px) {
+  .blockquote {
+    margin-left: 3rem;
+    margin-right: 3rem;
+
+    width: auto;
+    max-width: none;
+  }
 }
 
 .blockquote::before {
@@ -126,21 +134,52 @@
   margin-top: 1rem;
 }
 
-.blockquote img {
+.blockquote-picture {
+  margin-top: 1rem;
+  margin-bottom:0;
+
   display: block;
+  position: relative;
+
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+
+  height: 60px;
+  min-height: 60px;
+  max-height: 60px;
+
+  flex: 0 0 60px;
 
   border-radius: 50%;
 
-  width: 60px;
-  height: 60px;
+  overflow: hidden;
 
-  margin-top: 1rem;
-  margin-bottom:0;
+  background: #f9f9f9;
+}
+
+.blockquote-picture img {
+  display: block;
+  box-sizing: border-box;
+
+  position: absolute;
+  min-width: 100%;
+  min-height: 100%;
+  width: 100%;
+
+  top: 36%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  object-fit: cover;
+
+  border-radius: 50%;
 }
 
 .blockquote-author {
   color: black;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-style: normal;
 
   margin-top: 1rem;
