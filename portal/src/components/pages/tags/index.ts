@@ -1,1 +1,1 @@
-export * from './page-main.component'
+export * from './page-tags.component'

@@ -4,7 +4,7 @@
   </picture>
 
   <div *ngIf="value.tags.length > 0" class="bj-article__header__tags">
-    <a *ngFor="let tag of value.tags">#{{ tag }}</a>
+    <a *ngFor="let tag of value.tags" [routerLink]="['/tags', tag]">#{{ tag }}</a>
   </div>
 
   <time class="bj-article__header__datetime" [attr.datetime]="value.ts | timestamp">

@@ -119,7 +119,7 @@
   border-right: 5px solid transparent;
 }
 
-/*.bj-article__header__tags a:hover {
+.bj-article__header__tags a:hover {
   background-color: var(--color-active);
 }
 .bj-article__header__tags a:hover::before {
@@ -127,7 +127,7 @@
 }
 .bj-article__header__tags a:hover::after {
   border-top-color: var(--color-active);
-}*/
+}
 
 .bj-article__header__datetime {
   display: block;

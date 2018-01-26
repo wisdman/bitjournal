@@ -157,6 +157,15 @@
 .bj-pub-card__tags {
   font-size: 12px;
   line-height: 1.2;
-  margin-top: var(--indent-base);
+  margin-top: 8px;
+  padding: 0 var(--indent-base);
+  color: var(--color-gray);
+
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bj-pub-card__tags span {
+  margin-right: 5px;
   color: var(--color-gray);
 }
