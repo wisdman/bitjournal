@@ -55,11 +55,16 @@ export class GetListAPI extends RouteMiddleware {
   @Get(`${PUBLICATIONS_API_PATH}`, 'q')
   async search(ctx: Context, next: INext) {
 
-    let q = String(ctx.route.data.query)
+    let q = String(ctx.route.query.q)
+            .toLowerCase()
+            .replace(/[^a-zа-я0-9]+/,' ')
+            .replace(/\s+/,' ')
+            .trim()
 
-    q = q.replace(/[^a-zа-я0-9]+/,' ')
-         .replace(/\s+/,' ')
-         .trim()
+    if (q.length === 0) {
+      ctx.set([])
+      return
+    }
 
     let query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
 
@@ -74,9 +79,7 @@ export class GetListAPI extends RouteMiddleware {
     query = query.order({'ts': 'DESC'})
 
     const limit = Math.max(~~( new Array<string>().concat(ctx.route.query['limit']).pop() || '' ) || 0, 0)
-    if (limit > 0)
-      query = query.limit(limit)
-
+    query = query.limit(limit > 0 ? limit : 100)
 
     const result = await query.exec<IPartialPublication>(ctx.db)
     ctx.set(result)

@@ -7,6 +7,7 @@ import {
   MessageService,
   MetaService,
   NotificationService,
+  SearchService,
   UserService,
   YouTubeService,
 } from './services'
@@ -20,6 +21,7 @@ export const SERVICES: any[] = [
   MessageService,
   MetaService,
   NotificationService,
+  SearchService,
   UserService,
   YouTubeService,
 ]

@@ -17,6 +17,7 @@ import {
   PagePrivacyComponent,
   PubCardComponent,
   PubLineComponent,
+  SearchComponent,
   ShareComponent,
   TradingViewComponent,
   VideoRibbonComponent,
@@ -40,6 +41,7 @@ export const COMPONENTS: any[] = [
   PagePrivacyComponent,
   PubCardComponent,
   PubLineComponent,
+  SearchComponent,
   ShareComponent,
   TradingViewComponent,
   VideoRibbonComponent,
@@ -47,4 +49,5 @@ export const COMPONENTS: any[] = [
 
 export const ENTRY_COMPONENTS: any[] = [
   AuthDialogComponent,
+  SearchComponent,
 ]

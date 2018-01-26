@@ -60,3 +60,16 @@
 .bj-common--down {
   color: var(--color-down);
 }
+
+.bj-backdrop {
+  background-color: #000;
+  backdrop-filter: blur(2px);
+}
+
+.bj-backdrop.cdk-overlay-backdrop-showing {
+  opacity: 0.85;
+}
+
+.bj-panel {
+  height: 100%;
+}
