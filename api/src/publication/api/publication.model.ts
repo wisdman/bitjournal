@@ -124,7 +124,7 @@ export const PublicationModel = new Model({
   tags: input => {
     const result = new Array<any>()
                    .concat(input)
-                   .map( item => String(item).trim() )
+                   .map( item => String(item).trim().toLowerCase() )
 
     return { tags: result }
   },
