@@ -26,7 +26,7 @@ export class LayoutComponent {
     this._router
         .events
         .filter( event => (event instanceof NavigationEnd) )
-        .subscribe( async event => {
+        .subscribe( event => {
           if (this._isServer)
             return
 
