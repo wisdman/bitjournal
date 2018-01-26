@@ -3,7 +3,7 @@
   --padding-size: 20px;
 }
 
-.article p, blockquote {
+.article p, .article blockquote {
   display: block;
   position: relative;
 
