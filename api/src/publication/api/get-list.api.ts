@@ -1,6 +1,6 @@
 import { RouteMiddleware, Context, INext, Get, ACL } from '@core/service'
 
-import { Query, CustomQuery } from '@core/db'
+import { Query } from '@core/db'
 import { Role } from '@common/role'
 
 import {
