@@ -31,14 +31,7 @@ export class LayoutComponent {
             return
 
           window.scrollTo(0,0)
-          this._ext.ya.then( ya => {
-            console.dir(ya)
-
-            if (!ya)
-              return
-
-            ya.hit(document.location.href)
-          })
+          this._ext.ya.then( ya => ya && ya.hit(document.location.href) )
         })
 
   }

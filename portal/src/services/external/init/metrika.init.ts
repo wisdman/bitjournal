@@ -6,7 +6,7 @@ import {
 
 export function MetrikaInit(): Promise<void> {
   return new Promise( (resolve, reject) => {
-    (<any>window).yandex_metrika_callbacks = function() {
+    (<any>window).yandex_metrika_callback = function() {
 
       try {
         (<any>window)[`yaCounter${YA_METRIKA_ID}`] = new (<any>window).Ya.Metrika({
