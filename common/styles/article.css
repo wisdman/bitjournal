@@ -3,7 +3,7 @@
   --padding-size: 20px;
 }
 
-.article p, .blockquote {
+.article p, blockquote {
   display: block;
   position: relative;
 
@@ -84,7 +84,7 @@
   margin-bottom: 0.5rem;
 }
 
-.blockquote {
+.article blockquote {/*.blockquote*/
   display: flex;
   position: relative;
   flex-direction: column;
@@ -105,7 +105,7 @@
 }
 
 @media (max-width: 1100px) {
-  .blockquote {
+  .article blockquote {/*.blockquote*/
     margin-left: 3rem;
     margin-right: 3rem;
 
@@ -114,7 +114,7 @@
   }
 }
 
-.blockquote::before {
+.article blockquote::before {/*.blockquote::before*/
   position: absolute;
   display: block;
 
@@ -130,11 +130,7 @@
   color: #ef6c00;
 }
 
-.blockquote-foooter {
-  margin-top: 1rem;
-}
-
-.blockquote-picture {
+.article blockquote picture {/*.blockquote-picture*/
   margin-top: 1rem;
   margin-bottom:0;
 
@@ -158,7 +154,7 @@
   background: #f9f9f9;
 }
 
-.blockquote-picture img {
+.article blockquote picture img {/*.blockquote-picture img*/
   display: block;
   box-sizing: border-box;
 
@@ -177,7 +173,7 @@
   border-radius: 50%;
 }
 
-.blockquote-author {
+.article blockquote span {/*.blockquote-author*/
   color: black;
   font-size: 1.1rem;
   font-style: normal;
@@ -185,7 +181,7 @@
   margin-top: 1rem;
 }
 
-.blockquote-author-position {
+.article blockquote span+span {/*.blockquote-author-position*/
   font-style: normal;
   font-size: 0.9rem;
 }
