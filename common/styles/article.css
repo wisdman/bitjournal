@@ -67,7 +67,14 @@
 
   margin: 0;
   margin-left: 2rem;
+  margin-bottom: 1rem;
   padding: 0;
+}
+
+.article li > ul,
+.article li > ol {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .article img {
@@ -79,7 +86,7 @@
 }
 
 .article a {
-  color:inherit;
+  color: #ef6c00;
   text-decoration: none;
 }
 

@@ -34,6 +34,13 @@
   margin-top: var(--indent-base);
 }
 
+.bj-page-main__button {
+  width: 100%;
+  flex: 0 0 100%;
+  order: 3;
+  margin-top: var(--indent-base);
+}
+
 @media (min-width: 600px) {
   .bj-page-main {
     padding-left: var(--indent-half);
@@ -134,6 +141,11 @@
     }
 
     .bj-page-main__video {
+      grid-column-start: 1;
+      grid-column-end: -1;
+    }
+
+    .bj-page-main__button {
       grid-column-start: 1;
       grid-column-end: -1;
     }

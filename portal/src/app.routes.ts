@@ -6,6 +6,7 @@ import {
   PageArticleComponent,
   PageCoinComponent,
   PageCoinsComponent,
+  PageDonateComponent,
   PageMainComponent,
   PagePrivacyComponent,
 } from './components'
@@ -14,6 +15,8 @@ export const ROUTES: Routes = [
   { path: ''               , component: PageMainComponent    },
 
   { path: '101'            , component: Page101Component     },
+
+  { path: 'donate'         , component: PageDonateComponent  },
 
   { path: 'privacy'        , component: PagePrivacyComponent },
 

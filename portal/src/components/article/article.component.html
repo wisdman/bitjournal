@@ -4,7 +4,7 @@
   </picture>
 
   <div *ngIf="value.tags.length > 0" class="bj-article__header__tags">
-    <a *ngFor="let tag of value.tags | async">{{ tag }}</a>
+    <a *ngFor="let tag of value.tags">#{{ tag }}</a>
   </div>
 
   <time class="bj-article__header__datetime" [attr.datetime]="value.ts | timestamp">
@@ -25,3 +25,4 @@
   </div>
   <div *ngIf="value" class="bj-article__share share" [value]="[value.ts | timestamp:'URL', value.url]"></div>
 </div>
+

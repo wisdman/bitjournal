@@ -153,3 +153,10 @@
 .bj-pub-card__datetime i {
   margin-right: .5em;
 }
+
+.bj-pub-card__tags {
+  font-size: 12px;
+  line-height: 1.2;
+  margin-top: var(--indent-base);
+  color: var(--color-gray);
+}

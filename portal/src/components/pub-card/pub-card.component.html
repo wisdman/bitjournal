@@ -13,3 +13,6 @@
   <span>{{ value.ts | timestamp:'HR' }}</span>
 </time>
 <h1 class="bj-pub-card__h1">{{ value.title }}</h1>
+<div *ngIf="value.tags.length > 0" class="bj-pub-card__tags">
+  <a *ngFor="let tag of value.tags">#{{ tag }}</a>
+</div>
