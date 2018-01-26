@@ -1,0 +1,7 @@
+
+<main class="bj-page-tag">
+  <div class="bj-page-tag__header">
+    <h1 class="column-header">#{{ tag }}</h1>
+  </div>
+  <a #publicationsList *ngFor="let publication of publications | async" class="bj-pub-card bj-page-tag__card" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]"></a>
+</main>

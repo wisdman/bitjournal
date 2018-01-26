@@ -6,7 +6,6 @@ import {
 
 export function MetrikaInit(): Promise<void> {
   return new Promise( (resolve, reject) => {
-
     (<any>window).yandex_metrika_callbacks = function() {
 
       try {
@@ -16,7 +15,9 @@ export function MetrikaInit(): Promise<void> {
           trackLinks: true,
           accurateTrackBounce: true
         })
-      } catch (_) {}
+      } catch (error) {
+        reject( error )
+      }
 
       const YA = (<any>window)[`yaCounter${YA_METRIKA_ID}`]
 

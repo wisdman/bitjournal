@@ -1,0 +1,12 @@
+<div class="bj-search__wrapper" [formGroup]="searchForm">
+  <mat-form-field class="bj-search__input">
+    <input matInput type="text" placeholder="Поиск" formControlName="query">
+    <mat-hint *ngIf="inProgress">Ищем...</mat-hint>
+  </mat-form-field>
+  <div class="bj-search__results">
+    <a *ngFor="let publication of publications | async" class="bj-pub-line bj-page-main__news-card" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]" [class.bj-page-main__news-card--hide]="publication.weight !== 0" (click)="close()"></a>
+  </div>
+</div>
+<button class="bj-search__close" (click)="close()">
+  <i class="fa fa-times" aria-hidden="true"></i>
+</button>

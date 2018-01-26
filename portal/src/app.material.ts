@@ -8,11 +8,16 @@ import {
   MatSnackBarModule,
   MatSortModule,
   MatTableModule,
-} from '@angular/material';
+} from '@angular/material'
+
+import {
+  OverlayModule
+} from '@angular/cdk/overlay'
 
 import {
   ScrollDispatchModule,
-} from '@angular/cdk/scrolling';
+} from '@angular/cdk/scrolling'
+
 
 export const MATERIAL: any[] = [
   MatButtonModule,
@@ -24,5 +29,6 @@ export const MATERIAL: any[] = [
   MatSortModule,
   MatTableModule,
 
+  OverlayModule,
   ScrollDispatchModule,
 ]

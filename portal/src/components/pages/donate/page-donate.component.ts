@@ -7,12 +7,12 @@ import {
 } from '../../../services'
 
 @Component({
-  selector: 'page-privacy.page',
-  templateUrl: './page-privacy.component.html',
-  styleUrls: [ './page-privacy.component.css' ],
+  selector: 'page-donate.page',
+  templateUrl: './page-donate.component.html',
+  styleUrls: [ './page-donate.component.css' ],
   encapsulation: ViewEncapsulation.None
 })
-export class PagePrivacyComponent implements OnInit {
+export class PageDonateComponent implements OnInit {
 
   constructor(
     private readonly _meta: MetaService,

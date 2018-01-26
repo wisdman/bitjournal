@@ -1,0 +1,5 @@
+
+<main class="bj-page-tags">
+  <h1 class="bj-page-tags__header">Теги</h1>
+  <a *ngFor="let tag of tags | async" [routerLink]="['/tags', tag]">#{{ tag }}</a>
+</main>
