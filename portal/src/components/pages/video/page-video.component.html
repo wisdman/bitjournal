@@ -1,0 +1,29 @@
+
+<main class="bj-page-video">
+
+  <div class="bj-page-video__wrapper">
+    <a *ngFor="let item of items | async" [href]="item.href" target="_blank" class="bj-page-video__item">
+      <figure class="bj-page-video__figure">
+        <picture class="bj-page-video__picture">
+          <img [src]="item.thumb">
+        </picture>
+        <figcaption class="bj-page-video__caption bj-page-video__caption--left">{{ item.duration }}</figcaption>
+        <figcaption class="bj-page-video__caption bj-page-video__caption--right">
+          <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+          <span>{{ item.like }}</span>
+        </figcaption>
+      </figure>
+      <time class="bj-page-video__datetime" [attr.datetime]="item.date">
+        <i class="fa fa-clock-o" aria-hidden="true"></i>
+        <span>{{ item.date | timestamp:'HR' }}</span>
+      </time>
+      <h3 class="bj-page-video__title">{{ item.title }}</h3>
+    </a>
+  </div>
+
+  <aside class="bj-page-video__aside">
+    <h1 class="column-header">Последние новости</h1>
+    <a *ngFor="let publication of publications | async" class="bj-pub-line" [value]="publication" [routerLink]="['/',publication.ts | timestamp:'DATE', publication.url]"></a>
+  </aside>
+
+</main>
