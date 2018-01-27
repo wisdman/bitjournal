@@ -271,7 +271,7 @@ module.exports = {
 
   ].concat( isProduction ? [
     // === Minify js ===
-    new MinifyPlugin({
+  /*  new MinifyPlugin({
       booleans: false,
       infinity: false,
       simplify: false,
@@ -281,7 +281,7 @@ module.exports = {
     },{
       comments: false,
       sourceMap: false
-    })
+    })*/
   ] : []),
 
   node: false,
