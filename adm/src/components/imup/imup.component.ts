@@ -25,6 +25,9 @@ export class ImupComponent implements ControlValueAccessor {
 
   @Input() editor: boolean = false
 
+  @Input() maxWidth: number = 0
+  @Input() maxHeight: number = 0
+
   oid: number | null = null
 
   constructor(
@@ -68,7 +71,11 @@ export class ImupComponent implements ControlValueAccessor {
   add() {
     this._fileService
         .upload({
-          accept: this.accept
+          accept: this.accept,
+          image: {
+            width: this.maxWidth,
+            height: this.maxHeight
+          }
         })
         .subscribe( result => this.value = result.oid )
   }

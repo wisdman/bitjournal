@@ -13,17 +13,19 @@ export const OPTIONS = {
   htmlAllowComments: false,
 
   htmlAllowedAttrs: [
-    'alt', 'class', 'href', 'src', 'target', 'title', 'contenteditable'
+    'alt', 'class', 'href', 'src', 'target', 'title', 'contenteditable', 'frameborder'
   ],
 
   htmlAllowedEmptyTags: [
-    'img', 'script', 'video',
+    'img', 'script', 'video', 'iframe',
   ],
 
   htmlAllowedStyleProps: [ ],
 
   htmlAllowedTags: [
-    'a', 'blockquote', 'div', 'em', 'figcaption', 'figure', 'h3', 'h4', 'img', 'li', 'ol', 'p', 'picture', 'script', 'span', 'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'ul', 'video'
+    'a', 'blockquote', 'div', 'em', 'figcaption', 'figure', 'h3', 'h4', 'iframe', 'img', 'li', 'ol', 'p', 'picture',
+    'script', 'span', 'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'ul', 'video',
+    'embed-twitter', 'embed-facebook', 'embed-vk'
   ],
 
   htmlDoNotWrapTags: [
@@ -37,7 +39,7 @@ export const OPTIONS = {
   placeholderText: 'Контент',
 
   pluginsEnabled: [
-    'codeBeautifier', 'codeView', 'fullscreen', 'lineBreaker', 'link', 'lists', 'paragraphFormat', 'table', 'url', 'image'
+    'codeBeautifier', 'codeView', 'fullscreen', 'lineBreaker', 'link', 'lists', 'paragraphFormat', 'table', 'url', 'custom'
    ],
 
   shortcutsEnabled: ['bold', 'italic', 'underline', 'strikeThrough', 'indent', 'outdent', 'undo', 'redo', 'createLink'],
@@ -46,10 +48,14 @@ export const OPTIONS = {
   tabSpaces: 2,
 
   toolbarButtons: [
-    'selectAll', '|', 'undo', 'redo', '|', 'clearFormatting', 'paragraphFormat', '|',
-    'bold', 'italic', 'underline', 'strikeThrough', '|', 'subscript', 'superscript', '|',
+    'selectAll', '|',
+    'undo', 'redo', '|',
+    'clearFormatting', 'paragraphFormat', '|',
+    'bold', 'italic', 'underline', 'strikeThrough', '|',
+    'subscript', 'superscript', '|',
     'formatOL', 'formatUL', 'outdent', 'indent', '|',
-    'insertLink', 'insertTable', 'insertImage', '|', 'fullscreen', 'html'
+    'insertBlockquote', 'insertLink', 'insertTable', 'insertImage', 'insertVideo', 'insertSocial', '|',
+    'fullscreen', 'html'
   ],
   toolbarButtonsMD: null,
   toolbarButtonsSM: null,
@@ -73,7 +79,6 @@ export const OPTIONS = {
   paragraphFormat: {
     N: 'Normal',
     H3: 'Heading 3',
-    H4: 'Heading 4'
   },
   paragraphFormatSelection: true,
   paragraphMultipleStyles: false,
