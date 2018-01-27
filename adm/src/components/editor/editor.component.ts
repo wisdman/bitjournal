@@ -7,6 +7,10 @@ import './froala/imports'
 
 import { OPTIONS } from './froala/options'
 
+import {
+  FileService,
+} from '../../services'
+
 @Component({
   selector: 'editor',
   template: '',
@@ -25,7 +29,11 @@ export class EditorComponent implements OnInit, OnDestroy, ControlValueAccessor 
 
   private _listeningEvents: Array<string> = new Array<string>()
 
-  constructor(el: ElementRef,  private zone: NgZone) {
+  constructor(
+    el: ElementRef,
+    private zone: NgZone,
+    private readonly _fileService: FileService
+  ) {
     const element: any = el.nativeElement;
 
     this._$element = (<any>$(element))
@@ -93,6 +101,7 @@ export class EditorComponent implements OnInit, OnDestroy, ControlValueAccessor 
                          .froalaEditor(OPTIONS)
                          .data('froala.editor')
                          .$el
+      ;(<any>window)._fileService = this._fileService
     })
 
     this._initialized = true

@@ -1,6 +1,6 @@
 
 
-import { NgModule } from '@angular/core'
+import { NgModule, APP_INITIALIZER } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,6 +17,11 @@ import { ROUTES }   from './app.routes'
 import { SERVICES } from './app.services'
 
 import { LayoutComponent } from './components'
+
+import {
+  ExternalService,
+  ExternalServiceFactory,
+} from './services'
 
 @NgModule({
   bootstrap: [ LayoutComponent ],
@@ -45,11 +50,23 @@ import { LayoutComponent } from './components'
   ],
 
   providers: [
-    ...SERVICES
+    ...SERVICES,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: ExternalServiceFactory,
+      deps: [ ExternalService ],
+      multi: true
+    }
   ],
 
   entryComponents: [
     ...ENTRY_COMPONENTS
   ]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(
+    externalService: ExternalService
+  ) {
+    externalService.init()
+  }
+}

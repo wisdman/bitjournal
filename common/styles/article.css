@@ -77,14 +77,6 @@
   margin-bottom: 1rem;
 }
 
-.article img {
-  width: 100%;
-  max-width: 100%;
-
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
 .article blockquote {/*.blockquote*/
   display: flex;
   position: relative;
@@ -128,6 +120,7 @@
 
   content: "\275D";
   font-size: 4rem;
+  line-height: 30px;
   color: #ef6c00;
 }
 
@@ -185,6 +178,8 @@
 .article blockquote span+span {/*.blockquote-author-position*/
   font-style: normal;
   font-size: 0.9rem;
+  margin-top: 0;
+  color: #73787e;
 }
 
 .article a {
@@ -194,4 +189,80 @@
 
 .article a:hover {
   text-decoration: underline;
+}
+
+/* Embended */
+
+.article figure {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+
+  margin: 0.5rem 0;
+  padding: 0;
+
+  position: relative;
+}
+
+.article figure.video {
+  height: 0;
+  overflow: hidden;
+  padding-bottom: 56.25%;
+}
+
+.article figure.video iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.article figure picture {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.article img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 0.5rem auto;
+  padding: 0;
+}
+
+.article figure img {
+  margin: 0 auto;
+}
+
+.article figure embed-twitter,
+.article figure embed-facebook,
+.article figure embed-vk  {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+
+  color: #73787e;
+}
+
+.article figure embed-twitter:before {
+  content: 'Twitter post: '
+}
+
+.article figure embed-facebook:before {
+  content: 'Facebook post: '
+}
+.article figure embed-vk:before {
+  content: 'VK post: '
 }
