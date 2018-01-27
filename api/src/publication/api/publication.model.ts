@@ -124,7 +124,12 @@ export const PublicationModel = new Model({
   tags: input => {
     const result = new Array<any>()
                    .concat(input)
-                   .map( item => String(item).trim().toLowerCase() )
+                   .map( item => String(item)
+                                 .toLowerCase()
+                                 .replace(/[^a-zа-я0-9_-]+/,' ')
+                                 .replace(/\s+/,' ')
+                                 .trim()
+                   ).filter( item => item.length > 0 )
 
     return { tags: result }
   },

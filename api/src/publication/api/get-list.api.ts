@@ -57,7 +57,7 @@ export class GetListAPI extends RouteMiddleware {
 
     let q = String(ctx.route.query.q)
             .toLowerCase()
-            .replace(/[^a-zа-я0-9]+/,' ')
+            .replace(/[^a-zа-я0-9_-]+/,' ')
             .replace(/\s+/,' ')
             .trim()
 
