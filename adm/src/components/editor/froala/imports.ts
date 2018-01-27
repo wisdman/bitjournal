@@ -27,3 +27,4 @@ import 'froala-editor/js/plugins/table.min.js'
 import 'froala-editor/js/plugins/url.min.js'
 
 // === Custom Plugins ===
+import './image/image.js'

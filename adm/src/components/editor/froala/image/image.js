@@ -29,15 +29,47 @@
   $.FE.PLUGINS.image = function (editor) {
     function insert() {
 
+    }
 
+    function showInsertPopup () {
+
+      console.log('showInsertPopup')
+
+      // var $btn = editor.$tb.find('.fr-command[data-cmd="insertImage"]');
+
+      // var $popup = editor.popups.get('image.insert');
+
+      // if (!$popup) $popup = _initInsertPopup();
+      // hideProgressBar();
+
+      // if (!$popup.hasClass('fr-active')) {
+      //   editor.popups.refresh('image.insert');
+      //   editor.popups.setContainer('image.insert', editor.$tb);
+
+      //   if ($btn.is(':visible')) {
+      //     var left = $btn.offset().left + $btn.outerWidth() / 2;
+      //     var top = $btn.offset().top + (editor.opts.toolbarBottom ? 10 : $btn.outerHeight() - 10);
+      //     editor.popups.show('image.insert', left, top, $btn.outerHeight());
+      //   }
+      //   else {
+      //     editor.position.forSelection($popup);
+      //     editor.popups.show('image.insert');
+      //   }
+      // }
+    }
+
+    function _init () {
+      console.log('_init')
     }
 
     return {
-      insert: insert
+      _init: _init,
+      showInsertPopup: showInsertPopup,
+      insert: insert,
     }
   }
 
-  $.FE.DefineIcon('insertImage', {NAME: 'image' })
+  $.FE.DefineIcon('insertImage', { NAME: 'image' })
   $.FE.RegisterCommand('insertImage', {
     title: 'Insert Image',
     undo: false,
@@ -45,8 +77,8 @@
     refreshAfterCallback: false,
     plugin: 'image',
     callback: function () {
-      this.image.showInsertPopup();
+      this.image.showInsertPopup()
     }
-  });
+  })
 
-}));
+}))

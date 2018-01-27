@@ -1,0 +1,145 @@
+.bj-page-video {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+
+  max-width: var(--max-width);
+  margin: 0 auto;
+
+  padding: var(--indent-base);
+}
+
+@media (min-width: 1200px) {
+  .bj-page-video {
+    padding: var(--indent-double);
+  }
+}
+
+.bj-page-video__wrapper {
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  margin-top: calc( 0 - var(--indent-base));
+}
+
+.bj-page-video__aside {
+  width: var(--aside-width);
+  flex: 0 0 var(--aside-width);
+
+  margin-left: var(--indent-double);
+
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .bj-page-video__aside {
+    display: flex;
+  }
+}
+
+.bj-page-video__item {
+  flex: 1 1 210px;
+  margin-top: var(--indent-base);
+  margin-left: var(--indent-half);
+  margin-right: var(--indent-half);
+
+  text-decoration: none;
+  text-transform: none;
+  color: inherit;
+}
+
+.bj-page-video__figure {
+  width: 100%;
+  height: 130px;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.bj-page-video__picture {
+  display: block;
+  box-sizing: border-box;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  background: #f9f9f9;
+}
+
+.bj-page-video__picture img {
+  display: block;
+  box-sizing: border-box;
+
+  position: absolute;
+  min-width: 100%;
+  min-height: 100%;
+  width: 100%;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: center;
+
+  object-fit: cover;
+}
+
+.bj-page-video__caption {
+  position: absolute;
+  bottom: 5px;
+
+  background-color: rgba(36, 41, 46, .7);
+  font-size: 12px;
+  line-height: 1;
+  color: #fff;
+
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.bj-page-video__caption i {
+  margin-right: .5em;
+}
+
+.bj-page-video__caption--left {
+  left: 5px;
+}
+
+.bj-page-video__caption--right {
+  right: 5px;
+}
+
+.bj-page-video__datetime {
+  display: block;
+  margin-top: var(--indent-half);
+  color: var(--color-gray);
+  font-size: 13px;
+}
+
+.bj-page-video__datetime i {
+  margin-right: .5em;
+}
+
+.bj-page-video__title {
+  padding: 0;
+  margin: 5px 0 0;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}

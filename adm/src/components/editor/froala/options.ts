@@ -37,7 +37,7 @@ export const OPTIONS = {
   placeholderText: 'Контент',
 
   pluginsEnabled: [
-    'codeBeautifier', 'codeView', 'fullscreen', 'lineBreaker', 'link', 'lists', 'paragraphFormat', 'table', 'url'
+    'codeBeautifier', 'codeView', 'fullscreen', 'lineBreaker', 'link', 'lists', 'paragraphFormat', 'table', 'url', 'image'
    ],
 
   shortcutsEnabled: ['bold', 'italic', 'underline', 'strikeThrough', 'indent', 'outdent', 'undo', 'redo', 'createLink'],
@@ -49,7 +49,7 @@ export const OPTIONS = {
     'selectAll', '|', 'undo', 'redo', '|', 'clearFormatting', 'paragraphFormat', '|',
     'bold', 'italic', 'underline', 'strikeThrough', '|', 'subscript', 'superscript', '|',
     'formatOL', 'formatUL', 'outdent', 'indent', '|',
-    'insertLink', 'insertTable', '|', 'fullscreen', 'html'
+    'insertLink', 'insertTable', 'insertImage', '|', 'fullscreen', 'html'
   ],
   toolbarButtonsMD: null,
   toolbarButtonsSM: null,
