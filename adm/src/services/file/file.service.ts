@@ -103,6 +103,12 @@ export class FileService {
           from.width = img.naturalWidth
           from.height = img.naturalHeight
 
+          const ctx = from.getContext('2d')
+          if (ctx === null)
+            return reject(new Error('Canvas error'))
+          ctx.scale(1, 1)
+          ctx.drawImage(img, 0, 0)
+
           const factor = Math.max(width/from.width, height/from.height)
 
           if ( factor <= 0 || factor >= 1 ) {
@@ -113,12 +119,6 @@ export class FileService {
             }, 'image/jpeg', 0.92)
             return
           }
-
-          const ctx = from.getContext('2d')
-          if (ctx === null)
-            return reject(new Error('Canvas error'))
-          ctx.scale(1, 1)
-          ctx.drawImage(img, 0, 0)
 
           const to = document.createElement('canvas')
           to.width = from.width*factor
