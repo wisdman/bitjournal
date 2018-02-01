@@ -62,7 +62,7 @@ export class APIService {
     if (this._isBrowser)
       return
 
-    if (item !== undefined && item !== null)
+    if (item === undefined || item === null)
       return
 
     const itemKey = this._transferStateKey(url)
@@ -92,9 +92,10 @@ export class APIService {
   get<T>(path: string, inputParams: { [param: string]: string | string[] } = {}): Observable<T> {
 
     const url = APIService.buildURL(path)
+    const urlAndParams = url + JSON.stringify(inputParams)
 
     // Check transfer state data
-    const result = this._transferStateGet(url + JSON.stringify(inputParams))
+    const result = this._transferStateGet(urlAndParams)
     if (result !== undefined && result !== null)
       return Observable.of(result) as Observable<T>
 
@@ -110,7 +111,7 @@ export class APIService {
                                          && item !== undefined
                                          && ( item.enable === undefined || item.enable === true ) )
                      .map(item => {
-                       this._transferStateSet(url, item)
+                       this._transferStateSet(urlAndParams, item)
                        return item
                      }) as Observable<T>
   }

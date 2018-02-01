@@ -11,6 +11,10 @@ import {
   IPartialPublication,
 } from '@common/publication'
 
+import {
+  PATTERN_URL
+} from '@common/pattern'
+
 const FULL_ACCES_ROLES = [
   Role.Author,
   Role.Publisher,
@@ -95,7 +99,18 @@ export class GetOneAPI extends RouteMiddleware {
   async getByUrl(ctx: Context, next: INext) {
 
     const date = String(ctx.route.data.date)
+
+    if ( !/\d{4}-\d{2}-\d{2}/.test(date) ) {
+      ctx.set(400)
+      return
+    }
+
     const url = String(ctx.route.data.url)
+
+    if ( !PATTERN_URL.test(url) ) {
+      ctx.set(400)
+      return
+    }
 
     let query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
 

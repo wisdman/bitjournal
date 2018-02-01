@@ -54,9 +54,70 @@ export class GetListAPI extends RouteMiddleware {
 
   @Get(`${PUBLICATIONS_API_PATH}`, 'q')
   async search(ctx: Context, next: INext) {
-    ctx.set([])
-    return
+
+    let q = String(ctx.route.query.q)
+            .toLowerCase()
+            .replace(/[^a-zа-я0-9_-]+/,' ')
+            .replace(/\s+/,' ')
+            .trim()
+
+    if (q.length === 0) {
+      ctx.set([])
+      return
+    }
+
+    let query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
+
+              ? new Query(PUBLICATIONS_DATATABLE)
+                    .select(FIELDS_FOR_ADMINS)
+                    .where(`(tsv @@ plainto_tsquery($1))`, q)
+
+              : new Query(PUBLICATIONS_DATATABLE)
+                    .select(FIELDS_FOR_EVERYONE)
+                    .where(`enable AND ts <= timezone('UTC', now()) AND (tsv @@ plainto_tsquery($1))`, q)
+
+    query = query.order({'ts': 'DESC'})
+
+    const limit = Math.max(~~( new Array<string>().concat(ctx.route.query['limit']).pop() || '' ) || 0, 0)
+    query = query.limit(limit > 0 ? limit : 100)
+
+    const result = await query.exec<IPartialPublication>(ctx.db)
+    ctx.set(result)
   }
+
+
+  @Get(`${PUBLICATIONS_API_PATH}`, 'tag')
+  async tag(ctx: Context, next: INext) {
+    let tag = String(ctx.route.query.tag)
+              .toLowerCase()
+              .replace(/[^a-zа-я0-9]+/,' ')
+              .replace(/\s+/,' ')
+              .trim()
+
+    if (tag.length === 0) {
+      ctx.set([])
+      return
+    }
+
+    let query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
+
+              ? new Query(PUBLICATIONS_DATATABLE)
+                    .select(FIELDS_FOR_ADMINS)
+                    .where(`tags @> ARRAY[$1]::text[]`, tag)
+
+              : new Query(PUBLICATIONS_DATATABLE)
+                    .select(FIELDS_FOR_EVERYONE)
+                    .where(`enable AND ts <= timezone('UTC', now()) AND tags @> ARRAY[$1]::text[]`, tag)
+
+    query = query.order({'ts': 'DESC'})
+
+    const limit = Math.max(~~( new Array<string>().concat(ctx.route.query['limit']).pop() || '' ) || 0, 0)
+    query = query.limit(limit > 0 ? limit : 100)
+
+    const result = await query.exec<IPartialPublication>(ctx.db)
+    ctx.set(result)
+  }
+
 
   @Get(`${PUBLICATIONS_API_PATH}`)
   async get(ctx: Context, next: INext) {

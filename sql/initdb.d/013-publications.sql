@@ -57,6 +57,8 @@ CREATE TABLE publications (
 
   "lastModified"  timestamp without time zone NOT NULL DEFAULT timezone('UTC', now()),
 
+  "tsv"           tsvector      NOT NULL,
+
   CONSTRAINT publications__idx_pkey PRIMARY KEY ("id"),
 
   CONSTRAINT publications__check__url CHECK ("url" ~ '^[a-z0-9]([a-z0-9_-]*[a-z0-9])?$'),
@@ -87,8 +89,33 @@ CREATE INDEX publications__idx__facebook     ON publications USING btree ("faceb
 CREATE INDEX publications__idx__twitter      ON publications USING btree ("twitter");
 CREATE INDEX publications__idx__rating       ON publications USING gin   ("rating");
 CREATE INDEX publications__idx__lastModified ON publications USING btree ("lastModified");
+CREATE INDEX publications__idx__tsv          ON publications USING gin   ("tsv");
 
 -- Prevent change publications id
 CREATE TRIGGER publications__prevent_change_id__trigger
   BEFORE UPDATE ON publications FOR EACH ROW
   EXECUTE PROCEDURE prevent_change_id();
+
+
+-- Generate FTS vector
+CREATE FUNCTION publications__generate_tsv() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.tsv := setweight(to_tsvector('russian',translate(coalesce(NEW."bigTitle",''),'ё','е')) || to_tsvector('russian',translate(coalesce(NEW."title",''),'ё','е')) || to_tsvector('russian',translate(coalesce(array_to_string(NEW."tags",' '),''),'ё','е')),'A') || setweight(to_tsvector('russian',translate(coalesce(NEW."content",''),'ё','е')),'B');
+  RETURN NEW;
+END; $$;
+
+CREATE TRIGGER publications__generate_tsv__trigger
+  BEFORE INSERT OR UPDATE ON publications FOR EACH ROW
+  EXECUTE PROCEDURE publications__generate_tsv();
+
+
+-- Set last modified time
+CREATE FUNCTION publications__update_last_modified() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  NEW."lastModified" = timezone('UTC', now());
+  RETURN NEW;
+END; $$;
+
+CREATE TRIGGER publications__update_last_modified__trigger
+  BEFORE UPDATE ON publications FOR EACH ROW
+  EXECUTE PROCEDURE publications__update_last_modified();

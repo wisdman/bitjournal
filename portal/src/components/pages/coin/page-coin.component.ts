@@ -43,11 +43,28 @@ export class PageCoinComponent {
 
   item: Observable<IPartialCoin>
 
+  setMetaTags(item: IPartialCoin) {
+    this._meta.setMetaTags({
+      title: item.title,
+      description: item.description,
+      ogTitle: item.ogTitle,
+      ogDescription: item.ogDescription,
+      ogImage: item.ogImage || undefined
+    })
+  }
+
   onRoute(params: { [key:string]: any }) {
+    this._loaderService.show()
+
     const symbol = params.symbol
 
-    this.item =  this._api
-                     .get<IPartialCoin>(`${COINS_API_PATH}/${symbol}`)
+    this.item = this._api
+                    .get<IPartialCoin>(`${COINS_API_PATH}/${symbol}`)
+                    .map( item => {
+                      this.setMetaTags(item)
+                      this._loaderService.hide()
+                      return item
+                    })
 
     this.publications = this._api
                             .get<Array<IPartialPublication>>(`${PUBLICATIONS_API_PATH}?limit=50`)

@@ -21,21 +21,24 @@
     <a class="bj-footer__nav__item" routerLink="/markets">
       <span>Биржи</span>
     </a> -->
+    <a class="bj-footer__nav__item" routerLink="/tags">
+      <span>Теги</span>
+    </a>
   </div>
-  <!-- <div class="bj-footer__nav__row">
-    <a class="bj-footer__nav__item" routerLink="/about">
+  <div class="bj-footer__nav__row">
+    <!-- <a class="bj-footer__nav__item" routerLink="/about">
       <span>О проекте</span>
     </a>
     <a class="bj-footer__nav__item" routerLink="/staff">
       <span>Редакция</span>
-    </a>
-    <a class="bj-footer__nav__item" routerLink="/ads">
+    </a> -->
+    <!-- <a class="bj-footer__nav__item" routerLink="/ads">
       <span>Реклама</span>
-    </a>
-    <a class="bj-footer__nav__item bj-footer__nav__item--donate" routerLink="/donate">
+    </a> -->
+    <!-- <a class="bj-footer__nav__item bj-footer__nav__item--donate" routerLink="/donate">
       <span>Поддержать</span>
-    </a>
-  </div> -->
+    </a> -->
+  </div>
 </nav>
 
 <div class="bj-footer__row">
@@ -48,31 +51,45 @@
   </div>
 
   <div class="bj-footer__col bj-footer__col--widgets">
-    <!-- Facebook Widget -->
+    <!-- Facebook Button -->
     <div class="bj-footer__col__widget">
-      <div class="fb-page" data-href="https://www.facebook.com/bitjournalOfficial/" data-width="200" data-height="160" data-small-header="false" data-adapt-container-width="false" data-show-facepile="false" data-hide-cover="true"><blockquote cite="https://www.facebook.com/bitjournalOfficial/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/bitjournalOfficial/">BitJournal</a></blockquote></div>
+      <a class="bj-footer__facebook" href="https://www.facebook.com/bitjournalofficial" target="_blank">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path d="M9 8H6v4h3v12h5V12h3.6l.4-4h-4V6.3c0-1 .2-1.3 1-1.3h3V0h-3.8C10.6 0 9 1.6 9 4.6V8z"></path>
+        </svg>
+        <span>Facebook</span>
+      </a>
     </div>
-  </div>
 
-  <div class="bj-footer__col bj-footer__col--widgets">
     <!-- Telegram Button -->
     <div class="bj-footer__col__widget">
       <a class="bj-footer__telegram" href="https://t.me/bitjournal_io" target="_blank">
         <svg width="24" height="24" viewBox="0 0 24 24">
           <path d="M.4 11.6l5.6 2 2 7c.2.3.8.5 1 .2l3.2-2.5c.3-.3.8-.3 1 0l5.7 4c.3.3.8 0 1-.4l4-19.7c0-.5-.4-1-1-.7L.5 10.4c-.5.2-.5 1 0 1.2zm7.3 1l10.8-6.8c.3 0 .5.2.3.4l-9 8.3-.5 1L9 18c0 .3-.5.3-.5 0l-1.2-4c-.2-.5 0-1 .4-1.3z"></path>
         </svg>
-        <span>BitJournal в Телеграм</span>
+        <span>Телеграм</span>
       </a>
     </div>
 
-    <!-- YouTube Widget -->
+    <!-- YouTube Button -->
     <div class="bj-footer__col__widget">
-      <div class="g-ytsubscribe" data-channelid="UCeOLUeYNcYDos1wcTJVLGlw" data-layout="default" data-theme="dark" data-count="default"></div>
+      <a class="bj-footer__youtube" href="https://www.youtube.com/channel/UCeOLUeYNcYDos1wcTJVLGlw" target="_blank">
+        <svg width="310" height="310" viewBox="0 0 310 310">
+          <path d="M298 64.6C286.6 51.3 266 46 226.5 46H83.4C43 46 22 51.7 10.9 66 0 79.7 0 100 0 128.2v53.6c0 54.6 12.9 82.3 83.4 82.3h143.2c34.2 0 53.2-4.8 65.5-16.5 12.5-12 17.9-31.7 17.9-65.8v-53.6c0-29.7-.8-50.2-12-63.6zm-99 97.8l-65 34a10 10 0 0 1-14.6-8.9v-67.7a10 10 0 0 1 14.6-8.9l65 33.8a10 10 0 0 1 0 17.7z">
+          </path>
+        </svg>
+        <span>YouTube</span>
+      </a>
     </div>
 
-    <!-- Twitter Widget -->
+    <!-- Twitter Button -->
     <div class="bj-footer__col__widget">
-      <a href="https://twitter.com/bitjournal_io" class="twitter-follow-button" data-size="large" data-show-count="false" target="_blank">Follow @bitjournal_io</a>
+      <a class="bj-footer__twitter" href="https://twitter.com/BitJournal_io" target="_blank">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <path d="M24 4.6c-1 .3-1.8.6-2.8.7 1-.6 1.8-1.5 2-2.7-.8.6-2 1-3 1.2-1-1-2.2-1.6-3.6-1.6-3.2 0-5.5 3-4.8 6-4 0-7.7-2-10-5C.3 5.3 1 8 3 9.6c-.8 0-1.6-.2-2.2-.6 0 2.4 1.5 4.5 4 5-.8.2-1.5.2-2.3 0 .6 2 2.4 3.5 4.6 3.5-2 1.6-4.7 2.3-7.3 2 2.2 1.4 4.8 2.3 7.5 2.3 9.2 0 14.4-7.8 14-14.7 1-.6 1.8-1.5 2.5-2.4z"></path>
+        </svg>
+        <span>Twitter</span>
+      </a>
     </div>
   </div>
 
@@ -90,7 +107,7 @@
   <a routerLink="/privacy">Политика конфиденциальности</a>
   <span>|</span>
   <a href="mailto:ad@bitjournal.io" target="_blank">ad@bitjournal.io</a>
-  <div class="bj-footer__bottom__copyright">Copyright &copy; 2017 BitJournal</div>
+  <div class="bj-footer__bottom__copyright">Copyright &copy; 2017 - 2018 BitJournal</div>
 </div>
 
 <a class="bj-footer__logo" routerLink="/">

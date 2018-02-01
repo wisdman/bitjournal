@@ -4,6 +4,7 @@
   </picture>
 
   <div *ngIf="value.tags.length > 0" class="bj-article__header__tags">
+<<<<<<< HEAD
     <a>#Тег 1</a>
     <a>#Тегas 2</a>
     <a>#Теasdг 3 cas</a>
@@ -13,6 +14,10 @@
 
   </div>
 
+=======
+    <a *ngFor="let tag of value.tags" [routerLink]="['/tags', tag]">#{{ tag }}</a>
+  </div>
+>>>>>>> master
 
   <time class="bj-article__header__datetime" [attr.datetime]="value.ts | timestamp">
     <i class="fa fa-clock-o" aria-hidden="true"></i>
@@ -25,6 +30,7 @@
   <div *ngIf="value" class="bj-article__share share" [value]="[value.ts | timestamp:'URL', value.url]"></div>
 
 </div>
+<<<<<<< HEAD
 <div class="bj-article__content article">
   <p>мяуедплттудплуклпьлкпьлпу3лпть34лджьлдльа43длаь</p>
   <ol>
@@ -49,3 +55,13 @@
 <!--<div *ngIf="value" class="bj-article__footer">
   {{ value | json}}
 </div> -->
+=======
+<div *ngIf="value" class="bj-article__content article" [innerHTML]="value.content"></div>
+<div *ngIf="value" class="bj-article__footer">
+  <div class="bj-article__telegram">
+    <a class="bj-article__telegram__link" href="https://t.me/bitjournal_io" target="_blank">Подписывайтесь на новости <span>BitJournal в Telegram</span></a>
+  </div>
+  <div *ngIf="value" class="bj-article__share share" [value]="[value.ts | timestamp:'URL', value.url]"></div>
+</div>
+
+>>>>>>> master

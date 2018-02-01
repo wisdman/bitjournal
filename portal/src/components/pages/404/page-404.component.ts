@@ -1,6 +1,11 @@
 import { Component, ViewEncapsulation } from '@angular/core'
 
-import { ContextService } from '../../../services'
+import {
+  ContextService,
+  MetaService
+} from '../../../services'
+
+import { META } from './meta'
 
 @Component({
   selector: 'page-404.page',
@@ -10,10 +15,12 @@ import { ContextService } from '../../../services'
 })
 export class Page404Component {
   constructor(
-    private readonly _context: ContextService
+    private readonly _context: ContextService,
+    private readonly _meta: MetaService,
   ){}
 
   ngOnInit() {
     this._context.status = 404
+    this._meta.setMetaTags(META)
   }
 }

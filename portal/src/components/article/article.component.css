@@ -64,7 +64,10 @@
 
   width: 100%;
   max-width: var(--max-article-width);
+<<<<<<< HEAD
   height: 30px;
+=======
+>>>>>>> master
 
   margin: 0 auto;
   padding: 0 20px;
@@ -82,16 +85,26 @@
   text-transform: uppercase;
 
   color: inherit;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 300;
-  line-height: 21px;
 
+<<<<<<< HEAD
   padding: 1px 5px 0;
   background: rgba(36, 41, 46, 0.9);/* var(--color-main); for transparency */
   color: #fff;
 
   margin-right: 8px;
   padding-top: 5px;
+=======
+  height: 26px;
+  padding: 7px 5px 0;
+  background: var(--color-main);
+  color: #fff;
+
+  margin-left: 4px;
+  margin-top: 5px;
+  margin-right: 6px;
+>>>>>>> master
 }
 
 .bj-article__header__tags a::before,
@@ -109,24 +122,33 @@
 
 .bj-article__header__tags a::before {
   left: -5px;
+<<<<<<< HEAD
   border-bottom: 30px solid rgba(36, 41, 46, 0.9);/* var(--color-main); for transparency */
+=======
+  border-bottom: 26px solid var(--color-main);
+>>>>>>> master
   border-left: 5px solid transparent;
 }
 
 .bj-article__header__tags a::after {
   right: -5px;
+<<<<<<< HEAD
   border-top: 30px solid rgba(36, 41, 46, 0.9);/* var(--color-main); for transparency */
+=======
+  border-top: 26px solid var(--color-main);
+>>>>>>> master
   border-right: 5px solid transparent;
 }
 
-.bj-article__header__tags a:first-child::before {
-  display: none;
+.bj-article__header__tags a:hover {
+  background-color: var(--color-active);
 }
-
-.bj-article__header__tags a:last-child::after {
-  display: none;
+.bj-article__header__tags a:hover::before {
+  border-bottom-color: var(--color-active);
 }
-
+.bj-article__header__tags a:hover::after {
+  border-top-color: var(--color-active);
+}
 
 .bj-article__header__datetime {
   display: block;
@@ -156,7 +178,7 @@
   width: 100%;
   max-width: var(--max-article-width);
 
-  margin: 10px auto 20px auto;
+  margin: 24px auto 20px auto;
   padding: 0 20px;
 
   font-family: inherit;
@@ -197,7 +219,44 @@
   width: 100%;
   max-width: var(--max-article-width);
 
-  margin: 40px auto 30px auto;
+  margin: 40px auto 10px auto;
   padding: 0 20px;
+}
+
+.bj-article__content {
+  padding: var(--indent-base) 0;
+}
+
+.bj-article__footer {
+  border-top: 1px solid #eee;
+}
+
+.bj-article__footer .bj-article__share {
+  margin-bottom: 40px;
+}
+
+.bj-article__telegram {
+  width: 100%;
+  max-width: var(--max-article-width);
+  padding: 0 20px;
+<<<<<<< HEAD
   margin-bottom: 0;/*add*/
+=======
+
+  margin: 40px auto 0 auto;
+}
+
+.bj-article__telegram__link {
+  color: inherit;
+  text-decoration: none;
+  text-transform: none;
+}
+
+.bj-article__telegram__link span {
+  color: #0088cc;
+}
+
+.bj-article__telegram__link:hover span {
+  text-decoration: underline;
+>>>>>>> master
 }

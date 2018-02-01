@@ -1,0 +1,201 @@
+.article {
+  --max-text-width: 700px;
+  --padding-size: 20px;
+}
+
+.article p, .article blockquote {
+  display: block;
+  position: relative;
+
+  width: 100%;
+  max-width: var(--max-text-width);
+
+  font-size: 1rem;
+  line-height: 1.5;/* from 1.618*/
+
+  margin: 1em auto;
+  padding: 0 var(--padding-size);
+}
+
+.article h1,
+.article h2,
+.article h3 {
+  display: block;
+  position: relative;
+
+  width: 100%;
+  max-width: var(--max-text-width);
+
+  font-size: 1.17em;
+  line-height: 1.618;
+
+  margin: 1em auto;
+  padding: 0 var(--padding-size);
+}
+
+.article h1,
+.article h2 {
+  text-align: center;
+}
+
+.article h1 {
+  font-size: 1.5rem;
+}
+
+.article h2 {
+  font-size: 1.25rem;
+}
+
+.article ol,
+.article ul {
+  display: block;
+  position: relative;
+
+  width: 100%;
+  max-width: var(--max-text-width);
+
+  font-size: 1rem;
+  line-height: 1.5;/* from 1.618*/
+
+  margin: 1em auto;
+  padding: 0 var(--padding-size);
+}
+
+.article li {
+  font-size: 1rem;
+  line-height: 1.5;/* from 1.618*/
+
+  margin: 0;
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+  padding: 0;
+}
+
+.article li > ul {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.article img {
+  width: 100%;
+  max-width: 100%;
+
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.article blockquote {/*.blockquote*/
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  max-width: var(--max-text-width);
+
+  line-height: 1.5rem;
+  color:dimgrey;
+  text-align: center;
+  font-style: italic;
+
+  border-top: 3px solid #ef6c00;
+
+  margin-top: 1.6rem;
+  padding-top:1.5rem;
+}
+
+@media (max-width: 1100px) {
+  .article blockquote {/*.blockquote*/
+    margin-left: 3rem;
+    margin-right: 3rem;
+
+    width: auto;
+    max-width: none;
+  }
+}
+
+.article blockquote::before {/*.blockquote::before*/
+  position: absolute;
+  display: block;
+
+  background-color: white;
+
+  top: 0.05em;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding-right: 0.12em;
+
+  content: "\275D";
+  font-size: 4rem;
+  color: #ef6c00;
+}
+
+.article blockquote picture {/*.blockquote-picture*/
+  margin-top: 1rem;
+  margin-bottom:0;
+
+  display: block;
+  position: relative;
+
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+
+  height: 60px;
+  min-height: 60px;
+  max-height: 60px;
+
+  flex: 0 0 60px;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  background: #f9f9f9;
+}
+
+.article blockquote picture img {/*.blockquote-picture img*/
+  display: block;
+  box-sizing: border-box;
+
+  position: absolute;
+  min-width: 100%;
+  min-height: 100%;
+  width: 100%;
+
+  top: 36%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  object-fit: cover;
+
+  border-radius: 50%;
+}
+
+.article blockquote span {/*.blockquote-author*/
+  color: black;
+  font-size: 1.1rem;
+  font-style: normal;
+
+  margin-top: 1rem;
+}
+
+.article blockquote span+span {/*.blockquote-author-position*/
+  font-style: normal;
+  font-size: 0.9rem;
+}
+
+.article a {
+  color: #ef6c00;
+  text-decoration: none;
+}
+
+.article a:hover {
+  text-decoration: underline;
+}
+
+.bj-article__content {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}

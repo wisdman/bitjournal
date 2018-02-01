@@ -1,0 +1,89 @@
+.bj-page-tags {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  max-width: var(--max-width);
+  margin: 0 auto;
+
+  padding: var(--indent-base);
+}
+
+@media (min-width: 1200px) {
+  .bj-page-tags {
+    padding: var(--indent-double);
+  }
+}
+
+.bj-page-tags__header {
+  display: block;
+  flex: 0 0 100%;
+  width: 100%;
+
+  font-size: 1.5rem;
+  font-weight: 500;
+
+  margin: 0;
+  padding: 0;
+
+  margin-bottom: var(--indent-base);
+
+  text-align: center;
+}
+
+.bj-page-tags a {
+  display: block;
+  position: relative;
+
+  text-decoration: none;
+  text-transform: uppercase;
+
+  color: inherit;
+  font-size: 12px;
+  font-weight: 300;
+
+  height: 26px;
+  padding: 7px 5px 0;
+  background: var(--color-main);
+  color: #fff;
+
+  margin-left: 4px;
+  margin-top: 5px;
+  margin-right: 6px;
+}
+
+.bj-page-tags a::before,
+.bj-page-tags a::after {
+  display: block;
+  content: "";
+
+  position: absolute;
+
+  width: 0;
+  height: 0;
+
+  top: 0px;
+}
+
+.bj-page-tags a::before {
+  left: -5px;
+  border-bottom: 26px solid var(--color-main);
+  border-left: 5px solid transparent;
+}
+
+.bj-page-tags a::after {
+  right: -5px;
+  border-top: 26px solid var(--color-main);
+  border-right: 5px solid transparent;
+}
+
+.bj-page-tags a:hover {
+  background-color: var(--color-active);
+}
+.bj-page-tags a:hover::before {
+  border-bottom-color: var(--color-active);
+}
+.bj-page-tags a:hover::after {
+  border-top-color: var(--color-active);
+}

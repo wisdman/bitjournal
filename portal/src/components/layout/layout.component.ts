@@ -2,6 +2,10 @@ import { Component, ViewEncapsulation, PLATFORM_ID, Inject } from '@angular/core
 import { isPlatformServer } from '@angular/common'
 import { Router, NavigationEnd } from '@angular/router'
 
+import {
+  ExternalService
+} from '../../services'
+
 @Component({
   selector: '.layout',
   templateUrl: './layout.component.html',
@@ -15,6 +19,7 @@ export class LayoutComponent {
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly _router: Router,
+    private readonly _ext: ExternalService,
   ) {
     this._isServer = isPlatformServer(platformId)
 
@@ -26,8 +31,7 @@ export class LayoutComponent {
             return
 
           window.scrollTo(0,0)
-
-          // console.log(document.title)
+          this._ext.ya.then( ya => ya && ya.hit(document.location.href) )
         })
 
   }
