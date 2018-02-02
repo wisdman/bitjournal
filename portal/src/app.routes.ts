@@ -11,6 +11,7 @@ import {
   PagePrivacyComponent,
   PageTagComponent,
   PageTagsComponent,
+  PageVideoComponent,
 } from './components'
 
 export const ROUTES: Routes = [
@@ -27,6 +28,8 @@ export const ROUTES: Routes = [
 
   { path: 'tags'           , component: PageTagsComponent    },
   { path: 'tags/:tag'      , component: PageTagComponent     },
+
+  { path: 'video'          , component: PageVideoComponent   },
 
   { path: ':date/:url'     , component: PageArticleComponent },
 

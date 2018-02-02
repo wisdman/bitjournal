@@ -1,6 +1,7 @@
 export * from './article'
 export * from './auth'
 export * from './coin'
+export * from './coins-calc'
 export * from './coins-ribbon'
 export * from './footer'
 export * from './header'
