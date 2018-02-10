@@ -1,0 +1,260 @@
+.bj-coins-calc {
+  display: flex;
+  align-items: center;
+  flex-wrap:wrap;
+  position: relative;
+}
+
+.currency-converter_side  {
+  display: flex;
+  flex-direction: column;
+
+  padding: var(--indent-base);
+
+  width: 45%;
+  max-width: 400px;
+}
+
+.currency-converter_side_title {
+  margin-bottom: var(--indent-half);
+  font-size: 1.3em;
+}
+
+.currency-converter_currency_icon {
+  width: 30px;
+  height: 30px;
+
+  margin-left: var(--indent-half);
+}
+
+.currency-converter_arrow-to-down-black {/*Fix arrow place to center*/
+  width: 10px;
+  height: 10px;
+
+  margin: var(--indent-half);
+  margin-left: var(--indent-base);
+  margin-right: var(--indent-base);
+}
+
+.currency-converter_currency_choosing_menu {
+  border-left: 1px solid #cdcdcd;
+}
+
+.currency-converter_currency_choosing_menu:hover {
+  /* background-color: #cdcdcd; Fix spaces */
+  cursor: pointer;
+}
+
+.currency-converter_currency_choosing {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid #cdcdcd;
+  border-radius: 4px;
+
+  background-color: white;
+}
+
+.currency-converter_currency_choosed {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.currency-converter_currency_input {
+  outline: 0;
+  font-size: 1.2em;
+
+  margin: var(--indent-half);
+  margin-top: 7px;
+
+  border: 0;
+}
+
+.currency-converter_input_value {
+  outline: 0;
+  font-size: 2.2em;
+  font-weight: 600;
+
+  margin: var(--indent-half);
+  margin-top: var(--indent-half);
+  margin-bottom: var(--indent-base);
+
+  border:0;
+}
+
+.currency-converter_input {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid #cdcdcd;
+
+  margin-top: var(--indent-half);
+  padding: var(--indent-base);
+
+  background-color: white;
+}
+
+.currency-converter_currency_current_rate {
+  color:#888888;
+  margin-left: var(--indent-half);
+}
+
+.currency-converter_side-changing {
+  width: 72px;
+  height: 72px;
+}
+
+.currency-converter_side-changing img {
+  margin-top: 6px;
+  margin-left: 6px;
+
+  width: 60px;
+  height: 60px;
+}
+
+@media (max-width:800px) {
+
+  .currency-converter_second_side  {
+    flex-direction: column-reverse;
+    padding-top: 0;
+  }
+
+  .currency-converter_currency_choosing {
+    margin-top: var(--indent-half);
+
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .currency-converter_second_side .currency-converter_currency_choosing {
+    margin-bottom: var(--indent-half);
+    margin-top: -1px;
+
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .currency-converter_side_title {
+    display: none;
+  }
+
+  .currency-converter_side-changing {
+    position: absolute;
+    right:10%;
+    background-color: white;
+    margin-top: 10px;
+  }
+
+  .currency-converter_currency_current_rate {
+    font-size: 0.9em;
+  }
+
+  .currency-converter_currency_input {
+    width: 140px;
+  }
+
+  .currency-converter_input_value {
+    font-size: 2em;
+    width:300px;
+  }
+
+/*  .currency-converter-changing_money_picture {
+    background-color: white;
+    margin-top: 20px;
+    width: 60px;
+  }*/
+
+  .bj-coins-calc {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .currency-converter_side  {
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .currency-converter_input {
+    margin-top: -1px;
+  }
+
+}
+
+@media (max-width:400px) {
+
+  .currency-converter_input_value {
+    width:200px;
+  }
+
+  .currency-converter_side-changing {
+    right:10%;
+  }
+
+  .bj-coins-calc {
+    width: 100%;
+  }
+
+}
+
+/*--------------------------------------------------------------------------*/
+.cc-calc--narrow .currency-converter_side  {
+  width: 100%;
+  /* max-width:  value */
+  padding-bottom: 0;
+}
+
+.cc-calc--narrow .currency-converter_second_side  {
+    flex-direction: column-reverse;
+    padding-top: 0;
+  }
+
+.cc-calc--narrow .currency-converter_currency_choosing {
+    margin-top: var(--indent-half);
+
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+.cc-calc--narrow .currency-converter_second_side .currency-converter_currency_choosing {
+    margin-bottom: var(--indent-half);
+    margin-top: -1px;
+
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+.cc-calc--narrow .currency-converter_side_title {
+    display: none;
+  }
+
+.cc-calc--narrow .currency-converter_side-changing {
+    position: absolute;
+    right: 10%;
+    background-color: white;
+  }
+
+/*.cc-calc--narrow .currency-converter-changing_money_picture {
+    background-color: white;
+    margin-top: 20px;
+    width: 60px;
+  }*/
+
+.cc-calc--narrow .bj-coins-calc {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+.cc-calc--narrow .currency-converter_input {
+    margin-top: -1px;
+  }
