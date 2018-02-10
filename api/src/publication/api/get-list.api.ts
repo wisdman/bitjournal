@@ -140,7 +140,7 @@ export class GetListAPI extends RouteMiddleware {
 
     const sectionsWhere = sections.length > 0 ? ` AND sections <@ '{${ sections.join(',') }}' ` : ''
 
-    const ts = Math.max(~~( new Array<string>().concat(ctx.route.query['ts']).pop() || '' ) || 0, 0)
+    const ts = Math.max(parseInt( new Array<string>().concat(ctx.route.query['ts']).pop() || '' ) || 0, 0)
     const tsWhere = ts > 0 ? ` AND (extract(epoch from ts at time zone 'utc') * 100000) < ${ts} ` : ''
 
     let query = ctx.session.roles.checkAny(FULL_ACCES_ROLES) === true
