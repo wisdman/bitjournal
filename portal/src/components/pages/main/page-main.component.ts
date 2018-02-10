@@ -26,7 +26,7 @@ import {
 })
 export class PageMainComponent implements OnInit {
 
-  publications: Observable < Array<IPublication> >
+  publications: Array<IPublication>
 
   isMoreNews: boolean = false
   isMorePublications: boolean = true
@@ -49,23 +49,36 @@ export class PageMainComponent implements OnInit {
 
     this._meta.setMetaTags()
 
-    this.publications = Observable.forkJoin(
-                          this._api
-                              .get< Array<IPublication> >(`${PUBLICATIONS_API_PATH}`, { weight: '0', limit: '40' }),
-                          this._api
-                              .get< Array<IPublication> >(`${PUBLICATIONS_API_PATH}`, { weight: '1,2', limit: '19' })
-                        ).map( ([s1, s2]) => {
-                          const result = [...s1, ...s2].sort( (a, b) => a.ts < b.ts ? 1 : -1 )
-                          this._loaderService.hide()
-                          return result
-                        })
+    Observable.forkJoin(
+      this._api
+          .get< Array<IPublication> >(`${PUBLICATIONS_API_PATH}`, { weight: '0', limit: '40' }),
+      this._api
+          .get< Array<IPublication> >(`${PUBLICATIONS_API_PATH}`, { weight: '1,2', limit: '19' })
+    ).map( ([s1, s2]) => [...s1, ...s2].sort( (a, b) => a.ts < b.ts ? 1 : -1 ))
+     .subscribe( result => {
+      this._loaderService.hide()
+      this.publications = result
+    })
   }
 
-  // more() {
-  //   this.publications
-  //       .subscribe( value => {
-  //         console.dir(value)
-  //       })
-  // }
+  more() {
+    const lastTS = this.publications.length > 0
+                   ? new Date( <string>(this.publications[ this.publications.length - 1].ts) )
+                   : new Date()
+
+    const lastIntTS = String(Number(lastTS)*100)
+
+    this._api
+        .get< Array<IPublication> >(`${PUBLICATIONS_API_PATH}`, { limit: '20', ts: lastIntTS })
+        .subscribe( result => {
+
+          this.publications = this.publications
+                                  .concat(result.map( item => {
+                                                        item.weight = 1
+                                                        return item
+                                                 })
+                                  )
+        })
+  }
 
 }

@@ -6,7 +6,7 @@
 
     <aside class="bj-page-coin__aside">
 
-      <div class="bj-coins-calc bj-coins-calc--narrow"></div>
+      <!-- <div class="bj-coins-calc bj-coins-calc--narrow"></div> -->
 
       <h3 class="column-header">Новости</h3>
       <a *ngFor="let publication of publications | async" class="bj-pub-line" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]"></a>

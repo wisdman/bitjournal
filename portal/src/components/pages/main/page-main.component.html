@@ -5,7 +5,7 @@
     <h1 class="column-header">Новости</h1>
     <div class="bj-page-main__aside__void">
       <div class="bj-page-main__aside__news">
-        <a *ngFor="let publication of publications | async" class="bj-pub-line bj-page-main__news-card" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]" [class.bj-page-main__news-card--hide]="publication.weight !== 0"></a>
+        <a *ngFor="let publication of publications" class="bj-pub-line bj-page-main__news-card" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]" [class.bj-page-main__news-card--hide]="publication.weight !== 0"></a>
       </div>
     </div>
     <button *ngIf="!isMoreNews" mat-raised-button color="primary" class="bj-page-main__aside__button" (click)="isMoreNews=true">Больше новостей</button>
@@ -13,8 +13,8 @@
 
   <div class="bj-page-main__video bj-video-ribbon"></div>
 
-  <a #publicationsList *ngFor="let publication of publications | async" class="bj-pub-card bj-page-main__card" [class.bj-page-main__card--wide]="publication.weight > 1" [class.bj-page-main__card--hide]="publication.weight === 0" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]"></a>
+  <a #publicationsList *ngFor="let publication of publications" class="bj-pub-card bj-page-main__card" [class.bj-page-main__card--wide]="publication.weight > 1" [class.bj-page-main__card--hide]="publication.weight === 0" [value]="publication" [routerLink]="['/', publication.ts | timestamp:'DATE', publication.url]"></a>
 
-  <!-- <button *ngIf="isMorePublications" mat-raised-button color="primary" class="bj-page-main__button" (click)="more()">Больше публикаций</button> -->
+  <button *ngIf="isMorePublications" mat-raised-button color="primary" class="bj-page-main__button" (click)="more()">Больше публикаций</button>
 
 </main>
